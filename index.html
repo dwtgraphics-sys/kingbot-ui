@@ -2759,7 +2759,7 @@ window.sendSettings = async function sendSettings(extra, msgId, btn) {
 }
 
 function showImage(b64, when) { const box = $("shot"); box.innerHTML = ""; const img = new Image(); img.alt = "صورة شاشة السيرفر"; img.src = "data:image/jpeg;base64," + b64; box.appendChild(img); setMsg("m-shot", "آخر صورة: " + fmtTime(when), "ok"); }
-async window.requestShot = function requestShot() {
+window.requestShot = async function requestShot() {
   const req = stamp();
   if (!(await sendSettings({ shot_request: req }, "m-shot", $("b-shot")))) return;
   lastShotRequest = req; setMsg("m-shot", "طلبت الصورة. تصل عادةً خلال 20 إلى 60 ثانية…");
