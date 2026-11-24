@@ -1808,7 +1808,7 @@ document.querySelectorAll("[data-g]").forEach(el => el.innerHTML = gsvg(el.datas
 
 /* ---------- tabs ---------- */
 const railBtns = [...document.querySelectorAll(".rail button[data-v]")];
-function showView(id) {
+window.showView = function showView(id) {
   document.querySelectorAll(".view").forEach(v => v.classList.toggle("show", v.id === id));
   const sv = document.getElementById("b-send2"); if (sv) sv.hidden = id !== "v-acts";
   railBtns.forEach(b => b.classList.toggle("on", b.dataset.v === id));
@@ -2731,7 +2731,7 @@ async function loadSettings() {
 }
 
 function stamp() { return new Date().toISOString().replace(/\D/g, "").slice(0, 17); }
-async function sendSettings(extra, msgId, btn) {
+window.sendSettings = async function sendSettings(extra, msgId, btn) {
   settings.running = $("running").checked; settings.loop_minutes = Number($("loop").value); readSched();
   const order = ALL.map(a => a.routine);
   const tasks = settings.tasks.slice().sort((a, b) => order.indexOf(a.routine) - order.indexOf(b.routine));
@@ -3623,5 +3623,89 @@ document.getElementById("cond-ic").innerHTML = gsvg("conduct", 46);
   <div class="ast-log" id="ast-log"><div class="ast-m bot">أهلاً! اضغط أمراً أو اكتب طلبك، وأنا أرسله للبوت وأتابعه حتى ينتهي.</div></div>
   <form class="ast-in" id="ast-form"><input id="ast-text" autocomplete="off" placeholder="اكتب طلبك… مثال: حدّث القادة والموارد"><button type="submit">إرسال</button></form>
 </section>
+
+
+<script>
+(function(){
+  function forceShowView(id) {
+    if (!id) return;
+    if (typeof window.showView === "function") {
+      window.showView(id);
+    } else {
+      document.querySelectorAll(".view").forEach(v => v.classList.toggle("show", v.id === id));
+      document.querySelectorAll(".rail [data-v]").forEach(b => b.classList.toggle("on", b.dataset.v === id));
+    }
+    try { history.replaceState(null, "", "#" + id.replace(/^v-/, "")); } catch (_) {}
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  document.addEventListener("click", function(e) {
+    // Hamburger menu button (#kbar-menu)
+    const mb = e.target.closest("#kbar-menu");
+    if (mb) {
+      const mp = document.getElementById("kbar-mpop");
+      if (mp) {
+        const open = !mp.classList.contains("open");
+        document.querySelectorAll(".kbar-pop").forEach(p => p.classList.remove("open"));
+        if (open) mp.classList.add("open");
+      }
+      return;
+    }
+
+    // Language button (#kbar-lang)
+    const lb = e.target.closest("#kbar-lang");
+    if (lb) {
+      const lp = document.getElementById("kbar-langs");
+      if (lp) {
+        const open = !lp.classList.contains("open");
+        document.querySelectorAll(".kbar-pop").forEach(p => p.classList.remove("open"));
+        if (open) lp.classList.add("open");
+      }
+      return;
+    }
+
+    // Bell button (#kbar-bell)
+    if (e.target.closest("#kbar-bell")) {
+      document.querySelectorAll(".kbar-pop").forEach(p => p.classList.remove("open"));
+      forceShowView("v-log");
+      return;
+    }
+
+    // Navigation items ([data-go] in top menu or [data-v] in bottom rail)
+    const goBtn = e.target.closest("[data-go]");
+    if (goBtn) {
+      document.querySelectorAll(".kbar-pop").forEach(p => p.classList.remove("open"));
+      const target = goBtn.dataset.go;
+      if (target === "settings") {
+        const sb = document.getElementById("b-settings");
+        if (sb) sb.click();
+      } else if (target === "logout") {
+        if (typeof window.kbLogout === "function") window.kbLogout();
+      } else {
+        forceShowView(target);
+      }
+      return;
+    }
+
+    const railBtn = e.target.closest("[data-v]");
+    if (railBtn) {
+      forceShowView(railBtn.dataset.v);
+      return;
+    }
+
+    // Fallback for Save & Send buttons (#b-send, #b-send2, #b-send3)
+    const sendBtn = e.target.closest("#b-send, #b-send2, #b-send3");
+    if (sendBtn && typeof window.sendSettings === "function" && !sendBtn.dataset.boundOk) {
+      const map = { "b-send": "m-send", "b-send2": "m-send2", "b-send3": "m-send3" };
+      window.sendSettings({}, map[sendBtn.id] || "m-send", sendBtn);
+    }
+  }, true);
+
+  ["b-send", "b-send2", "b-send3"].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.dataset.boundOk = "1";
+  });
+})();
+</script>
 
 </body></html>
