@@ -884,6 +884,20 @@ main, .view, .panel, #top, .kbar { min-width: 0; max-width: 100%; box-sizing: bo
 </style>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&amp;display=swap">
 </head>
+
+<script>
+window.addEventListener("error", function(e) {
+  let b = document.getElementById("kb-err-banner");
+  if (!b) {
+    b = document.createElement("div");
+    b.id = "kb-err-banner";
+    b.style.cssText = "position:fixed;top:0;left:0;right:0;z-index:999999;background:#b91c1c;color:#fff;padding:10px;font:12px monospace;direction:ltr;word-break:break-all;";
+    document.body.appendChild(b);
+  }
+  b.textContent = "JS ERROR: " + e.message + " (line " + e.lineno + ")";
+});
+</script>
+
 <body class="lite"><svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
 <linearGradient id="kgGold" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff2a8"></stop><stop offset=".45" stop-color="#f3c24a"></stop><stop offset="1" stop-color="#a86a12"></stop></linearGradient>
 <linearGradient id="kgWheat" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffe9a0"></stop><stop offset="1" stop-color="#d79a2b"></stop></linearGradient>
