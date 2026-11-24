@@ -2503,7 +2503,7 @@ async function newestFile(folder, title) {
 }
 async function download(b64Content) {
   return b64Content;
-}); return p && p.content; }
+
 function fmtTime(iso) { if (!iso) return "—"; const d = new Date(iso); return isNaN(d) ? "—" : d.toLocaleString("ar-OM", { weekday: "short", hour: "2-digit", minute: "2-digit" }); }
 function minutesAgo(iso) { const d = new Date(iso); return isNaN(d) ? Infinity : (Date.now() - d.getTime()) / 60000; }
 
