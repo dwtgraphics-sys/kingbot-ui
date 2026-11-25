@@ -928,6 +928,7 @@ main, .view, .panel, #top, .kbar { min-width: 0; max-width: 100%; box-sizing: bo
 .gd .gd-toc{border:1px solid #ffffff1a;border-radius:14px;background:#ffffff08;padding:8px 12px;margin-bottom:14px;position:sticky;top:76px;z-index:5;backdrop-filter:blur(10px)}
 .gd .gd-toc summary{cursor:pointer;font-weight:700}
 .gd-jump{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}.gd-jump a{padding:5px 11px;border-radius:999px;background:rgba(242,140,40,.13);border:1px solid #f28c2855;color:inherit;text-decoration:none;font-size:12.5px}
+.gd-groups{display:grid;gap:8px}.gd-groups details{border-radius:12px;border:1px solid #ffffff14;background:#ffffff06;padding:0 12px}.gd-groups summary{cursor:pointer;padding:10px 0;font-weight:700}.gd-groups summary em{font-style:normal;opacity:.65;font-weight:400;margin-inline-start:6px}.gd-groups ul{margin:0 0 10px;padding-inline-start:18px;display:grid;gap:6px;font-size:13px}.gd-groups li small{display:block;opacity:.7;font-size:11.5px;line-height:1.5}
 .gd-jump a:hover{background:rgba(242,140,40,.3)}
 .gd-sec{margin:22px 0 10px;font-size:17px;color:#ffd46a;scroll-margin-top:150px}.gd-sub{margin:16px 0 8px;scroll-margin-top:150px}
 .gd-steps,.gd-points,.gd-legend{list-style:none;margin:0;padding:0;display:grid;gap:8px}
@@ -1760,7 +1761,7 @@ window.addEventListener("error", function(e) {
         <div class="panel-head"><h2 id="gd-h">📘 الدليل <button type="button" class="info-btn" data-info="guide" aria-label="شرح">❗</button></h2></div>
         <details class="gd-toc" open><summary>📑 في هذه الصفحة</summary>
           <nav class="gd-jump">
-            <a href="#gd-start">البداية</a><a href="#gd-panel">لوحتك</a><a href="#gd-adv">ميزات متقدمة</a><a href="#gd-bset">إعدادات البوت</a><a href="#gd-live">الشاشة المباشرة</a><a href="#gd-sched">الجدولة الذكية</a><a href="#gd-gains">مكاسبي</a><a href="#gd-log">سجل الأحداث</a><a href="#gd-acc">الحساب والإشعارات</a><a href="#gd-habits">عادات جيدة</a><a href="#gd-support">الدعم</a><a href="#gd-discord">ديسكورد</a><a href="#gd-faq">الأسئلة</a>
+            <a href="#gd-start">البداية</a><a href="#gd-panel">لوحتك</a><a href="#gd-adv">ميزات متقدمة</a><a href="#gd-bset">إعدادات البوت</a><a href="#gd-groups">مجموعات الأنشطة</a><a href="#gd-live">الشاشة المباشرة</a><a href="#gd-sched">الجدولة الذكية</a><a href="#gd-gains">مكاسبي</a><a href="#gd-log">سجل الأحداث</a><a href="#gd-acc">الحساب والإشعارات</a><a href="#gd-habits">عادات جيدة</a><a href="#gd-support">الدعم</a><a href="#gd-discord">ديسكورد</a><a href="#gd-faq">الأسئلة</a>
           </nav>
         </details>
 
@@ -1859,6 +1860,11 @@ window.addEventListener("error", function(e) {
           <li><span class="gd-n">5</span><b>الحفظ:</b> لا يتغير شيء على السيرفر حتى تضغط <span class="gd-pill">حفظ وإرسال</span>؛ تظهر رسالة «تم الإرسال» ويصل للبوت خلال دقيقة. إذا كان البوت غير متصل تنتظر أوامرك حتى يعود. لإلغاء تعديلات لم تُرسل أعد تحميل الصفحة.</li>
         </ol>
         <div class="gd-call warn">💸 <b>راجع قبل التفعيل:</b> بعض الأنشطة تستهلك موارد أو مسرّعات أو عناصر (شراء التاجر الغامض، مسرّعات البحث والتدريب، عناصر نقاط الحركة، التبرعات). البوت <b>لا يصرف الجواهر أبداً</b> ويرفض أي نافذة جواهر، لكن اقرأ خيارات كل نشاط ❗ قبل تشغيله.</div>
+
+        <!-- GUIDE-11/12: activity groups (built from the real activity list, so it is always current) -->
+        <h3 class="gd-sec" id="gd-groups">🗂️ مجموعات الأنشطة</h3>
+        <p class="gd-p">كل الأنشطة بنفس ترتيب «إعدادات البوت»، مع عددها في كل مجموعة. اضغط المجموعة لعرض أنشطتها وشرح مختصر لكل نشاط.</p>
+        <div class="gd-groups" id="gd-groups-list"></div>
 
         <!-- GUIDE-09: Live Screen -->
         <h3 class="gd-sec" id="gd-live">📺 الشاشة المباشرة (Live)</h3>
@@ -3018,6 +3024,12 @@ document.addEventListener("click", async e => { const t = e.target; if (!t || !t
   if (t.closest("#cap-x")) { capHidden = capShown; const m = document.getElementById("cap-modal"); m.hidden = true; m.classList.remove("open"); return; }
   if (t.closest("#cap-ok")) { const b = t.closest("#cap-ok"); const id = (lastStatus && lastStatus.city && lastStatus.city.captcha && lastStatus.city.captcha.id) || ""; if (!id) return;
     settings.captcha_resume = id; if (await sendSettings({ captcha_resume: id }, "m-cap", b)) setMsg("m-cap", "✅ أُرسل. يتأكد البوت أن النافذة اختفت ثم يكمل (خلال دقيقة تقريباً).", "ok"); } });
+// GUIDE-11/12: guide "activity groups" from GROUPS (the same list as Bot Settings)
+(function gdGroups() { const f = () => { const box = document.getElementById("gd-groups-list"); if (!box || typeof GROUPS === "undefined") return; box.innerHTML = "";
+  GROUPS.forEach(g => { const d = document.createElement("details"), sm = document.createElement("summary"); sm.textContent = g.name; const em = document.createElement("em"); em.textContent = "(" + g.items.length + ")"; sm.appendChild(em);
+    const ul = document.createElement("ul"); g.items.forEach(it => { const li = document.createElement("li"); const b = document.createElement("b"); b.textContent = it.name; li.appendChild(b);
+      if (it.hint) { const h = document.createElement("small"); h.textContent = it.hint; li.appendChild(h); } ul.appendChild(li); }); d.append(sm, ul); box.appendChild(d); }); };
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", f); else setTimeout(f, 0); })();
 // TASK-08: smart_schedule {enabled, daily_active_hours_limit, work_session_minutes, break_duration_minutes, jitter_percent}
 const SSX = { "ssx-lim": ["daily_active_hours_limit", 1, 24, 14], "ssx-work": ["work_session_minutes", 10, 600, 90], "ssx-brk": ["break_duration_minutes", 1, 240, 20], "ssx-jit": ["jitter_percent", 0, 50, 15] };
 function ssxGet() { if (typeof settings !== "object" || !settings) return {}; const c = settings.smart_schedule = (settings.smart_schedule && typeof settings.smart_schedule === "object") ? settings.smart_schedule : {};
