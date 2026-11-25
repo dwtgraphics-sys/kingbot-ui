@@ -1,0 +1,34 @@
+name: guard
+# If a broken dashboard is pushed (empty, cut short, or without </html>), put the last good one back.
+on:
+  push:
+    branches: [main]
+    paths: [index.html]
+permissions:
+  contents: write
+jobs:
+  index:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 30
+      - name: Check index.html and restore the last good version if broken
+        shell: bash
+        run: |
+          ok() { [ "$(wc -c < "$1")" -ge 100000 ] && tail -c 300 "$1" | grep -qi "</html>"; }
+          if ok index.html; then echo "index.html is fine ($(wc -c < index.html) bytes)"; exit 0; fi
+          echo "index.html is broken ($(wc -c < index.html) bytes) - looking for the last good version"
+          for c in $(git log --format=%H -n 30 -- index.html | tail -n +2); do
+            git show "$c:index.html" > /tmp/prev.html 2>/dev/null || continue
+            if ok /tmp/prev.html; then
+              cp /tmp/prev.html index.html
+              git config user.name "kingbot-guard"
+              git config user.email "kingbot-guard@users.noreply.github.com"
+              git commit -am "guard: restore index.html from ${c:0:7} (pushed file was broken)"
+              git push
+              echo "restored from $c"
+              exit 1
+            fi
+          done
+          echo "no good version found"; exit 1
