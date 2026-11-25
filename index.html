@@ -1727,6 +1727,10 @@ window.addEventListener("error", function(e) {
           <label>مدة الاستراحة (دقيقة) <input type="number" id="ssx-brk" min="1" max="240" placeholder="20"></label>
           <label>عشوائية ± % <input type="number" id="ssx-jit" min="0" max="50" placeholder="15"></label>
         </div>
+        <div class="mc-row ssx-in">   <!-- GUIDE-13 -->
+          <label>انتظار قبل العودة بعد الدخول من جهاز آخر (دقيقة) <input type="number" id="ssx-relog" min="1" max="240" placeholder="10"></label>
+          <label>إيقاف المسيرات إذا قلّ السلوك (Conduct) عن <input type="number" id="ssx-cond" min="0" max="100" placeholder="61"></label>
+        </div>
         <p class="gd-p">تُحفظ مع «حفظ وإرسال».</p>
       </section>
       <section class="panel" aria-labelledby="sc-h">
@@ -1775,7 +1779,7 @@ window.addEventListener("error", function(e) {
         <div class="panel-head"><h2 id="gd-h">📘 الدليل <button type="button" class="info-btn" data-info="guide" aria-label="شرح">❗</button></h2></div>
         <details class="gd-toc" open><summary>📑 في هذه الصفحة</summary>
           <nav class="gd-jump">
-            <a href="#gd-start">البداية</a><a href="#gd-panel">لوحتك</a><a href="#gd-adv">ميزات متقدمة</a><a href="#gd-bset">إعدادات البوت</a><a href="#gd-groups">مجموعات الأنشطة</a><a href="#gd-live">الشاشة المباشرة</a><a href="#gd-sched">الجدولة الذكية</a><a href="#gd-gains">مكاسبي</a><a href="#gd-log">سجل الأحداث</a><a href="#gd-acc">الحساب والإشعارات</a><a href="#gd-habits">عادات جيدة</a><a href="#gd-support">الدعم</a><a href="#gd-discord">ديسكورد</a><a href="#gd-faq">الأسئلة</a>
+            <a href="#gd-start">البداية</a><a href="#gd-panel">لوحتك</a><a href="#gd-adv">ميزات متقدمة</a><a href="#gd-bset">إعدادات البوت</a><a href="#gd-groups">مجموعات الأنشطة</a><a href="#gd-know">قواعد مهمة</a><a href="#gd-live">الشاشة المباشرة</a><a href="#gd-sched">الجدولة الذكية</a><a href="#gd-gains">مكاسبي</a><a href="#gd-log">سجل الأحداث</a><a href="#gd-acc">الحساب والإشعارات</a><a href="#gd-habits">عادات جيدة</a><a href="#gd-support">الدعم</a><a href="#gd-discord">ديسكورد</a><a href="#gd-faq">الأسئلة</a>
           </nav>
         </details>
 
@@ -1879,6 +1883,15 @@ window.addEventListener("error", function(e) {
         <h3 class="gd-sec" id="gd-groups">🗂️ مجموعات الأنشطة</h3>
         <p class="gd-p">كل الأنشطة بنفس ترتيب «إعدادات البوت»، مع عددها في كل مجموعة. اضغط المجموعة لعرض أنشطتها وشرح مختصر لكل نشاط.</p>
         <div class="gd-groups" id="gd-groups-list"></div>
+
+        <!-- GUIDE-13: worth knowing -->
+        <h3 class="gd-sec" id="gd-know">💡 قواعد يجب معرفتها</h3>
+        <div class="gd-card"><b>💎 جمع الجواهر بجدولة ذكية</b><p>يعمل جمع الجواهر في جولات لا تزيد عن <b>4 ساعات</b>، ثم يرتاح <b>ساعة على الأقل</b> مع إزاحة عشوائية <b>0–15 دقيقة</b> قبل الجولة التالية، وبحد أقصى <b>18 ساعة جمع جواهر لكل شخصية في اليوم</b> (بتوقيت غرينتش). كل هذه الأرقام قابلة للتعديل من خيارات «جمع الجواهر»، ويمكن إيقاف الجدولة.</p></div>
+        <div class="gd-card"><b>🧠 الجلسات والاستراحات</b><p>من <span class="gd-pill">الجدولة</span> فعّل «جلسات عمل واستراحات»: يعمل البوت جلسات ثم يرتاح مثل اللاعب، مع حد ساعات يومي وتحريك بسيط لكل نقرة.</p></div>
+        <div class="gd-card"><b>🟢 نقاط السلوك (Conduct)</b><p>إذا قرأ البوت أن نقاط السلوك أقل من <b>61</b> يوقف الأنشطة الميدانية (الجمع، الحشود، البرابرة، الحراس، الاستكشاف) ويكمل مهام المدينة، ثم يعود تلقائياً عند 61 أو أكثر. الحد قابل للتعديل في <span class="gd-pill">الجدولة</span>.</p></div>
+        <div class="gd-card"><b>⚔️ البرابرة مهمة واحدة في كل مرة</b><p>«مهاجمة البرابرة» (مع خيار السلسلة) و«حشد الحصون» لا يعملان في نفس اللحظة: البوت ينفّذ المهام واحدة بعد الأخرى بالترتيب الذي تحدده في «أولوية المسيرات».</p></div>
+        <div class="gd-card"><b>📱 الدخول من جهاز آخر</b><p>إذا فتحت حسابك من هاتفك أو جهاز آخر تظهر في اللعبة رسالة «دخول من جهاز آخر». البوت <b>ينتظر 10 دقائق</b> (قابلة للتعديل في <span class="gd-pill">الجدولة</span>) ثم يعود، حتى تلعب دون أن يطردك.</p></div>
+        <div class="gd-call warn">🚫 البوت لا يصرف الجواهر ولا يضغط «فوري» أبداً، ويشتري من المتاجر ويتبرع بالموارد فقط، ويفتح صناديق الحانة المجانية فقط.</div>
 
         <!-- GUIDE-09: Live Screen -->
         <h3 class="gd-sec" id="gd-live">📺 الشاشة المباشرة (Live)</h3>
@@ -2608,7 +2621,13 @@ const OPTS = {
                 { k: "avoid_combat_zones", type: "check", label: "تجنّب المناجم قرب الخطوط الحمراء والمعارك", def: true },
                 { k: "quiet_hours_only", type: "check", label: "الجمع في الساعات الهادئة فقط", def: false },
                 { k: "quiet_hours", type: "range", label: "الساعات الهادئة (UTC، من – إلى)", def: [22, 6], min: 0, max: 23 },
-                { k: "commander_preset", type: "num", label: "رقم خطة القادة (0 = الافتراضي)", def: 0, min: 0, max: 7 }],
+                { k: "commander_preset", type: "num", label: "رقم خطة القادة (0 = الافتراضي)", def: 0, min: 0, max: 7 },
+                // GUIDE-13: gem scheduler (runs / rest / daily cap per character)
+                { k: "gem_scheduler", type: "check", label: "جدولة الجواهر الذكية (جولات محدودة + راحة)", def: true },
+                { k: "run_max_hours", type: "num", label: "أقصى مدة جولة الجواهر (ساعة)", def: 4, min: 1, max: 12 },
+                { k: "rest_min_hours", type: "num", label: "أقل راحة بين الجولات (ساعة)", def: 1, min: 0, max: 12 },
+                { k: "start_offset_max_min", type: "num", label: "إزاحة عشوائية للبدء حتى (دقيقة)", def: 15, min: 0, max: 60 },
+                { k: "day_cap_hours", type: "num", label: "حد جمع الجواهر لكل شخصية / اليوم (ساعة)", def: 18, min: 1, max: 24 }],
   gather: [{ k: "kinds", type: "kinds", label: "أنواع الموارد", def: ["food", "wood", "stone", "gold"] },
            { k: "reserve", type: "num", label: "ترك مسيرات فارغة (لحشد البرابرة أو الهجوم)", def: 0, min: 0, max: 4 },
            // TASK-02: balanced gathering (saved with the gather task options in control.json)
@@ -3120,6 +3139,7 @@ const SSX = { "ssx-lim": ["daily_active_hours_limit", 1, 24, 14], "ssx-work": ["
 function ssxGet() { if (typeof settings !== "object" || !settings) return {}; const c = settings.smart_schedule = (settings.smart_schedule && typeof settings.smart_schedule === "object") ? settings.smart_schedule : {};
   Object.values(SSX).forEach(([k, , , d]) => { if (c[k] == null) c[k] = d; }); if (c.enabled == null) c.enabled = false; return c; }
 function ssxFill() { const on = document.getElementById("ssx-on"); if (!on) return; const c = ssxGet(); on.checked = !!c.enabled;
+  const rl = document.getElementById("ssx-relog"); if (rl) rl.value = settings.relogin_cooldown_min || ""; const cd = document.getElementById("ssx-cond"); if (cd) cd.value = settings.conduct_min || "";
   Object.entries(SSX).forEach(([id, [k]]) => { const e = document.getElementById(id); if (e) e.value = c[k]; }); ssxShow(); }
 function ssxShow() { const st = document.getElementById("ssx-st"); if (!st) return; const c = ssxGet(), x = (typeof lastStatus === "object" && lastStatus && lastStatus.city && lastStatus.city.smart_schedule) || null;
   const lim = +(x && x.limit_h) || +c.daily_active_hours_limit || 14, used = x ? +x.active_h || 0 : 0;
@@ -3132,6 +3152,8 @@ function ssxShow() { const st = document.getElementById("ssx-st"); if (!st) retu
   if (brk && x.break_until) { const m = Math.max(0, Math.round((x.break_until * 1000 - Date.now()) / 60000)); t += " · يعود بعد ~" + m + " دقيقة"; }
   document.getElementById("ssx-txt").textContent = t; }
 document.addEventListener("change", e => { const id = e.target && e.target.id; if (id === "ssx-on") { ssxGet().enabled = e.target.checked; ssxShow(); }
+  if (id === "ssx-relog") { const v = Math.max(1, Math.min(240, Math.round(+e.target.value || 10))); e.target.value = v; settings.relogin_cooldown_min = v; }
+  if (id === "ssx-cond") { const v = Math.max(0, Math.min(100, Math.round(+e.target.value || 61))); e.target.value = v; settings.conduct_min = v; }
   if (SSX[id]) { const [k, lo, hi, d] = SSX[id]; const v = Math.max(lo, Math.min(hi, Math.round(+e.target.value || d))); e.target.value = v; ssxGet()[k] = v; ssxShow(); } });
 setTimeout(() => { try { ssxFill(); } catch (_) {} }, 0); setInterval(() => { try { ssxShow(); } catch (_) {} }, 30000);
 // TASK-07: commander_presets {task: {primary, secondary}} in the bot settings
@@ -3908,7 +3930,7 @@ async function loadSettings() {
     if (f) {
       const d = await kbParse(await download(f.id), curServer().control);
       if (d._locked) { setMsg("m-send", "🔐 الإعدادات مشفّرة: أدخل عبارة المرور لعرضها وتعديلها.", "err"); renderAll(); return; }
-      settings = { running: d.running !== false, loop_minutes: d.loop_minutes || 60, tasks: Array.isArray(d.tasks) ? d.tasks : settings.tasks, schedule: d.schedule || settings.schedule, daily_pause: d.daily_pause || settings.daily_pause, freeze_until: d.freeze_until || null, presets: (d.presets && typeof d.presets === "object") ? d.presets : (settings.presets || {}), char_rotation: d.char_rotation || settings.char_rotation || { enabled: false, slots: [] }, stream: (d.stream && typeof d.stream === "object") ? d.stream : (settings.stream || { enabled: true }), march_control: (d.march_control && typeof d.march_control === "object") ? d.march_control : (settings.march_control || {}), commander_presets: (d.commander_presets && typeof d.commander_presets === "object") ? d.commander_presets : (settings.commander_presets || {}), smart_schedule: (d.smart_schedule && typeof d.smart_schedule === "object") ? d.smart_schedule : (settings.smart_schedule || undefined), events_hunter: (d.events_hunter && typeof d.events_hunter === "object") ? d.events_hunter : (settings.events_hunter || undefined) };
+      settings = { running: d.running !== false, loop_minutes: d.loop_minutes || 60, tasks: Array.isArray(d.tasks) ? d.tasks : settings.tasks, schedule: d.schedule || settings.schedule, daily_pause: d.daily_pause || settings.daily_pause, freeze_until: d.freeze_until || null, presets: (d.presets && typeof d.presets === "object") ? d.presets : (settings.presets || {}), char_rotation: d.char_rotation || settings.char_rotation || { enabled: false, slots: [] }, stream: (d.stream && typeof d.stream === "object") ? d.stream : (settings.stream || { enabled: true }), march_control: (d.march_control && typeof d.march_control === "object") ? d.march_control : (settings.march_control || {}), commander_presets: (d.commander_presets && typeof d.commander_presets === "object") ? d.commander_presets : (settings.commander_presets || {}), smart_schedule: (d.smart_schedule && typeof d.smart_schedule === "object") ? d.smart_schedule : (settings.smart_schedule || undefined), events_hunter: (d.events_hunter && typeof d.events_hunter === "object") ? d.events_hunter : (settings.events_hunter || undefined), relogin_cooldown_min: d.relogin_cooldown_min || settings.relogin_cooldown_min || undefined, conduct_min: d.conduct_min || settings.conduct_min || undefined };
       try { mcFill(); } catch (_) {}
       try { cpzFill(); } catch (_) {}
       try { ssxFill(); } catch (_) {}
