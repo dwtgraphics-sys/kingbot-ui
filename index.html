@@ -968,6 +968,7 @@ main, .view, .panel, #top, .kbar { min-width: 0; max-width: 100%; box-sizing: bo
 .mc-pr{display:flex;gap:8px;align-items:flex-start;margin-top:8px;font-size:13px}.mc-pr ol{margin:0;padding-inline-start:18px;display:grid;gap:4px}.mc-pr li button{margin-inline-start:4px;padding:0 6px;border-radius:6px;border:1px solid #ffffff22;background:#ffffff0a;color:inherit;cursor:pointer}
 .ref-box{display:flex;gap:8px;margin:10px 0}.ref-box input{flex:1;min-width:0;padding:10px 12px;border-radius:12px;border:1px solid #ffffff22;background:#0005;color:inherit;font:inherit}
 /* TOOLS-03: speedup calculator */
+.spd-note{font-size:11.5px;opacity:.65;margin:8px 2px 0}.spd-foot{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-top:16px;padding-top:12px;border-top:1px solid #ffffff14;font-size:12.5px}.spd-fcol{display:flex;flex-direction:column;gap:5px;min-width:0}.spd-fcol a{color:inherit;opacity:.8;text-decoration:none}.spd-fcol a:hover{opacity:1}.spd-fcol p{margin:0;opacity:.7}
 .spd-crumb{font-size:12px;opacity:.75;margin:0 4px 8px}.spd-crumb a{color:inherit}.spd-tabs{display:flex;margin:10px 0}.spd-bag-h{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:4px}
 .spd-form{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px}.spd-form label{display:flex;flex-direction:column;gap:4px;font-size:12.5px}.spd-form input,.spd-form select{padding:8px;border-radius:10px;border:1px solid #ffffff22;background:#0005;color:inherit;font:inherit;min-width:0}
 .spd-out{margin-top:10px;display:grid;gap:6px}.spd-out div{display:flex;justify-content:space-between;gap:8px;padding:8px 11px;border-radius:10px;background:#ffffff0a;font-size:13px}.spd-out .ok{background:#2ecc711f;color:#bff5d3}.spd-out .no{background:#e74c3c22;color:#ffc2b8}
@@ -1959,6 +1960,7 @@ window.addEventListener("error", function(e) {
           <!-- TOOLS-03: speedup calculator -->
           <div class="spd-tot" id="spd-tot"></div>
           <div class="spd-cats" id="spd-cats"></div>
+          <p class="spd-note">💾 الأرقام تُحفظ في هذا المتصفح فقط ولا تُرسل لأي مكان.</p>
         </div>
         <div class="spd-pane" data-pane="train" hidden>
           <div class="spd-form"><label>المستوى <select id="spt-tier"><option value="1">T1</option><option value="2">T2</option><option value="3">T3</option><option value="4" selected>T4</option><option value="5">T5</option></select></label>
@@ -1971,6 +1973,28 @@ window.addEventListener("error", function(e) {
             <label>ساعات <input type="number" id="sph-h" min="0" max="23" placeholder="0"></label><label>دقائق <input type="number" id="sph-m" min="0" max="59" placeholder="0"></label></div>
           <div class="spd-out" id="sph-out"></div>
         </div>
+              <!-- TOOLS-03C -->
+        <h3 class="gd-sec">طريقة الاستعمال</h3>
+        <ol class="gd-steps">
+          <li><i>1</i><div><b>أدخل تسريعاتك</b><p>في «التسريعات» اكتب عدد كل فئة (1د … 7 أيام) لكل نوع كما في حقيبتك.</p></div></li>
+          <li><i>2</i><div><b>التدريب أو العلاج</b><p>افتح «التدريب» واكتب المستوى وعدد الجنود ونسبة سرعة التدريب، أو «العلاج» واكتب الوقت الظاهر في المستشفى.</p></div></li>
+          <li><i>3</i><div><b>اقرأ النتيجة</b><p>ترى الوقت اللازم، القوة المضافة، وهل تكفي تسريعاتك أو كم ينقصك.</p></div></li>
+        </ol>
+        <h3 class="gd-sec">الأسئلة</h3>
+        <div class="ml-faq">
+          <details><summary>كم يستغرق تدريب جندي T5؟</summary><p>الوقت الأساسي 120 ثانية لكل جندي T5 قبل المكافآت (T4: 80 ثانية، T3: 60، T2: 30، T1: 15). نسبة «سرعة التدريب» من الأبحاث والقادة والمعدات تقسم هذا الوقت: 100% سرعة = نصف الوقت.</p></details>
+          <details><summary>كم تكلفة جندي T5؟</summary><p>التكلفة تختلف حسب النوع (مشاة، فرسان، رماة، حصار) وحسب مكافآت التخفيض في حسابك، لذلك اعتمد الرقم الظاهر في نافذة التدريب داخل اللعبة.</p></details>
+          <details><summary>أي التسريعات تصلح للتدريب؟</summary><p>تسريعات «التدريب» و«العامة» فقط. تسريعات البناء والبحث والعلاج لا تُستعمل للتدريب.</p></details>
+          <details><summary>من أين تأتي الأرقام؟</summary><p>أوقات التدريب الأساسية وقوة كل مستوى من بيانات اللعبة المعروفة؛ حقيبتك من إدخالك أنت. قد تختلف قليلاً مع تحديثات اللعبة.</p></details>
+        </div>
+        <div class="ml-promo"><b>😴 دع التدريب يعمل وأنت نائم</b><p>البوت يدرّب الجنود ويستعمل الطوابير بدون تسريعات أو جواهر، على مدار الساعة.</p><a href="#" data-go="v-guide">شاهد كيف يعمل ←</a></div>
+        <h3 class="gd-sec">أدوات مجانية أخرى</h3>
+        <div class="ml-more"><a href="#" data-go="v-tool-mail">مولّد رسائل التحالف ←</a><a href="#" data-go="v-tool-equip">المعدات والتصنيع ←</a><a href="#" data-go="v-tool-cmd">دليل القادة ←</a><a href="#" data-go="v-tool-events">تقويم الأحداث ←</a><a href="#" data-go="v-tool-crystal">تقنية الكريستال ←</a></div>
+        <footer class="spd-foot">
+          <div class="spd-fcol"><b>👑 KingBot</b><p>بوت ذكي لـ Rise of Kingdoms يعمل وأنت بعيد — بدون جواهر.</p><div class="kbar-comm" data-comm></div></div>
+          <div class="spd-fcol"><b>المنتج</b><a href="#" data-go="v-home">الرئيسية</a><a href="#" data-go="v-guide">الدليل</a><a href="#" data-go="v-subs">الاشتراكات</a></div>
+          <div class="spd-fcol"><b>أدوات مجانية</b><a href="#" data-go="v-tool-speed">حاسبة التسريعات</a><a href="#" data-go="v-tool-mail">رسائل التحالف</a><a href="#" data-go="v-tool-cmd">دليل القادة</a></div>
+        </footer>
       </section>
     </div>
     <div class="view tool-view" id="v-tool-equip">
@@ -2927,7 +2951,8 @@ document.addEventListener("click", e => { const a = e.target.closest && e.target
   const L = [["discord", "💬", "Discord"], ["whatsapp", "🟢", "WhatsApp"], ["whatsapp_group", "👥", "WhatsApp Group"], ["telegram", "✈️", "Telegram"], ["youtube", "▶️", "YouTube"]];
   const draw = cfg => { const box = document.getElementById("kbar-comm"); if (!box) return; box.innerHTML = "";
     L.forEach(([k, e, n]) => { const u = cfg && cfg[k]; if (!u || !/^https:\/\//.test(u)) return; const a = document.createElement("a");
-      a.href = u; a.target = "_blank"; a.rel = "noopener"; a.textContent = e + " " + n; box.appendChild(a); }); };
+      a.href = u; a.target = "_blank"; a.rel = "noopener"; a.textContent = e + " " + n; box.appendChild(a); });
+    document.querySelectorAll("[data-comm]").forEach(x => { x.innerHTML = box.innerHTML; }); };   // TOOLS-03C: tool footers
   let cached = null; try { cached = JSON.parse(localStorage.getItem("kb_comm") || "null"); } catch (_) {}
   draw(cached || { discord: "https://discord.gg/MJWvUJvJC", telegram: "https://t.me/CrownKingsBot" });
   fetch("https://raw.githubusercontent.com/dwtgraphics-sys/kingbot-syn/main/config/community.json?t=" + Date.now()).then(r => r.ok ? r.json() : null)
@@ -3008,6 +3033,7 @@ document.addEventListener("click", e => { const a = e.target.closest && e.target
   const syncSoc = () => { if (!cm || !soc) return; soc.innerHTML = ""; cm.querySelectorAll("a").forEach(a => { if (/whatsapp group/i.test(a.textContent)) return; const c = a.cloneNode(true); soc.appendChild(c); }); };
   syncSoc(); if (cm) new MutationObserver(syncSoc).observe(cm, { childList: true });
   document.querySelectorAll("#v-tool-mail a[data-go]").forEach(a => a.addEventListener("click", e => e.preventDefault()));
+  document.querySelectorAll("#v-tool-speed a[data-go]").forEach(a => a.addEventListener("click", e => e.preventDefault()));   // TOOLS-03C
   lists(); upd();
 })();
 // TASK-06: march_control {max_concurrent_marches, search_timeout_seconds, priority_order} in the bot settings
