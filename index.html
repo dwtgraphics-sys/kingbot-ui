@@ -950,6 +950,8 @@ main, .view, .panel, #top, .kbar { min-width: 0; max-width: 100%; box-sizing: bo
 .kbar-comm a{display:inline-flex;align-items:center;gap:5px;padding:6px 10px;border-radius:999px;border:1px solid #ffffff22;background:#ffffff0a;color:inherit;text-decoration:none;font-size:12px}
 .kbar-comm a:hover{background:#ffffff1a}
 .oratios{display:flex;flex-wrap:wrap;gap:8px}.oratios label{display:inline-flex;align-items:center;gap:4px;padding:4px 8px;border-radius:10px;background:#ffffff0a;font-size:12.5px}.oratios input{width:52px}.oratios small{opacity:.65;font-size:11px;margin-inline-start:4px}
+.mc-row{display:flex;flex-wrap:wrap;gap:10px}.mc-row label{display:flex;align-items:center;gap:6px;font-size:13px}.mc-row input{width:64px}
+.mc-pr{display:flex;gap:8px;align-items:flex-start;margin-top:8px;font-size:13px}.mc-pr ol{margin:0;padding-inline-start:18px;display:grid;gap:4px}.mc-pr li button{margin-inline-start:4px;padding:0 6px;border-radius:6px;border:1px solid #ffffff22;background:#ffffff0a;color:inherit;cursor:pointer}
 .ref-box{display:flex;gap:8px;margin:10px 0}.ref-box input{flex:1;min-width:0;padding:10px 12px;border-radius:12px;border:1px solid #ffffff22;background:#0005;color:inherit;font:inherit}
 .tool-soon{margin-top:12px;padding:18px;border-radius:14px;border:1px dashed #ffffff33;text-align:center;opacity:.8}
 /* TOOLS-02..02D: alliance mail generator */
@@ -1468,6 +1470,13 @@ window.addEventListener("error", function(e) {
     </div>
     <div class="view show" id="v-acts">
       <div style="display:flex;justify-content:flex-end;margin-bottom:8px"><button class="btn" type="button" onclick="showView('v-sched')">🕒 الجدولة</button></div>
+      <section class="panel mc" aria-labelledby="mc-h">   <!-- TASK-06 -->
+        <div class="panel-head"><h2 id="mc-h">🧭 أولوية المسيرات والمهلة <button type="button" class="info-btn" data-info="march" aria-label="شرح">❗</button></h2></div>
+        <div class="mc-row"><label>أقصى عدد جيوش في نفس الوقت <input type="number" id="mc-max" min="0" max="5" placeholder="0"></label>
+          <label>مهلة البحث في الخريطة (ثانية) <input type="number" id="mc-to" min="5" max="120" placeholder="15"></label></div>
+        <div class="mc-pr"><span>الترتيب:</span><ol id="mc-ord"></ol></div>
+        <p class="gd-p">تُحفظ مع «حفظ وإرسال».</p>
+      </section>
       <section class="panel" aria-labelledby="pr-h">
         <div class="panel-head"><h2 id="pr-h"><span class="hic" style="background-position:100% 100%"></span>الإعدادات المخصصة <button type="button" class="info-btn" data-info="presets" aria-label="شرح">❗</button></h2><span class="count" id="pr-count">1 محفوظ</span></div>
         <div class="pr-new"><input id="pr-name" type="text" maxlength="40" placeholder="اسم الإعداد، مثلاً: إعداد حشد البربر"><button class="btn primary" id="pr-save" type="button">💾 حفظ الأنشطة الحالية بهذا الاسم</button></div>
@@ -2354,6 +2363,7 @@ const PAGE_INFO = {
   guide: { name: "الدليل", text: "دليل استعمال اللوحة خطوة بخطوة: اضغط أي عنوان في «في هذه الصفحة» للانتقال إليه مباشرة. الأرقام 1–7 في مخطط «لوحتك» تطابق الشرح تحته، و«معنى الحالة» يشرح كل حالة تظهر في رأس الخانة." },
   mail: { name: "مولّد رسائل التحالف", text: "أداة مجانية لكتابة بريد تحالف منسّق في Rise of Kingdoms. حدد نصاً واضغط عريض / مائل / الحجم / لون / تدرج فتوضع علامات اللعبة حوله (إذا لم تحدد شيئاً توضع العلامات عند المؤشر). العدّاد يحسب العلامات أيضاً لأن حد اللعبة 2,000 حرف يشملها. المسودة وقوالبك تُحفظ على هذا الجهاز فقط. «نسخ الكود» ينسخ النص بالعلامات لتلصقه في بريد التحالف." },
   uxq: { name: "في المدينة", text: "بطاقات الطوابير النشطة في مدينتك كما قرأها البوت من «نظرة عامة على الطوابير»: تدريب المشاة والفرسان والرماة والحصار (مع المستوى المختار في إعدادات الطوابير)، إنتاج المواد، والعلاج. العدّاد ينقص كل ثانية، والشريط يقارن الوقت المتبقي بأطول وقت رآه البوت لنفس الطابور (اللعبة لا تعرض المدة الكاملة). يقرأ البوت الطوابير كل 10 دقائق تقريباً وبعد تبديل الشخصية." },
+  march: { name: "أولوية المسيرات والمهلة", text: "«أقصى عدد جيوش في نفس الوقت»: البوت لا يرسل جيش جمع جديداً إذا كان هذا العدد في الخارج (فارغ أو 0 = حسب خانات اللعبة). «مهلة البحث»: إذا علِق البحث في الخريطة أطول من هذه الثواني (الافتراضي 15) يلغيه ويرجع للمدينة بدل أن يتجمد. «الترتيب»: أي نوع مسيرات يُنفَّذ أولاً في كل جولة — الحشود، الجمع، البرابرة — بالأسهم ▲▼." },
   ref: { name: "الإحالات", text: "رابط الإحالة فيه اسم حسابك في اللوحة. انسخه وأرسله لأصدقائك؛ عند تسجيلهم من الرابط يُسجَّل أنهم جاؤوا عن طريقك. المكافآت يحددها المشرف." },
   menu: { name: "القائمة", text: "القائمة الرئيسية: الدليل، الدعم، الإحالات، حسابي، ثم «أدوات مجانية» (تفتح بالضغط) وروابط المجتمع (ديسكورد، واتساب، تيليجرام، يوتيوب) — الروابط تُقرأ من إعدادات kingbot-syn فيتغيّر الرابط بدون تحديث الصفحة. تسجيل الخروج في الأسفل." },
   gains: { name: "مكاسبي", text: "يسجل البوت كل يوم (بتوقيت غرينتش) ما تكسبه من طعام وخشب وحجر وذهب وجواهر لآخر 30 يوماً. يقرأ شريط الموارد بعد كل جولة ويحسب الزيادات فقط (الجمع من الخريطة، جمع فقاعات المدينة، المكافآت)، أما الصرف على التدريب والبناء فلا يُخصم. الجواهر تُحسب من الزيادة في رصيد الجواهر خلال اليوم. اختر المورد لعرض الرسم البياني، والجدول يعرض كل الموارد مع عدد البرابرة والحصون. الأرقام في الجدول مختصرة (3.3M = 3,300,000 و 130K = 130,000) — مرّر المؤشر أو اضغط على الرقم لرؤيته كاملاً، وعمود اليوم ثابت عند التمرير على الجوال. «الكل» يعرض الطعام والخشب والحجر والذهب جنباً إلى جنب لكل يوم (الجواهر لها تبويب خاص لأن أرقامها صغيرة)، وأزرار «اليوم / 7 أيام / 30 يوم» تغيّر الفترة في البطاقات والرسم والجدول معاً." },
@@ -2832,6 +2842,19 @@ document.addEventListener("click", e => { const a = e.target.closest && e.target
   document.querySelectorAll("#v-tool-mail a[data-go]").forEach(a => a.addEventListener("click", e => e.preventDefault()));
   lists(); upd();
 })();
+// TASK-06: march_control {max_concurrent_marches, search_timeout_seconds, priority_order} in the bot settings
+const MC_NAMES = { rallies: "🏰 الحشود", gathering: "⛏️ الجمع", barbarians: "⚔️ البرابرة" };
+function mcGet() { if (typeof settings !== "object" || !settings) return {}; settings.march_control = settings.march_control || {}; const m = settings.march_control;
+  if (!Array.isArray(m.priority_order) || m.priority_order.length !== 3) m.priority_order = ["rallies", "gathering", "barbarians"]; return m; }
+function mcFill() { const m = mcGet(), mx = document.getElementById("mc-max"); if (!mx) return;
+  mx.value = m.max_concurrent_marches || ""; document.getElementById("mc-to").value = m.search_timeout_seconds || "";
+  const ol = document.getElementById("mc-ord"); ol.innerHTML = "";
+  m.priority_order.forEach((k, i) => { const li = document.createElement("li"); li.textContent = MC_NAMES[k] || k;
+    [["▲", -1], ["▼", 1]].forEach(([t, d]) => { const b = document.createElement("button"); b.type = "button"; b.textContent = t; b.disabled = (i + d < 0 || i + d > 2);
+      b.addEventListener("click", () => { const a = m.priority_order; [a[i], a[i + d]] = [a[i + d], a[i]]; mcFill(); }); li.appendChild(b); }); ol.appendChild(li); }); }
+document.addEventListener("change", e => { if (e.target.id === "mc-max") { const v = Math.max(0, Math.min(5, Math.round(+e.target.value || 0))); e.target.value = v || ""; mcGet().max_concurrent_marches = v; }
+  if (e.target.id === "mc-to") { const v = Math.max(5, Math.min(120, Math.round(+e.target.value || 15))); e.target.value = v; mcGet().search_timeout_seconds = v; } });
+setTimeout(() => { try { mcFill(); } catch (_) {} }, 0);
 if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", astInit); else setTimeout(astInit, 0);
 /* ---------- v192: approved commander list = pictures in kingbot-ui/commanders (GitHub) ---------- */
 // same commander, different spellings ("Suleiman" / "Suleiman I", "Edward" / "Edward of Woodstock") share one key
@@ -3594,7 +3617,8 @@ async function loadSettings() {
     if (f) {
       const d = await kbParse(await download(f.id), curServer().control);
       if (d._locked) { setMsg("m-send", "🔐 الإعدادات مشفّرة: أدخل عبارة المرور لعرضها وتعديلها.", "err"); renderAll(); return; }
-      settings = { running: d.running !== false, loop_minutes: d.loop_minutes || 60, tasks: Array.isArray(d.tasks) ? d.tasks : settings.tasks, schedule: d.schedule || settings.schedule, daily_pause: d.daily_pause || settings.daily_pause, freeze_until: d.freeze_until || null, presets: (d.presets && typeof d.presets === "object") ? d.presets : (settings.presets || {}), char_rotation: d.char_rotation || settings.char_rotation || { enabled: false, slots: [] }, stream: (d.stream && typeof d.stream === "object") ? d.stream : (settings.stream || { enabled: true }) };
+      settings = { running: d.running !== false, loop_minutes: d.loop_minutes || 60, tasks: Array.isArray(d.tasks) ? d.tasks : settings.tasks, schedule: d.schedule || settings.schedule, daily_pause: d.daily_pause || settings.daily_pause, freeze_until: d.freeze_until || null, presets: (d.presets && typeof d.presets === "object") ? d.presets : (settings.presets || {}), char_rotation: d.char_rotation || settings.char_rotation || { enabled: false, slots: [] }, stream: (d.stream && typeof d.stream === "object") ? d.stream : (settings.stream || { enabled: true }), march_control: (d.march_control && typeof d.march_control === "object") ? d.march_control : (settings.march_control || {}) };
+      try { mcFill(); } catch (_) {}
       lastShotRequest = d.shot_request || null;
     }
   } catch (e) { setMsg("m-send", errText(e), "err"); }
