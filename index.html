@@ -2334,7 +2334,12 @@ const OPTS = {
            { k: "balanced_mode", type: "check", label: "الجمع المتوازن (يرسل للمورد الأقل من نسبته المطلوبة)", def: false },
            { k: "target_ratios", type: "ratios", label: "النسب المطلوبة من مخزون المدينة", def: { food: 25, wood: 25, stone: 25, gold: 25 } }],
   join_rally: [{ k: "max_troops", type: "num", label: "لا ينضم إذا كان في الحشد هذا العدد أو أكثر", def: 600000, min: 10000, max: 5000000 },
-               { k: "max_armies", type: "num", label: "أقصى عدد جيوش في المرة", def: 2, min: 1, max: 5 }],
+               { k: "max_armies", type: "num", label: "أقصى عدد جيوش في المرة", def: 2, min: 1, max: 5 },
+               // TASK-03: auto-join rallies (= "auto_rally" options of the join_rally task in control.json)
+               { k: "target_types", type: "select", label: "نوع الحشود", def: "forts", choices: [["forts", "حصون البرابرة"]] },
+               { k: "min_ap_reserve", type: "num", label: "لا ينضم إذا نقاط الحركة عند هذا الحد أو أقل (0 = بدون حد)", def: 0, min: 0, max: 3000 },
+               { k: "max_march_time_minutes", type: "num", label: "أقصى وقت مسيرة بالدقائق (0 = أي وقت)", def: 0, min: 0, max: 60 },
+               { k: "commander_preset", type: "num", label: "رقم خطة القادة (0 = الافتراضي)", def: 0, min: 0, max: 7 }],
   rally_fort: [{ k: "level", type: "num", label: "مستوى الحصن", def: 10, min: 1, max: 10 },
   { k: "primary_commander", type: "select", label: "القائد الأساسي", def: "", choices: [["","Auto / Preset"],["Boudica","Boudica"],["Lohar","Lohar"],["Aethelflaed","Aethelflaed"],["Minamoto","Minamoto"],["Cao Cao","Cao Cao"],["Belisarius","Belisarius"],["YSG","YSG"],["Joan of Arc","Joan of Arc"],["Pelagius","Pelagius"],["Baibars","Baibars"]] },
   { k: "secondary_commander", type: "select", label: "القائد الثانوي", def: "", choices: [["","Auto / Preset"],["Boudica","Boudica"],["Lohar","Lohar"],["Aethelflaed","Aethelflaed"],["Minamoto","Minamoto"],["Cao Cao","Cao Cao"],["Belisarius","Belisarius"],["YSG","YSG"],["Joan of Arc","Joan of Arc"],["Pelagius","Pelagius"],["Baibars","Baibars"]] },
@@ -2379,7 +2384,7 @@ const INFO = {
   alliance_tech: "يتفقد تبرعات تقنيات التحالف كل ساعتين ويتبرع بالموارد في التقنية الموصى بها. إذا لم تكفِ الموارد لا يتبرع. لا يضغط زر التبرع بالمجوهرات أبداً.",
   rally_fort: "يحشد على حصن البرابرة بالمستوى الذي تختاره بعتاد تشين شي هوانغ، ويتكرر بعد رجوعه حتى تنفد نقاط الحرب (بدون النقاط الاحتياطية).",
   attack_barbarians: "يهاجم البرابرة بتشكيلة تشين، ويبحث من أعلى مستوى إلى الأدنى. مع التتبع يبقى الجيش في الخريطة ويبحث عن البربري التالي القريب ويضربه، واحداً تلو الآخر حتى تنفد نقاط الحرب. إذا فعّلت استخدام نقاط الحرب الاحتياطية يستخدم عناصر نقاط الحرب من الحقيبة فقط (لا يستخدم المجوهرات أبداً) ويكمل.",
-  join_rally: "ينضم إلى حشود التحالف على حصون البرابرة فقط، ويتخطى الحشد إذا كان فيه العدد الذي تكتبه من الجنود أو أكثر. يفحص كل دقيقتين.",
+  join_rally: "ينضم إلى حشود التحالف على حصون البرابرة فقط، ويتخطى الحشد إذا كان فيه العدد الذي تكتبه من الجنود أو أكثر. يفحص كل دقيقتين.\n\n🏰 الانضمام التلقائي: «نقاط الحركة» = لا ينضم إذا كانت آخر قراءة لنقاط الحركة (من الملف الشخصي) عند الحد الذي تكتبه أو أقل — ولا يستعمل البوت أبداً جرعات نقاط الحركة. «أقصى وقت مسيرة» = يقرأ وقت المسيرة قبل الإرسال ويتراجع إذا كان أطول. حالياً يتعرف البوت على حشود حصون البرابرة فقط. عدد الانضمامات اليوم يظهر بجانب اسم المهمة.",
   auto_shield: "يفعّل درع السلام حسب الشرط الذي تختاره.",
   daily_objectives: "يستلم مكافآت المهام اليومية وصناديق النقاط كل 8 ساعات.",
   vip_chests: "يستلم صندوق VIP اليومي والصندوق المجاني مرة واحدة في اليوم بعد التجديد 00:00 بتوقيت غرينتش.",
@@ -3225,6 +3230,10 @@ function renderRes(r, city) {
     const c = city || (lastStatus || {}).city || {}, lb = document.querySelector('label[for="en-gather_gems"]');
     if (lb) { let b = lb.querySelector(".gem-today"); if (!b) { b = document.createElement("b"); b.className = "gem-today"; lb.insertBefore(b, lb.firstChild.nextSibling); }
       const n = +c.gems_today || +c.gems_est || 0; b.textContent = " 💎 اليوم: " + n.toLocaleString("en-US"); }
+    const lr = document.querySelector('label[for="en-join_rally"]');   // TASK-03: rallies joined today
+    if (lr) { let b = lr.querySelector(".gem-today"); if (!b) { b = document.createElement("b"); b.className = "gem-today"; lr.insertBefore(b, lr.firstChild.nextSibling); }
+      const d = new Date().toISOString().slice(0, 10), h = Array.isArray(c.history) ? c.history : [], t = h.length && h[h.length - 1].day === d ? h[h.length - 1] : {};
+      b.textContent = " 🏰 انضمام اليوم: " + (+t.rally_join || 0); }
   } catch (_) {}
   const at = $("res-at"); if (at) at.textContent = r && r.read_at ? "آخر قراءة " + r.read_at : "لم يقرأ البوت الموارد بعد";
 }
