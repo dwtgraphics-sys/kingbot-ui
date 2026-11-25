@@ -920,6 +920,9 @@ main, .view, .panel, #top, .kbar { min-width: 0; max-width: 100%; box-sizing: bo
 .ast-q button.busy{opacity:.75;cursor:wait;border-color:#5aa9ff88}.ast-q button.busy .lb::before{content:"";display:inline-block;width:10px;height:10px;margin-inline-end:5px;border-radius:50%;border:2px solid #8fd0ff;border-top-color:transparent;animation:astspin .8s linear infinite;vertical-align:-1px}
 .ast-q button.ok{border-color:#2ecc71;background:#2ecc7126;color:#bff5d3}@keyframes astspin{to{transform:rotate(360deg)}}
 .ast-q button.wide{grid-column:1/-1;justify-content:center;background:rgba(242,140,40,.16);border-color:#f28c2866}
+.ast-pills{display:flex;flex-wrap:wrap;gap:6px;align-items:center;padding:6px 12px 0}
+.ast-pill{display:inline-flex;align-items:center;gap:4px;padding:5px 12px;border-radius:999px;border:1px solid #ffffff2a;background:#ffffff0d;color:inherit;font:inherit;font-size:12px;font-weight:700;text-decoration:none;cursor:pointer}
+.ast-pill.discord{border-color:#5865f288;background:#5865f222}.ast-pill.whatsapp{border-color:#25d36688;background:#25d36622}
 .ast-shot{grid-column:1/-1;display:flex;gap:10px;align-items:center;padding:8px;border-radius:12px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12)}
 .ast-thumb{flex:0 0 120px;height:68px;border-radius:9px;overflow:hidden;padding:0;border:1px solid rgba(255,255,255,.18);background:#0b1220;color:#9fb0c8;font-size:11px;cursor:zoom-in}
 .ast-thumb img{width:100%;height:100%;object-fit:cover;display:block}
@@ -3118,13 +3121,23 @@ document.addEventListener("click", e => { const a = e.target.closest && e.target
   const draw = cfg => { const box = document.getElementById("kbar-comm"); if (!box) return; box.innerHTML = "";
     L.forEach(([k, e, n]) => { const u = cfg && cfg[k]; if (!u || !/^https:\/\//.test(u)) return; const a = document.createElement("a");
       a.href = u; a.target = "_blank"; a.rel = "noopener"; a.textContent = e + " " + n; box.appendChild(a); });
-    document.querySelectorAll("[data-comm]").forEach(x => { x.innerHTML = box.innerHTML; }); };   // TOOLS-03C: tool footers
+    document.querySelectorAll("[data-comm]").forEach(x => { x.innerHTML = box.innerHTML; });   // TOOLS-03C: tool footers
+    const ap = document.getElementById("ast-pills"); if (ap) {   // AI-03: quick support channel pills above the assistant input
+      const ok = u => typeof u === "string" && /^https:\/\//.test(u), wa = ok(cfg && cfg.whatsapp) ? cfg.whatsapp : (ok(cfg && cfg.whatsapp_group) ? cfg.whatsapp_group : "");
+      const P = [["discord", "💬 Discord", ok(cfg && cfg.discord) ? cfg.discord : ""], ["whatsapp", "🟢 WhatsApp", wa], ["support", "🛟 الدعم", ok(cfg && cfg.support) ? cfg.support : "#support"]];
+      ap.innerHTML = P.filter(p => p[2]).map(([k, n, u]) => u === "#support" ? '<button type="button" class="ast-pill" data-sup="1">' + n + '</button>'
+        : '<a class="ast-pill ' + k + '" href="' + u.replace(/"/g, "%22") + '" target="_blank" rel="noopener">' + n + '</a>').join("") +
+        '<button type="button" class="info-btn" data-x="pills-info" aria-label="شرح">❗</button>'; } };
   let cached = null; try { cached = JSON.parse(localStorage.getItem("kb_comm") || "null"); } catch (_) {}
   draw(cached || { discord: "https://discord.gg/MJWvUJvJC", telegram: "https://t.me/CrownKingsBot" });
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", () => { let c = null; try { c = JSON.parse(localStorage.getItem("kb_comm") || "null"); } catch (_) {} draw(c || cached || { discord: "https://discord.gg/MJWvUJvJC", telegram: "https://t.me/CrownKingsBot" }); });   // AI-03: the assistant pills are further down the page
   fetch("https://raw.githubusercontent.com/dwtgraphics-sys/kingbot-syn/main/config/community.json?t=" + Date.now()).then(r => r.ok ? r.json() : null)
     .then(c => { if (!c) return; draw(c); try { localStorage.setItem("kb_comm", JSON.stringify(c)); } catch (_) {} }).catch(() => {});
   const refFill = () => { const i = document.getElementById("ref-link"); if (!i) return; const u = (document.getElementById("kbar-user") || {}).textContent || "";
     i.value = location.origin + location.pathname + "?ref=" + encodeURIComponent(u.trim()); };
+  document.addEventListener("click", e => { const t = e.target.closest ? e.target : null; if (!t) return;   // AI-03
+    if (t.closest("#ast-pills [data-sup]")) { const a = document.getElementById("ast"); if (a) a.classList.remove("open"); if (window.showView) showView("v-contact"); return; }
+    if (t.closest('#ast-pills [data-x="pills-info"]') && window.astSay) astSay("💬 Discord و🟢 WhatsApp يفتحان قنوات المجتمع في نافذة جديدة، و🛟 «الدعم» يفتح صفحة التواصل والتذاكر. الروابط تأتي من ملف الإعدادات المركزي (kingbot-syn/config/community.json) فتتغير دون تحديث اللوحة، والزر يختفي إذا لم يكن له رابط."); });
   document.addEventListener("click", e => { if (e.target.closest && e.target.closest('[data-go="v-ref"]')) setTimeout(refFill, 50);
     if (e.target.id === "ref-copy") { refFill(); const i = document.getElementById("ref-link"); try { navigator.clipboard.writeText(i.value); } catch (_) { i.select(); document.execCommand("copy"); } e.target.textContent = "✅ نُسخ"; setTimeout(() => e.target.textContent = "نسخ الرابط", 1500); } });
   try { const r = new URLSearchParams(location.search).get("ref"); if (r) localStorage.setItem("kb_ref", r.slice(0, 40)); } catch (_) {}
@@ -5163,6 +5176,7 @@ document.getElementById("cond-ic").innerHTML = gsvg("conduct", 46);
   <div class="ast-q" id="ast-q"></div>
   <div class="ast-chips" id="ast-chips" aria-label="أسئلة سريعة"></div>
   <div class="ast-log" id="ast-log"><div class="ast-m bot">أهلاً! اضغط أمراً أو اكتب طلبك، وأنا أرسله للبوت وأتابعه حتى ينتهي.</div></div>
+  <div class="ast-pills" id="ast-pills" aria-label="قنوات الدعم السريعة"></div>
   <form class="ast-in" id="ast-form"><input id="ast-text" autocomplete="off" enterkeyhint="send" aria-label="اكتب رسالتك" placeholder="اكتب رسالتك… (Enter للإرسال)"><button type="submit" class="ast-send" aria-label="إرسال"><span aria-hidden="true">➤</span> إرسال</button></form>
   <p class="ast-disc" id="ast-disc">❗ إجابات المساعد مولَّدة آلياً وقد لا تكون دقيقة 100%. تأكد من المعلومات المهمة في «الدليل» أو اسأل «الدعم».</p>
   <div class="ast-srv" id="ast-srv" aria-label="تحكم سريع بالسيرفر"><b>🖥️ تحكم سريع بالسيرفر <button type="button" class="info-btn" data-x="srv-info" aria-label="شرح">❗</button></b>
