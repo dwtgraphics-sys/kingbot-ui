@@ -2181,11 +2181,11 @@ const GICONS = {
 };
 const ROUTINE_ICON = { gather_gems: "gem", gather: "food", collect_city: "castle", train: "train", research: "flask", heal: "heal", build_upgrade: "hammer",
   tavern: "beer", tavern_legendary: "legend", materials: "anvil", scout: "scout", alliance_help: "help", alliance_gifts: "chest", alliance_tech: "book",
-  rally_fort: "flag", attack_barbarians: "sword", join_rally: "rally", auto_shield: "shield", daily_objectives: "scroll", vip_chests: "vip",
+  rally_fort: "flag", attack_barbarians: "sword", join_rally: "rally", auto_shield: "shield", auto_recall: "shield", daily_objectives: "scroll", vip_chests: "vip",
   read_mail: "mail", events: "trophy", merchant: "merchant", vip_shop: "vip", sunset_canyon: "canyon", lost_canyon: "lost", conduct_watch: "conduct", upgrade_troops: "upgrade" };
 /* v146: painted game icons (Higgsfield) — sprite icons.webp, 10 x 3 tiles */
 const ICON_IDX = { gather_gems: 0, gather: 1, collect_city: 2, train: 3, research: 4, heal: 5, build_upgrade: 6, tavern: 7, tavern_legendary: 8, materials: 9,
-  scout: 10, alliance_help: 11, alliance_gifts: 12, alliance_tech: 13, rally_fort: 14, attack_barbarians: 15, join_rally: 16, auto_shield: 17, daily_objectives: 18, vip_chests: 19,
+  scout: 10, alliance_help: 11, alliance_gifts: 12, alliance_tech: 13, rally_fort: 14, attack_barbarians: 15, join_rally: 16, auto_shield: 17, auto_recall: 17, daily_objectives: 18, vip_chests: 19,
   read_mail: 20, events: 21, merchant: 22, vip_shop: 23, sunset_canyon: 24, lost_canyon: 25, conduct_watch: 26, upgrade_troops: 27, char_rotation: 28, presets: 29 };
 function ricon(r) { const i = ICON_IDX[r]; if (i == null) return ""; return '<span class="gimg" style="background-position:' + (i % 10) * 100 / 9 + '% ' + Math.floor(i / 10) * 50 + '%"></span>'; }
 function gsvg(name, size = 30) { return `<svg class="gsvg" width="${size}" height="${size}" viewBox="0 0 32 32" aria-hidden="true">${GICONS[name] || GICONS.shield}</svg>`; }
@@ -2383,7 +2383,8 @@ const GROUPS = [
     { routine: "rally_fort", on: true, icon: "flag", name: "حشد على حصن البرابرة", hint: "عتاد تشين شي هوانغ · رماة فقط · يتكرر بعد رجوعه حتى نفاد نقاط الحرب (بدون الاحتياطية)" },
     { routine: "attack_barbarians", icon: "sword", name: "مهاجمة البرابرة", hint: "تشكيلة تشين · يتتبع البرابرة ويضربهم واحداً تلو الآخر حتى نفاد نقاط الحرب" },
     { routine: "join_rally", on: true, icon: "flag", name: "الانضمام لحشود الحصون", hint: "حشود التحالف على حصون البرابرة فقط · يفحص كل دقيقتين" },
-    { routine: "auto_shield", icon: "shield", name: "الدرع التلقائي", hint: "تفعيل درع السلام" } ] },
+    { routine: "auto_shield", icon: "shield", name: "الدرع التلقائي", hint: "تفعيل درع السلام" },
+    { routine: "auto_recall", icon: "shield", name: "العودة والاستدعاء التلقائي", hint: "يعيد جيوش الجمع للمدينة عند التهديد" } ] },
   { name: "المكافآت", items: [
     { routine: "daily_objectives", on: true, icon: "list", name: "المهام اليومية", hint: "استلام مكافآت المهام اليومية وصناديق النقاط" },
     { routine: "vip_chests", on: true, icon: "gift", name: "صناديق VIP", hint: "مرة واحدة في اليوم (يبدأ اليوم الجديد 00:00 UTC) · صندوق النقاط + المجاني" },
@@ -2460,6 +2461,8 @@ const OPTS = {
   alliance_gifts: [{ k: "every", type: "range", label: "يتفقد كل (دقائق)", def: [120, 180], min: 30, max: 1440 },
                    { k: "gifts", type: "check", label: "جمع صناديق/هدايا التحالف", def: true },
                    { k: "territory", type: "check", label: "جمع موارد أراضي التحالف", def: true }],
+  auto_recall: [{ k: "recall_on_threat", type: "check", label: "استدعاء جيوش الجمع عند ظهور تهديد", def: true },   // TASK-05
+                { k: "cooldown_minutes", type: "num", label: "انتظار بين كل استدعاء وآخر (دقائق)", def: 10, min: 1, max: 120 }],
   auto_shield: [{ k: "mode", type: "select", label: "متى يُفعَّل الدرع", def: "on_attack", choices: [["on_attack", "فور اكتشاف هجوم"], ["hospital_pct", "عند انخفاض المساحة الفارغة في المستشفى"]] },
                 { k: "pct", type: "num", label: "نسبة المساحة الفارغة في المستشفى (%)", def: 20, min: 1, max: 99 },
                 { k: "react_scout", type: "check", label: "التصرف عند التجسس على المدينة أيضاً", def: false },
@@ -2486,6 +2489,7 @@ const INFO = {
   rally_fort: "يحشد على حصن البرابرة بالمستوى الذي تختاره بعتاد تشين شي هوانغ، ويتكرر بعد رجوعه حتى تنفد نقاط الحرب (بدون النقاط الاحتياطية).",
   attack_barbarians: "يهاجم البرابرة بتشكيلة تشين، ويبحث من أعلى مستوى إلى الأدنى. مع التتبع يبقى الجيش في الخريطة ويبحث عن البربري التالي القريب ويضربه، واحداً تلو الآخر حتى تنفد نقاط الحرب. إذا فعّلت استخدام نقاط الحرب الاحتياطية يستخدم عناصر نقاط الحرب من الحقيبة فقط (لا يستخدم المجوهرات أبداً) ويكمل.",
   join_rally: "ينضم إلى حشود التحالف على حصون البرابرة فقط، ويتخطى الحشد إذا كان فيه العدد الذي تكتبه من الجنود أو أكثر. يفحص كل دقيقتين.\n\n🏰 الانضمام التلقائي: «نقاط الحركة» = لا ينضم إذا كانت آخر قراءة لنقاط الحركة (من الملف الشخصي) عند الحد الذي تكتبه أو أقل — ولا يستعمل البوت أبداً جرعات نقاط الحركة. «أقصى وقت مسيرة» = يقرأ وقت المسيرة قبل الإرسال ويتراجع إذا كان أطول. حالياً يتعرف البوت على حشود حصون البرابرة فقط. عدد الانضمامات اليوم يظهر بجانب اسم المهمة.",
+  auto_recall: "🏃 العودة والاستدعاء التلقائي: يراقب البوت التحذير الأحمر (هجوم على جيوشك أو مدينتك) كل 30 ثانية تقريباً. إذا ظهر مرتين متتاليتين وجيوشك تجمع الموارد، يفتح الخريطة ويضغط زر «العودة» لكل جيش جمع، ثم ينتظر «فترة الانتظار» قبل أي استدعاء آخر. يُسجَّل كل استدعاء في الإشعارات ويظهر عدد الهجمات التي تم تجنبها اليوم بجانب اسم المهمة. يحتاج البوت صورة زر «العودة» من اللعبة (btn_recall) — إن لم تكن مسجلة يرسل لك تنبيهاً لتستدعي يدوياً.",
   auto_shield: "يفعّل درع السلام حسب الشرط الذي تختاره.\n\n🛡️ الدرع التلقائي: «عند الهجوم» يفعّل الدرع بعد ظهور التحذير الأحمر مرتين متتاليتين، و«عند التجسس» يكفيه تحذير واحد. اختر مدة الدرع (8 أو 24 ساعة؛ إن لم توجد يستعمل الأخرى). «مواعيد مجدولة» = يفعّل الدرع في هذه الأوقات بتوقيت UTC (مرة في اليوم لكل موعد، إن لم يكن هناك درع فعّال). يستعمل فقط الدروع الموجودة في الحقيبة ولا يشتري بالجواهر أبداً. عند التفعيل يصلك تنبيه عاجل في الإشعارات وتيليجرام، وحالة الدرع تظهر بجانب اسم المهمة.",
   daily_objectives: "يستلم مكافآت المهام اليومية وصناديق النقاط كل 8 ساعات.",
   vip_chests: "يستلم صندوق VIP اليومي والصندوق المجاني مرة واحدة في اليوم بعد التجديد 00:00 بتوقيت غرينتش.",
@@ -3466,6 +3470,10 @@ function renderRes(r, city) {
     const ub = $("uxq-box"); if (ub) { ub.innerHTML = "";   // UX-02
       if (c.qm && c.qm.at) { uxCityCards(ub, c); $("uxq-at").textContent = "آخر قراءة " + new Date(c.qm.at * 1000).toLocaleTimeString("ar", { hour: "2-digit", minute: "2-digit" }); }
       else { ub.innerHTML = '<div class="hint">لم يقرأ البوت «نظرة عامة على الطوابير» بعد</div>'; $("uxq-at").textContent = "—"; } }
+    const lrc = document.querySelector('label[for="en-auto_recall"]');   // TASK-05: avoided attacks today
+    if (lrc) { let b = lrc.querySelector(".gem-today"); if (!b) { b = document.createElement("b"); b.className = "gem-today"; lrc.insertBefore(b, lrc.firstChild.nextSibling); }
+      const d = new Date().toISOString().slice(0, 10), h = Array.isArray(c.history) ? c.history : [], t = h.length && h[h.length - 1].day === d ? h[h.length - 1] : {};
+      b.textContent = " 🏃 هجمات تم تجنبها اليوم: " + (+t.recall || 0); }
     const lr = document.querySelector('label[for="en-join_rally"]');   // TASK-03: rallies joined today
     if (lr) { let b = lr.querySelector(".gem-today"); if (!b) { b = document.createElement("b"); b.className = "gem-today"; lr.insertBefore(b, lr.firstChild.nextSibling); }
       const d = new Date().toISOString().slice(0, 10), h = Array.isArray(c.history) ? c.history : [], t = h.length && h[h.length - 1].day === d ? h[h.length - 1] : {};
