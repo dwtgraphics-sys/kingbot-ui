@@ -907,6 +907,17 @@ main, .view, .panel, #top, .kbar { min-width: 0; max-width: 100%; box-sizing: bo
 .ast-q button.busy{opacity:.75;cursor:wait;border-color:#5aa9ff88}.ast-q button.busy .lb::before{content:"";display:inline-block;width:10px;height:10px;margin-inline-end:5px;border-radius:50%;border:2px solid #8fd0ff;border-top-color:transparent;animation:astspin .8s linear infinite;vertical-align:-1px}
 .ast-q button.ok{border-color:#2ecc71;background:#2ecc7126;color:#bff5d3}@keyframes astspin{to{transform:rotate(360deg)}}
 .ast-q button.wide{grid-column:1/-1;justify-content:center;background:rgba(242,140,40,.16);border-color:#f28c2866}
+.ast-shot{grid-column:1/-1;display:flex;gap:10px;align-items:center;padding:8px;border-radius:12px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12)}
+.ast-thumb{flex:0 0 120px;height:68px;border-radius:9px;overflow:hidden;padding:0;border:1px solid rgba(255,255,255,.18);background:#0b1220;color:#9fb0c8;font-size:11px;cursor:zoom-in}
+.ast-thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.ast-shot-t{display:flex;flex-direction:column;gap:3px;min-width:0;font-size:12px}.ast-shot-t small{opacity:.75}
+.ast-shot-t .ast-shot-r{align-self:flex-start;padding:3px 9px;font-size:11px;border-radius:999px}
+.ast-lrow{grid-column:1/-1;display:flex;gap:8px;align-items:center}.ast-lrow .ast-live{flex:1}
+.ast-sb{flex:0 0 auto;font-size:11px;font-weight:700;padding:4px 9px;border-radius:999px;white-space:nowrap}
+.ast-sb.on{background:rgba(46,204,113,.18);color:#2ecc71;border:1px solid rgba(46,204,113,.45)}.ast-sb.off{background:rgba(149,165,166,.15);color:#aab;border:1px solid rgba(149,165,166,.35)}
+.ast-lb{position:fixed;inset:0;z-index:10050;background:rgba(0,0,0,.86);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;padding:16px}
+.ast-lb img{max-width:100%;max-height:85vh;border-radius:10px}.ast-lb small{color:#ddd}
+.ast-lb-x{position:absolute;top:12px;left:12px;width:38px;height:38px;border-radius:50%;border:0;background:#fff2;color:#fff;font-size:18px}
 .ast-live{grid-column:1/-1;display:block;text-align:center;padding:11px;border-radius:12px;background:linear-gradient(90deg,#c0392b,#e74c3c);color:#fff;font-weight:800;text-decoration:none;box-shadow:0 4px 14px #c0392b55}
 .ast-log{flex:1;overflow:auto;padding:4px 12px 8px;display:flex;flex-direction:column;gap:6px;min-height:70px}
 .ast-m{padding:7px 10px;border-radius:12px;font-size:12.5px;line-height:1.45;max-width:92%;white-space:pre-wrap}
@@ -2916,6 +2927,38 @@ function astAsk(t) {
   astSay(k.a);
   if (k.go) { astLog[astLog.length - 1].go = k.go; astDraw(); }
 }
+// MOD-04: stream link per server, Online/Offline badge, latest screenshot thumbnail + lightbox
+function astStreamKey() { try { return "kb_stream:" + curServerId(); } catch (_) { return "kb_stream"; } }
+function astStreamUrl() { try { return localStorage.getItem(astStreamKey()) || localStorage.getItem("kb_stream") || ""; } catch (_) { return ""; } }
+function astStreamSave(u) { try { localStorage.setItem(astStreamKey(), u); localStorage.setItem("kb_stream", u); } catch (_) {} }
+function astStreamPaint() { const b = document.getElementById("ast-sb"); if (!b) return;
+  const s = (typeof lastStatus === "object" && lastStatus) || {}, st = s.stream, age = (Date.now() - new Date(s.updated).getTime()) / 60000;
+  const on = !!(st && typeof st === "object" && st.active && age < 10);
+  b.className = "ast-sb " + (on ? "on" : "off"); b.textContent = on ? "🟢 متصل" : "⚫ غير متصل";
+  b.title = on ? "البث يعمل الآن على هذا السيرفر" : "البث متوقف أو لا توجد حالة حديثة من البوت";
+  const a = document.querySelector(".ast-live"); const u = astStreamUrl(); if (a && u && a.href !== u) a.href = u; }
+let astShotAt = 0, astShotB64 = "";
+async function astShotLoad(force) { const box = document.getElementById("ast-shot"); if (!box) return;
+  if (!force && Date.now() - astShotAt < 55000) return; astShotAt = Date.now();
+  const th = box.querySelector(".ast-thumb"), tt = document.getElementById("ast-shot-time");
+  try { if (!getGhToken()) { tt.textContent = "اربط الحساب أولاً"; return; }
+    const f = await newestFile(OUTBOX_FOLDER, "screen.jpg"); if (!f) { tt.textContent = "لم تصل صورة بعد"; return; }
+    const b = await kbImg(await download(f.id)); if (!b) { tt.textContent = "🔐 الصورة مشفّرة: أدخل عبارة المرور"; return; }
+    astShotB64 = b; th.innerHTML = ""; const i = new Image(); i.alt = "آخر صورة من اللعبة"; i.src = "data:image/jpeg;base64," + b; th.appendChild(i);
+    let when = "";
+    try { const srv = curServer(), p = srv.screen || "outbox/screen.jpg";
+      const r = await fetch(`https://api.github.com/repos/${GH_OWNER}/${GH_REPO}/commits?per_page=1&path=${encodeURIComponent(p)}`, { headers: { "Authorization": `Bearer ${getGhToken()}`, "Accept": "application/vnd.github+json" } });
+      if (r.ok) { const c = await r.json(); when = c && c[0] && c[0].commit && c[0].commit.committer && c[0].commit.committer.date; } } catch (_) {}
+    tt.textContent = when ? "التُقطت " + new Date(when).toLocaleString("ar-OM", { hour: "2-digit", minute: "2-digit", day: "numeric", month: "short" }) : "وقت الالتقاط غير معروف";
+  } catch (e) { tt.textContent = "تعذّر تحميل الصورة"; } }
+function astShotBig() { if (!astShotB64) { astShotLoad(true); return; }
+  let lb = document.getElementById("ast-lb");
+  if (!lb) { lb = document.createElement("div"); lb.id = "ast-lb"; lb.className = "ast-lb"; lb.setAttribute("role", "dialog"); lb.setAttribute("aria-label", "آخر صورة مكبّرة");
+    lb.innerHTML = '<button type="button" class="ast-lb-x" aria-label="إغلاق">✕</button><img alt="آخر صورة من اللعبة"><small></small>';
+    lb.addEventListener("click", e => { if (e.target === lb || e.target.classList.contains("ast-lb-x")) lb.remove(); });
+    document.addEventListener("keydown", function k(e) { if (e.key === "Escape") { const x = document.getElementById("ast-lb"); if (x) x.remove(); document.removeEventListener("keydown", k); } });
+    document.body.appendChild(lb); }
+  lb.querySelector("img").src = "data:image/jpeg;base64," + astShotB64; lb.querySelector("small").textContent = (document.getElementById("ast-shot-time") || {}).textContent || ""; }
 function astInit() {
   const q = $("ast-q");
   if (q.dataset.ready) return; q.dataset.ready = "1"; q.innerHTML = "";
@@ -2925,14 +2968,24 @@ function astInit() {
   const all = document.createElement("button"); all.type = "button"; all.className = "wide"; all.textContent = "⚡ تحديث الكل (الملف، الموارد، المسيرات، الشخصيات)";
   all.dataset.k = "_all"; all.addEventListener("click", () => { if (all.classList.contains("busy")) return; astAdd(AST_ALL.map(k => ({ do: k }))); astBtn("_all", "send"); }); q.appendChild(all);
   const STREAM_DEF = "";   // v196: the viewer link (with its password) comes from the bot status, not from this public page
-  let surl = STREAM_DEF; try { surl = localStorage.getItem("kb_stream") || STREAM_DEF; } catch (_) {}
+  let surl = astStreamUrl() || STREAM_DEF;   // MOD-04: the link is kept per server (slot)
+  const shot = document.createElement("div"); shot.className = "ast-shot"; shot.id = "ast-shot";   // MOD-04: latest screenshot card
+  shot.innerHTML = '<button type="button" class="ast-thumb" aria-label="تكبير آخر صورة"><span>📷 آخر صورة من اللعبة</span></button><div class="ast-shot-t"><b>📷 آخر صورة <button type="button" class="info-btn" aria-label="شرح">❗</button></b><small id="ast-shot-time">—</small><button type="button" class="ast-shot-r">↻ تحديث</button></div>';
+  shot.querySelector(".ast-thumb").addEventListener("click", astShotBig);
+  shot.querySelector(".ast-shot-r").addEventListener("click", () => astShotLoad(true));
+  shot.querySelector(".info-btn").addEventListener("click", () => astSay("📷 آخر صورة: تعرض آخر لقطة شاشة أرسلها البوت مع وقت التقاطها. اضغط الصورة لتكبيرها، و«↻ تحديث» لجلب أحدث صورة. لطلب صورة جديدة الآن استعمل زر «📸 صورة».\n🟢 متصل / ⚫ غير متصل بجانب زر البث = هل البث المباشر يعمل الآن على هذا السيرفر. رابط البث يُحفظ لكل سيرفر على حدة."));
+  q.appendChild(shot);
+  const lrow = document.createElement("div"); lrow.className = "ast-lrow";
   const live = document.createElement("a"); live.className = "ast-live"; live.href = surl; live.target = "_blank"; live.rel = "noopener";
-  live.textContent = "📺 فتح البث المباشر للعبة"; q.appendChild(live);
+  live.textContent = "📺 فتح البث المباشر للعبة";
+  const badge = document.createElement("span"); badge.className = "ast-sb off"; badge.id = "ast-sb"; badge.textContent = "⚫ غير متصل";
+  lrow.append(live, badge); q.appendChild(lrow);
   const ed = document.createElement("button"); ed.type = "button"; ed.className = "wide"; ed.textContent = "⚙️ تغيير رابط البث";
   ed.addEventListener("click", () => { $("ast-text").value = "رابط البث: " + live.href; $("ast-text").focus(); astSay("ألصق رابط المشاهدة الجديد بعد «رابط البث:» ثم اضغط إرسال."); });
   q.appendChild(ed);
-  $("ast-fab").addEventListener("click", () => { $("ast").classList.toggle("open"); astDraw(); });
-  window.astOpen = () => { $("ast").classList.add("open"); astDraw(); };
+  $("ast-fab").addEventListener("click", () => { $("ast").classList.toggle("open"); astDraw(); astShotLoad(); astStreamPaint(); });
+  window.astOpen = () => { $("ast").classList.add("open"); astDraw(); astShotLoad(); astStreamPaint(); };
+  setInterval(() => { astStreamPaint(); if ($("ast").classList.contains("open") && !document.hidden) astShotLoad(); }, 60000);
   // v192: the assistant works in the background - every 3 hours (while the dashboard is open) it asks the bot
   // to refresh profile, resources, marches and characters, silently. Commanders are read by the bot itself
   // after every character switch.
@@ -2949,7 +3002,7 @@ function astInit() {
   $("ast-info").addEventListener("click", () => astSay("حالة كل زر تظهر عليه مباشرة: «⏳ جارٍ الإرسال» ثم «🛰️ بانتظار السيرفر» (الزر مقفل حتى لا يتكرر الأمر) ثم «✅ تم التحديث الآن»، وتحت الزر وقت آخر نجاح.\nزر «📺 فتح البث المباشر» يفتح بث شاشة اللعبة (OBS + VDO.Ninja) في نافذة جديدة.\nأنا أرسل أوامرك للبوت الرئيسي: تحديث الاسم والملف، الشخصيات، القادة، الموارد، المسيرات، أو صورة من اللعبة. يمكنك أيضاً كتابة طلبك بكلامك، مثل: «حدّث القادة والموارد» أو «بدّل إلى ArchLord».\nالأوامر تتقدّم الطابور: ينفذها البوت بين أي مهمتين، ولا ينتظر نهاية الجولة. البوت الرئيسي وحده يضغط داخل اللعبة."));
   $("ast-form").addEventListener("submit", e => { e.preventDefault(); const t = $("ast-text").value.trim(); if (!t) return; $("ast-text").value = "";
     const mm = t.match(/^رابط البث\s*[:：]\s*(https:\/\/\S+)$/);
-    if (mm) { try { localStorage.setItem("kb_stream", mm[1]); } catch (_) {} document.querySelector(".ast-live").href = mm[1]; astSay("✅ حُفظ رابط البث على هذا الجهاز."); return; }
+    if (mm) { astStreamSave(mm[1]); document.querySelector(".ast-live").href = mm[1]; astSay("✅ حُفظ رابط البث لهذا السيرفر على هذا الجهاز."); return; }
     const st = astParse(t); if (!st.length && astAnswer(t)) { astAsk(t); return; } if (!st.length) { astSay(t, "me"); astSay("لم أفهم الطلب. جرّب: الاسم، الشخصيات، القادة، الموارد، المسيرات، صورة، الكل، أو «بدّل إلى …»."); return; }
     astAdd(st); });
   astDraw();
@@ -3972,6 +4025,7 @@ async function refreshStatus(btn) {
     try { renderConduct(s.city); } catch (_) {}
     try { checkCharChange(s); checkWatched(s); astTick(s); } catch (_) {}
     try { if (window.liveUpdate) liveUpdate(s); } catch (_) {}
+    try { astStreamPaint(); } catch (_) {}   // MOD-04
     try { if (window.qmUpdate) qmUpdate(s); } catch (_) {}
     try { renderStats(s.city); renderChars(s.city); lastStatus = s; renderAccount(); renderPages(); renderMarches(s.city); try { ssxShow(); } catch (_) {} try { capCheck(s); } catch (_) {} rotNow = (s.city || {}).rotation || null; renderRotNow(); } catch (_) {}
     logLines = s.log || []; renderLog();
@@ -5046,7 +5100,7 @@ document.getElementById("cond-ic").innerHTML = gsvg("conduct", 46);
     "no data from the bot yet": "في انتظار أول حالة من البوت…" };
   window.liveUpdate = function (s) {
     lastS = s || {};
-    if (lastS.stream && /^https:\/\/vdo\.ninja\//.test(lastS.stream.view_url || "")) { try { localStorage.setItem("kb_stream", lastS.stream.view_url); } catch (_) {} }
+    if (lastS.stream && /^https:\/\/vdo\.ninja\//.test(lastS.stream.view_url || "")) { astStreamSave(lastS.stream.view_url); }
     const st = lastS.stream, sd = (typeof settings === "object" && settings) || {};
     wantOn = !(sd.stream && sd.stream.enabled === false);
     const age = (Date.now() - new Date(lastS.updated).getTime()) / 60000;
