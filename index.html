@@ -895,6 +895,9 @@ main, .view, .panel, #top, .kbar { min-width: 0; max-width: 100%; box-sizing: bo
 .ast-q{display:grid;grid-template-columns:1fr 1fr;gap:7px;padding:10px 12px}
 .ast-q button{display:flex;align-items:center;gap:7px;padding:9px 10px;border-radius:12px;border:1px solid #ffffff1c;background:rgba(255,255,255,.05);color:inherit;font:inherit;font-size:12.5px;cursor:pointer;text-align:start}
 .ast-q button:hover{border-color:var(--accent,#f28c28);background:rgba(242,140,40,.1)}
+.ast-q button{position:relative;flex-wrap:wrap}.ast-q .lb{flex:1}.ast-ts{flex-basis:100%;font-size:9.5px;opacity:.6;line-height:1.1}.ast-ts:empty{display:none}
+.ast-q button.busy{opacity:.75;cursor:wait;border-color:#5aa9ff88}.ast-q button.busy .lb::before{content:"";display:inline-block;width:10px;height:10px;margin-inline-end:5px;border-radius:50%;border:2px solid #8fd0ff;border-top-color:transparent;animation:astspin .8s linear infinite;vertical-align:-1px}
+.ast-q button.ok{border-color:#2ecc71;background:#2ecc7126;color:#bff5d3}@keyframes astspin{to{transform:rotate(360deg)}}
 .ast-q button.wide{grid-column:1/-1;justify-content:center;background:rgba(242,140,40,.16);border-color:#f28c2866}
 .ast-live{grid-column:1/-1;display:block;text-align:center;padding:11px;border-radius:12px;background:linear-gradient(90deg,#c0392b,#e74c3c);color:#fff;font-weight:800;text-decoration:none;box-shadow:0 4px 14px #c0392b55}
 .ast-log{flex:1;overflow:auto;padding:4px 12px 8px;display:flex;flex-direction:column;gap:6px;min-height:70px}
@@ -2557,6 +2560,27 @@ function astDraw() {
   box.scrollTop = box.scrollHeight;
   $("ast-fab").classList.toggle("busy", !!(astCur || astQueue.length));
 }
+/* MOD-02: live state on the quick buttons - Sending… → Waiting for server… (spinner, locked) → ✅ Updated just now;
+   the last successful time per command is kept on this device. A command already queued is not queued twice. */
+function astBtn(k, st) {
+  const b = document.querySelector('#ast-q button[data-k="' + k + '"]'); if (!b) return;
+  const lb = b.querySelector(".lb"); if (!b.dataset.lbl) b.dataset.lbl = lb ? lb.textContent : b.textContent;
+  b.classList.remove("busy", "ok"); b.disabled = false;
+  const set = t => { if (lb) lb.textContent = t; else b.textContent = t; };
+  if (st === "send") { b.classList.add("busy"); b.disabled = true; set("⏳ جارٍ الإرسال…"); }
+  else if (st === "wait") { b.classList.add("busy"); b.disabled = true; set("🛰️ بانتظار السيرفر…"); }
+  else if (st === "ok") { b.classList.add("ok"); set("✅ تم التحديث الآن"); try { const m = JSON.parse(localStorage.getItem("kb_ast_ok") || "{}"); m[k] = Date.now(); localStorage.setItem("kb_ast_ok", JSON.stringify(m)); } catch (_) {}
+    setTimeout(() => { if (b.classList.contains("ok")) { b.classList.remove("ok"); set(b.dataset.lbl); } astBtnPaint(); }, 4000); }
+  else set(b.dataset.lbl);
+  astBtnPaint();
+}
+function astBtnPaint() {
+  let m = {}; try { m = JSON.parse(localStorage.getItem("kb_ast_ok") || "{}"); } catch (_) {}
+  document.querySelectorAll("#ast-q button[data-k]").forEach(b => { const ts = b.querySelector(".ast-ts"); if (!ts) return; const t = m[b.dataset.k];
+    if (!t) { ts.textContent = ""; return; } const mn = Math.round((Date.now() - t) / 60000);
+    ts.textContent = "آخر نجاح: " + (mn < 1 ? "الآن" : mn < 60 ? "قبل " + mn + " د" : new Date(t).toLocaleTimeString("ar", { hour: "2-digit", minute: "2-digit" })); });
+}
+setInterval(() => { try { astBtnPaint(); } catch (_) {} }, 60000);
 function astParse(t) {
   const n = (t || "").toLowerCase().replace(/[أإآ]/g, "ا").replace(/ة/g, "ه");
   const out = [];
@@ -2575,7 +2599,8 @@ function astParse(t) {
 function astAdd(steps) {
   steps.forEach(st => {
     if (st.do === "_unknown_char") { astSay("لم أجد شخصية باسم «" + st.name + "». حدّث الشخصيات أولاً أو اكتب الاسم كما يظهر في القائمة."); return; }
-    st.msg = astSay(astName(st.do) + (st.name ? " → " + st.name : ""), "me", "⏳ في الانتظار"); astQueue.push(st);
+    if (st.do !== "switch_character" && (astQueue.some(x => x.do === st.do) || (astCur && astCur.steps.some(x => x.do === st.do)))) return;   // MOD-02: no stacked duplicates
+    st.msg = astSay(astName(st.do) + (st.name ? " → " + st.name : ""), "me", "⏳ في الانتظار"); astQueue.push(st); astBtn(st.do, "send");
   });
   astNext();
 }
@@ -2583,13 +2608,13 @@ async function astNext() {
   if (astCur || !astQueue.length) return astDraw();
   const batch = astQueue.splice(0, astQueue.length);
   const shot = batch.filter(b => b.do === "shot"), steps = batch.filter(b => b.do !== "shot");
-  shot.forEach(b => { astLog[b.msg].st = "📨 طُلبت — تظهر في الصفحة الرئيسية"; requestShot(); });
+  shot.forEach(b => { astLog[b.msg].st = "📨 طُلبت — تظهر في الصفحة الرئيسية"; requestShot(); astBtn("shot", "ok"); });
   if (!steps.length) return astDraw();
   const id = stamp();
   steps.forEach(b => astLog[b.msg].st = "📨 جارٍ الإرسال…"); astDraw();
   const ok = await sendSettings({ action_request: { id, do: "multi", steps: steps.map(b => ({ do: b.do, name: b.name, kingdom: b.kingdom })) } }, "m-send", null);
-  if (!ok) { steps.forEach(b => astLog[b.msg].st = "⚠️ لم يُرسل — حاول مرة أخرى"); return astDraw(); }
-  astCur = { id, steps, at: Date.now() };
+  if (!ok) { steps.forEach(b => { astLog[b.msg].st = "⚠️ لم يُرسل — حاول مرة أخرى"; astBtn(b.do, ""); }); return astDraw(); }
+  astCur = { id, steps, at: Date.now() }; steps.forEach(b => astBtn(b.do, "wait")); if (steps.length > 1) astBtn("_all", "wait");
   steps.forEach(b => astLog[b.msg].st = "🛰️ أُرسل — ينفّذه البوت بين مهمتين"); astDraw();
   fastPoll(600);
 }
@@ -2599,12 +2624,12 @@ function astTick(s) {
   const prog = c.action_progress || {};
   if (String(prog.id) === String(astCur.id)) astCur.steps.forEach((b, i) => { if (i < prog.step) astLog[b.msg].st = "✅ تم"; else if (i === prog.step) astLog[b.msg].st = "⚙️ قيد التنفيذ…"; });
   if (String(c.action_done) === String(astCur.id)) {
-    astCur.steps.forEach(b => astLog[b.msg].st = "✅ تم");
+    astCur.steps.forEach(b => { astLog[b.msg].st = "✅ تم"; astBtn(b.do, "ok"); }); if (astCur.steps.length > 1) astBtn("_all", "ok");
     astSay("انتهيت ✅ البيانات محدّثة في اللوحة.");
     if (!$("ast").classList.contains("open")) try { setMsg("m-acc", "✅ المساعد: البيانات محدّثة.", "ok"); } catch (_) {}
     astCur = null; astNext();
   } else if (Date.now() - astCur.at > 20 * 60000) {
-    astCur.steps.forEach(b => { if (!/✅/.test(astLog[b.msg].st)) astLog[b.msg].st = "⌛ تأخر — البوت مشغول أو غير متصل"; });
+    astCur.steps.forEach(b => { if (!/✅/.test(astLog[b.msg].st)) astLog[b.msg].st = "⌛ تأخر — البوت مشغول أو غير متصل"; astBtn(b.do, ""); }); astBtn("_all", "");
     astCur = null; astNext();
   }
   astDraw();
@@ -2633,9 +2658,10 @@ function astInit() {
   const q = $("ast-q");
   if (q.dataset.ready) return; q.dataset.ready = "1"; q.innerHTML = "";
   const chips = $("ast-chips"); if (chips) { chips.innerHTML = ""; AST_KB.slice(0, 4).forEach(k => { const c = document.createElement("button"); c.type = "button"; c.textContent = k.q; c.addEventListener("click", () => astAsk(k.q)); chips.appendChild(c); }); }   // MOD-01: build the quick buttons once (the static copies doubled them)
-  AST_CMDS.forEach(c => { const b = document.createElement("button"); b.type = "button"; b.textContent = c.ico + " " + c.name; b.addEventListener("click", () => astAdd([{ do: c.k }])); q.appendChild(b); });
+  AST_CMDS.forEach(c => { const b = document.createElement("button"); b.type = "button"; b.dataset.k = c.k; b.innerHTML = '<span class="lb"></span><small class="ast-ts"></small>'; b.querySelector(".lb").textContent = c.ico + " " + c.name; b.addEventListener("click", () => { if (b.classList.contains("busy")) return; astAdd([{ do: c.k }]); }); q.appendChild(b); });
+  astBtnPaint();
   const all = document.createElement("button"); all.type = "button"; all.className = "wide"; all.textContent = "⚡ تحديث الكل (الملف، الموارد، المسيرات، الشخصيات)";
-  all.addEventListener("click", () => astAdd(AST_ALL.map(k => ({ do: k })))); q.appendChild(all);
+  all.dataset.k = "_all"; all.addEventListener("click", () => { if (all.classList.contains("busy")) return; astAdd(AST_ALL.map(k => ({ do: k }))); astBtn("_all", "send"); }); q.appendChild(all);
   const STREAM_DEF = "";   // v196: the viewer link (with its password) comes from the bot status, not from this public page
   let surl = STREAM_DEF; try { surl = localStorage.getItem("kb_stream") || STREAM_DEF; } catch (_) {}
   const live = document.createElement("a"); live.className = "ast-live"; live.href = surl; live.target = "_blank"; live.rel = "noopener";
@@ -2658,7 +2684,7 @@ function astInit() {
   } catch (_) {} };
   setTimeout(autoRun, 45000); setInterval(autoRun, 10 * 60000);
   $("ast-x").addEventListener("click", () => $("ast").classList.remove("open"));
-  $("ast-info").addEventListener("click", () => astSay("زر «📺 فتح البث المباشر» يفتح بث شاشة اللعبة (OBS + VDO.Ninja) في نافذة جديدة.\nأنا أرسل أوامرك للبوت الرئيسي: تحديث الاسم والملف، الشخصيات، القادة، الموارد، المسيرات، أو صورة من اللعبة. يمكنك أيضاً كتابة طلبك بكلامك، مثل: «حدّث القادة والموارد» أو «بدّل إلى ArchLord».\nالأوامر تتقدّم الطابور: ينفذها البوت بين أي مهمتين، ولا ينتظر نهاية الجولة. البوت الرئيسي وحده يضغط داخل اللعبة."));
+  $("ast-info").addEventListener("click", () => astSay("حالة كل زر تظهر عليه مباشرة: «⏳ جارٍ الإرسال» ثم «🛰️ بانتظار السيرفر» (الزر مقفل حتى لا يتكرر الأمر) ثم «✅ تم التحديث الآن»، وتحت الزر وقت آخر نجاح.\nزر «📺 فتح البث المباشر» يفتح بث شاشة اللعبة (OBS + VDO.Ninja) في نافذة جديدة.\nأنا أرسل أوامرك للبوت الرئيسي: تحديث الاسم والملف، الشخصيات، القادة، الموارد، المسيرات، أو صورة من اللعبة. يمكنك أيضاً كتابة طلبك بكلامك، مثل: «حدّث القادة والموارد» أو «بدّل إلى ArchLord».\nالأوامر تتقدّم الطابور: ينفذها البوت بين أي مهمتين، ولا ينتظر نهاية الجولة. البوت الرئيسي وحده يضغط داخل اللعبة."));
   $("ast-form").addEventListener("submit", e => { e.preventDefault(); const t = $("ast-text").value.trim(); if (!t) return; $("ast-text").value = "";
     const mm = t.match(/^رابط البث\s*[:：]\s*(https:\/\/\S+)$/);
     if (mm) { try { localStorage.setItem("kb_stream", mm[1]); } catch (_) {} document.querySelector(".ast-live").href = mm[1]; astSay("✅ حُفظ رابط البث على هذا الجهاز."); return; }
