@@ -1,9 +1,11 @@
 name: guard
-# If a broken dashboard is pushed (empty, cut short, or without </html>), put the last good one back.
+# If a broken dashboard is pushed (empty, cut short, junk after </html>, or a JavaScript error),
+# put the last good one back so the live page keeps working.
 on:
   push:
     branches: [main]
     paths: [index.html]
+  workflow_dispatch:
 permissions:
   contents: write
 jobs:
@@ -12,14 +14,22 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 30
+          fetch-depth: 60
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
       - name: Check index.html and restore the last good version if broken
         shell: bash
         run: |
-          ok() { [ "$(wc -c < "$1")" -ge 100000 ] && tail -c 300 "$1" | grep -qi "</html>"; }
-          if ok index.html; then echo "index.html is fine ($(wc -c < index.html) bytes)"; exit 0; fi
-          echo "index.html is broken ($(wc -c < index.html) bytes) - looking for the last good version"
-          for c in $(git log --format=%H -n 30 -- index.html | tail -n +2); do
+          ok() {
+            [ "$(wc -c < "$1")" -ge 100000 ] || { echo "too small"; return 1; }
+            [ "$(grep -o '</html>' "$1" | wc -l)" -eq 1 ] || { echo "not exactly one </html>"; return 1; }
+            tail -c 300 "$1" | grep -qi "</html>" || { echo "does not end with </html>"; return 1; }
+            node .github/check_html.js "$1" | tee /tmp/chk.txt; grep -q "bad 0" /tmp/chk.txt || return 1
+          }
+          if ok index.html; then echo "index.html is fine"; exit 0; fi
+          echo "index.html is broken - looking for the last good version"
+          for c in $(git log --format=%H -n 60 -- index.html | tail -n +2); do
             git show "$c:index.html" > /tmp/prev.html 2>/dev/null || continue
             if ok /tmp/prev.html; then
               cp /tmp/prev.html index.html
