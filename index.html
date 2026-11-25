@@ -291,6 +291,12 @@ body.nofx .bg canvas, body.nofx .fog, body.nofx .bg-glow { display: none; }
 .rot-col { margin: 0 0 10px; padding: 10px 12px; border-radius: 12px; background: rgba(95,211,138,.07); border: 1px solid rgba(95,211,138,.25); gap: 10px; } .rot-col small { display: block; opacity: .65; font-size: 12px; margin-top: 2px; }
 .rot-slot { display: grid; grid-template-columns: 28px minmax(0,1.3fr) minmax(0,1.3fr) 92px auto; gap: 8px; align-items: center; padding: 8px; border-radius: 12px; background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.08); }
 .rot-slot.cur { border-color: #4caf50; background: rgba(76,175,80,.12); }
+.rot-slot.off { opacity: .55; }
+.rot-ctl { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 6px; align-items: center; font-size: 12px; }
+.rot-ctl button { padding: 4px 9px; border-radius: 9px; border: 1px solid var(--edge); background: rgba(255,255,255,.05); color: inherit; font: inherit; cursor: pointer; }
+.rot-ctl button:disabled { opacity: .35; cursor: default; } .rot-ctl .rot-st { color: var(--accent-2, #f3c24a); font-size: 15px; line-height: 1; }
+.rot-ctl label { display: inline-flex; align-items: center; gap: 4px; font-size: 12px; opacity: 1; margin: 0; } .rot-ctl .rot-mx input { width: 64px; padding: 4px 6px; }
+.rot-opts { margin-top: 10px; display: grid; gap: 8px; } .rot-ctl input[type=checkbox] { width: auto; padding: 0; }
 .rot-slot .n { font-weight: 800; text-align: center; opacity: .8; }
 .rot-slot label { font-size: 11px; opacity: .7; display: block; margin-bottom: 2px; }
 .rot-slot select, .rot-slot input { width: 100%; }
@@ -1575,6 +1581,9 @@ window.addEventListener("error", function(e) {
         <div class="rot-now" id="rot-now">مفعّلة — يبدأ البوت التبديل في الجولة القادمة.</div>
         <label class="row rot-col" for="rot-col"><span>🎁 عند تبديل الشخصية: اجمع كل شيء فوراً<small>موارد المدينة، الحانة المجانية، هدايا التحالف، المهام اليومية، البريد ومتجر VIP — مباشرة بعد الدخول للشخصية الجديدة</small></span><span class="switch"><input type="checkbox" id="rot-col" checked=""><span></span></span></label>
         <div id="rot-slots" class="rot-slots"><div class="rot-slot" data-name="Character 1"><span class="n">1</span><div><label>الشخصية</label><select data-k="name"><option value="">— اختر الشخصية —</option><option selected="" value="Character 1">Character 1 · #3796 Kingdom of Ilfan</option><option value="Character 2">Character 2 · #4010 Kingdom of Ivenia</option><option value="Character 3">Character 3 · #3796 Kingdom of Ilfan</option><option value="Character 4">Character 4 · #3703 Kingdom of Kesari</option></select></div><div><label>الإعداد</label><select data-k="preset"><option value="">الإعدادات الرئيسية (صفحة الأنشطة)</option><option selected="" value="85W">85W</option></select></div><div class="mins"><label>المدة (دقيقة)</label><input data-k="minutes" type="number" min="10" max="1440" step="10" value="120"></div><button type="button" class="btn del" aria-label="حذف">✕</button></div><div class="rot-slot" data-name="Character 3"><span class="n">2</span><div><label>الشخصية</label><select data-k="name"><option value="">— اختر الشخصية —</option><option selected="" value="Character 3">Character 3</option><option value="Character 1">Character 1 · #3796 Kingdom of Ilfan</option><option value="Character 2">Character 2 · #4010 Kingdom of Ivenia</option><option value="Character 3">Character 3 · #3796 Kingdom of Ilfan</option><option value="Character 4">Character 4 · #3703 Kingdom of Kesari</option></select></div><div><label>الإعداد</label><select data-k="preset"><option value="">الإعدادات الرئيسية (صفحة الأنشطة)</option><option value="85W">85W</option></select></div><div class="mins"><label>المدة (دقيقة)</label><input data-k="minutes" type="number" min="10" max="1440" step="10" value="120"></div><button type="button" class="btn del" aria-label="حذف">✕</button></div></div>
+        <!-- GUIDE-16: starred only, game order, switch now -->
+        <div class="rot-opts"><label class="row rot-col" for="rot-star"><span>⭐ بدّل فقط بين الشخصيات المميزة بنجمة<small>اضغط ☆ بجانب الشخصية لتمييزها. إذا لم تميّز أي شخصية يبدّل بين الجميع.</small></span><span class="switch"><input type="checkbox" id="rot-star"><span></span></span></label>
+          <div class="row"><button class="btn" id="rot-order" type="button">↺ رجوع لترتيب اللعبة</button><button class="btn" id="rot-snow" type="button">⏭️ بدّل الآن</button> <button type="button" class="info-btn" data-info="rotg16" aria-label="شرح">❗</button></div></div>
         <div class="row" style="margin-top:10px"><button class="btn" id="rot-add" type="button">+ إضافة شخصية</button><button class="btn primary" id="rot-send" type="button"><span class="spin"></span>حفظ وإرسال للبوت</button></div>
         <div class="msg" id="m-rot"></div>
       </section>
@@ -1942,6 +1951,8 @@ window.addEventListener("error", function(e) {
         <div class="gd-card"><b>🟢 نقاط السلوك (Conduct)</b><p>إذا قرأ البوت أن نقاط السلوك أقل من <b>61</b> يوقف الأنشطة الميدانية (الجمع، الحشود، البرابرة، الحراس، الاستكشاف) ويكمل مهام المدينة، ثم يعود تلقائياً عند 61 أو أكثر. الحد قابل للتعديل في <span class="gd-pill">الجدولة</span>.</p></div>
         <div class="gd-card"><b>⚔️ البرابرة مهمة واحدة في كل مرة</b><p>«مهاجمة البرابرة» (مع خيار السلسلة) و«حشد الحصون» لا يعملان في نفس اللحظة: البوت ينفّذ المهام واحدة بعد الأخرى بالترتيب الذي تحدده في «أولوية المسيرات».</p></div>
         <div class="gd-card"><b>📱 الدخول من جهاز آخر</b><p>إذا فتحت حسابك من هاتفك أو جهاز آخر تظهر في اللعبة رسالة «دخول من جهاز آخر». البوت <b>ينتظر 10 دقائق</b> (قابلة للتعديل في <span class="gd-pill">الجدولة</span>) ثم يعود، حتى تلعب دون أن يطردك.</p></div>
+        <!-- GUIDE-16: settings per character & rotation -->
+        <div class="gd-card"><b>👥 الإعدادات لكل شخصية وتبديل الشخصيات</b><p>من <span class="gd-pill">مهمة تبديل الشخصيات</span>: اقرأ قائمة الشخصيات أولاً، ثم أضفها. كل شخصية تلعب بـ<b>«الإعدادات الرئيسية»</b> (العامة) إلا إذا اخترت لها إعداداً محفوظاً فتلعب <b>بإعداداتها الخاصة</b>، و«📋 نسخ الإعداد للبقية» يعمّم إعدادها. لكل شخصية مدة دور خاصة (ثابتة أو عشوائية «من–إلى»): أطول لسلسلة البرابرة وأقصر للجمع. أزل «ضمن التبديل» لإخراجها مؤقتاً، رتّب بـ ▲▼ أو «↺ رجوع لترتيب اللعبة»، وميّز بـ ★ مع «بدّل فقط بين المميزة». «⏭️ بدّل الآن» يعمل فقط إذا مرّت <b>10 دقائق</b> على آخر تبديل.</p></div>
         <!-- GUIDE-14: rallies / recall / city upgrade / Baulur -->
         <div class="gd-card"><b>🏰 حد الحشود اليومي وقائمة اللاعبين</b><p>في خيارات <span class="gd-pill">الانضمام لحشود الحصون</span>: «أقصى عدد انضمامات في اليوم» يوقف الانضمام حتى منتصف الليل <b>UTC</b>، و«انضم فقط لحشود هؤلاء اللاعبين» يجعل البوت ينضم فقط لحشود الأسماء التي تكتبها (مفصولة بفاصلة). البوت يقرأ الاسم من صفحة الحرب، لذلك اكتبه كما يظهر في اللعبة.</p></div>
         <div class="gd-card"><b>🏗️ ترقية المدينة وحقيبة الموارد</b><p>البوت <b>لا يفتح</b> صناديق الموارد من الحقيبة لإكمال نقص الترقية. القاعدة المعتمدة: إذا أُضيف ذلك لاحقاً فلن يفتحها إلا إذا كانت <b>تغطي النقص كاملاً</b>، حتى لا تضيع الموارد على ترقية لن تبدأ.</p></div>
@@ -4446,6 +4457,7 @@ function renderRotNow() {
 function renderRot() {
   const box = $("rot-slots"); if (!box) return;
   const r = rotObj(); $("rot-on").checked = !!r.enabled; $("rot-col").checked = r.collect_on_switch !== false;
+  if ($("rot-star")) $("rot-star").checked = !!r.star_only;
   const chars = (chList && chList.length ? chList : (kbCache("chars", null) || []));
   const pnames = Object.keys(presetsObj());
   box.innerHTML = r.slots.length ? "" : '<p class="note">لم تُضف شخصيات بعد. اضغط «+ إضافة شخصية». (اقرأ الشخصيات أولاً من الصفحة الرئيسية ← تبديل الشخصيات)</p>';
@@ -4456,14 +4468,29 @@ function renderRot() {
       : '<input data-k="name" type="text" maxlength="40" placeholder="اسم الشخصية" value="' + esc(sl.name || "") + '">';
     const pSel = '<select data-k="preset"><option value="">' + MAIN_PRESET + '</option>' + pnames.map(n => '<option' + (n === sl.preset ? " selected" : "") + ' value="' + esc(n) + '">' + esc(n) + '</option>').join("") + '</select>';
     d.innerHTML = '<span class="n">' + (i + 1) + '</span><div><label>الشخصية</label>' + chSel + '</div><div><label>الإعداد</label>' + pSel + '</div>' +
-      '<div class="mins"><label>المدة (دقيقة)</label><input data-k="minutes" type="number" min="10" max="1440" step="10" value="' + (sl.minutes || 120) + '"></div><button type="button" class="btn del" aria-label="حذف">✕</button>';
+      '<div class="mins"><label>المدة (دقيقة)</label><input data-k="minutes" type="number" min="10" max="1440" step="10" value="' + (sl.minutes || 120) + '"></div><button type="button" class="btn del" aria-label="حذف">✕</button>' +
+      // GUIDE-16: in rotation, star, order, random duration up to, copy the setting to the others
+      '<div class="rot-ctl"><label class="rot-in"><input type="checkbox" data-c="on"' + (sl.on === false ? "" : " checked") + '> ضمن التبديل</label>' +
+      '<button type="button" class="rot-st' + (sl.star ? " on" : "") + '" data-c="star" aria-label="نجمة" title="شخصية مميزة">' + (sl.star ? "★" : "☆") + '</button>' +
+      '<button type="button" data-c="up" aria-label="للأعلى"' + (i ? "" : " disabled") + '>▲</button><button type="button" data-c="down" aria-label="للأسفل"' + (i < r.slots.length - 1 ? "" : " disabled") + '>▼</button>' +
+      '<label class="rot-mx">إلى <input data-k="minutes_max" type="number" min="0" max="1440" step="10" value="' + (sl.minutes_max || "") + '" placeholder="—"> د (عشوائي)</label>' +
+      '<button type="button" data-c="copy" title="نسخ الإعداد لكل الشخصيات">📋 نسخ الإعداد للبقية</button></div>';
+    if (sl.on === false) d.classList.add("off");
     d.querySelectorAll("[data-k]").forEach(inp => inp.addEventListener("change", () => {
       const k = inp.dataset.k; let v = inp.value;
       if (k === "minutes") v = Math.max(10, Math.min(1440, Math.round(Number(v) || 120)));
+      if (k === "minutes_max") { v = Math.round(Number(v) || 0); v = v ? Math.max(sl.minutes || 10, Math.min(1440, v)) : 0; inp.value = v || ""; }
       if (k === "name") { const c = chars.find(c => c.name === v); sl.kingdom = c ? c.kingdom || "" : ""; d.dataset.name = v; }
       sl[k] = v; if (k === "minutes") inp.value = v;
     }));
     d.querySelector(".del").addEventListener("click", () => { r.slots.splice(i, 1); renderRot(); });
+    d.querySelectorAll("[data-c]").forEach(b => b.addEventListener(b.type === "checkbox" ? "change" : "click", () => { const c = b.dataset.c;   // GUIDE-16
+      if (c === "on") sl.on = b.checked;
+      if (c === "star") sl.star = !sl.star;
+      if (c === "up" && i > 0) [r.slots[i - 1], r.slots[i]] = [r.slots[i], r.slots[i - 1]];
+      if (c === "down" && i < r.slots.length - 1) [r.slots[i + 1], r.slots[i]] = [r.slots[i], r.slots[i + 1]];
+      if (c === "copy") { r.slots.forEach(x => x.preset = sl.preset || ""); setMsg("m-rot", "نُسخ الإعداد «" + (sl.preset || MAIN_PRESET) + "» لكل الشخصيات. اضغط «حفظ وإرسال للبوت».", "ok"); }
+      renderRot(); }));
     box.appendChild(d);
   });
   renderRotNow();
@@ -4476,6 +4503,18 @@ $("rot-add").addEventListener("click", () => {
 });
 $("rot-on").addEventListener("change", e => { rotObj().enabled = e.target.checked; renderRotNow(); });
 $("rot-col").addEventListener("change", e => { rotObj().collect_on_switch = e.target.checked; });
+// GUIDE-16: starred-only rotation, back to the game's order, switch now (at least 10 minutes between switches)
+$("rot-star").addEventListener("change", e => { rotObj().star_only = e.target.checked; });
+$("rot-order").addEventListener("click", () => { const r = rotObj(), chars = (chList && chList.length ? chList : (kbCache("chars", null) || [])).map(c => c.name);
+  if (!chars.length) { setMsg("m-rot", "اقرأ الشخصيات أولاً (الصفحة الرئيسية ← تبديل الشخصيات) لمعرفة ترتيب اللعبة.", "err"); return; }
+  const pos = n => { const k = chars.indexOf(n); return k < 0 ? 999 : k; }; r.slots.sort((a, b) => pos(a.name) - pos(b.name)); renderRot();
+  setMsg("m-rot", "رُتّبت الشخصيات حسب ترتيبها في اللعبة. اضغط «حفظ وإرسال للبوت».", "ok"); });
+$("rot-snow").addEventListener("click", async e => { const r = rotObj();
+  if (!r.enabled) { setMsg("m-rot", "فعّل مهمة تبديل الشخصيات أولاً.", "err"); return; }
+  const since = rotNow && rotNow.since ? new Date(rotNow.since).getTime() : 0, left = 10 - (Date.now() - since) / 60000;
+  if (since && left > 0) { setMsg("m-rot", "آخر تبديل كان قبل أقل من 10 دقائق. انتظر " + Math.ceil(left) + " دقيقة ثم حاول.", "err"); return; }
+  r.switch_now = stamp();
+  if (await sendSettings({}, "m-rot", e.currentTarget)) setMsg("m-rot", "⏭️ أُرسل «بدّل الآن»: ينتقل البوت للشخصية التالية في الجولة القادمة.", "ok"); });
 $("rot-send").addEventListener("click", async e => {
   const r = rotObj();
   r.slots = r.slots.filter(x => (x.name || "").trim());
@@ -4486,6 +4525,7 @@ $("rot-send").addEventListener("click", async e => {
     setMsg("m-rot", r.enabled ? "أُرسل. يبدّل البوت بين " + r.slots.length + " شخصية حسب المدة، ويعمل على كل واحدة بإعدادها. يظهر الوضع الحالي أعلاه بعد التحديث." : "أُرسل. مهمة تبديل الشخصيات متوقفة.", "ok");
 });
 PAGE_INFO.presets = { name: "الإعدادات المخصصة", text: "احفظ مجموعة الأنشطة الحالية (المفعّلة وخياراتها وتكرار الجولة) باسم تختاره، مثل «إعداد حشد البربر». تستطيع حفظ أكثر من إعداد واستخدامها في «مهمة تبديل الشخصيات» لكل شخصية إعدادها الخاص.\n\n• تحميل للتعديل: يضع الإعداد في قائمة الأنشطة بالأسفل لتعدّله.\n• تحديث من الأنشطة الحالية: يحفظ قائمة الأنشطة الحالية فوق هذا الإعداد.\n• القالب الجاهز «حشد البربر»: جمع الموارد بـ 4 مسيرات مع ترك مسيرة واحدة فارغة، والحشد على حصن البرابرة بها، وباقي الأنشطة متوقفة." };
+PAGE_INFO.rotg16 = { name: "ترتيب التبديل والتبديل الآن", text: "• «ضمن التبديل»: أزل العلامة لتخرج الشخصية من الدورة دون حذفها.\n• ☆/★: ميّز الشخصيات، ثم فعّل «بدّل فقط بين المميزة بنجمة».\n• ▲ ▼: غيّر ترتيب الدورة، و«↺ رجوع لترتيب اللعبة» يعيد ترتيب الشخصيات كما في صفحة الشخصيات في اللعبة.\n• المدة: «من» إلى «إلى» = مدة عشوائية بينهما لكل دور (اترك «إلى» فارغة لمدة ثابتة). اجعلها أطول للشخصية التي تسلسل البرابرة وأقصر لشخصية الجمع.\n• «الإعداد»: «الإعدادات الرئيسية» = الإعدادات العامة لكل شخصية بلا إعداد خاص، أو اختر إعداداً محفوظاً لتلعب الشخصية بإعداداتها الخاصة. «📋 نسخ الإعداد للبقية» يضع نفس الإعداد لكل الشخصيات.\n• «⏭️ بدّل الآن»: ينتقل للشخصية التالية فوراً، بشرط مرور 10 دقائق على الأقل منذ آخر تبديل." };
 PAGE_INFO.rotation = { name: "مهمة تبديل الشخصيات", text: "يعمل البوت على كل شخصية في القائمة المدة التي تحددها، ثم يبدّل إلى الشخصية التالية (من الإعدادات ← الحساب/الشخصيات، مع إعادة تحميل اللعبة)، ويستخدم مع كل شخصية الإعداد المخصص الذي اخترته لها.\n\n• يتأكد بعد كل تبديل أن الشخصية الصحيحة هي المفتوحة. إذا فشل التبديل يحاول بعد 5 دقائق، وإذا فشل مرتين يتخطى الشخصية ويرسل إشعاراً.\n• لكل شخصية مؤقتاتها الخاصة (صناديق اليوم، الحانة، الجواهر اليومية …) فلا تختلط بين الشخصيات.\n• التبديل اليدوي من الصفحة الرئيسية يكمل الدورة من الشخصية التي اخترتها.\n• «اجمع كل شيء فوراً»: بعد كل تبديل يجمع البوت مباشرة موارد المدينة والحانة المجانية وهدايا التحالف والمهام اليومية والبريد ومتجر VIP، بدل انتظار مؤقت كل نشاط.\n• اقرأ الشخصيات أولاً من الصفحة الرئيسية حتى تظهر في القائمة." };
 try { renderPresets(); renderRot(); } catch (_) {}
 $("b-now").addEventListener("click", () => { $("running").checked = true; sendSettings({ run_now: stamp() }, "m-send", $("b-now")); });
