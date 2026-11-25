@@ -166,6 +166,7 @@ svg { display: block; }
 .r-dl { font-size: 11px; opacity: .7; direction: ltr; text-align: start; } .r-dl.up { color: #5fd38a; opacity: 1; }
 .r-bar { display: block; height: 4px; border-radius: 4px; background: rgba(255,255,255,.08); overflow: hidden; margin-top: 3px; }
 .r-bar u { display: block; height: 100%; width: 0; background: linear-gradient(90deg, #e0a93b, #ffd27a); transition: width .5s; }
+.gem-today { font-size: 12px; color: #8fd0ff; font-weight: 700; margin-inline-start: 6px; }
 .ap-card .remoji { font-size: 26px; } .ap-card .r-bar u { background: linear-gradient(90deg, #3aa7ff, #7fd0ff); }
 .ap-card.low .r-bar u { background: #e05a4a; } .ap-card b { display: flex; align-items: center; gap: 4px; white-space: nowrap; }
 .ap-card b .info-btn { width: 20px; height: 20px; min-width: 0; font-size: 10px; padding: 0; line-height: 1; }
@@ -2264,7 +2265,14 @@ const OPTS = {
   tavern: [{ k: "every", type: "range", label: "يفحص كل (دقائق)", def: [8, 10], min: 5, max: 600 }],
   daily_objectives: [{ k: "every", type: "range", label: "يفحص كل (دقائق، رقم عشوائي بين الرقمين)", def: [480, 480], min: 30, max: 1440 }],
   collect_city: [{ k: "every", type: "range", label: "يجمع كل (دقائق، رقم عشوائي بين الرقمين)", def: [30, 60], min: 5, max: 600 }],
-  gather_gems: [{ k: "day_limit", type: "num", label: "حد معين لجمع الجواهر / اليوم (جوهرة)", def: 1200, min: 0, max: 100000 }],
+  gather_gems: [{ k: "day_limit", type: "num", label: "حد معين لجمع الجواهر / اليوم (جوهرة)", def: 1200, min: 0, max: 100000 },
+                // TASK-01: Smart Gem Farming (saved in control.json as the gather_gems task options = "gem_farming")
+                { k: "max_level", type: "select", label: "مستوى المناجم", def: "0", choices: [["0", "كل المستويات"], ["2", "المستوى 1–2 فقط (أقل منافسة)"]] },
+                { k: "search_radius", type: "select", label: "نطاق البحث حول المدينة", def: "2", choices: [["1", "قريب (الشاشة الحالية)"], ["2", "متوسط"], ["3", "واسع"]] },
+                { k: "avoid_combat_zones", type: "check", label: "تجنّب المناجم قرب الخطوط الحمراء والمعارك", def: true },
+                { k: "quiet_hours_only", type: "check", label: "الجمع في الساعات الهادئة فقط", def: false },
+                { k: "quiet_hours", type: "range", label: "الساعات الهادئة (UTC، من – إلى)", def: [22, 6], min: 0, max: 23 },
+                { k: "commander_preset", type: "num", label: "رقم خطة القادة (0 = الافتراضي)", def: 0, min: 0, max: 7 }],
   gather: [{ k: "kinds", type: "kinds", label: "أنواع الموارد", def: ["food", "wood", "stone", "gold"] },
            { k: "reserve", type: "num", label: "ترك مسيرات فارغة (لحشد البرابرة أو الهجوم)", def: 0, min: 0, max: 4 }],
   join_rally: [{ k: "max_troops", type: "num", label: "لا ينضم إذا كان في الحشد هذا العدد أو أكثر", def: 600000, min: 10000, max: 5000000 },
@@ -2298,7 +2306,7 @@ const OPTS = {
 };
 const STEPPER = { gather_gems: { label: "عدد ارسال القوات", max: 5 } };
 const INFO = {
-  gather_gems: "يبحث البوت عن مناجم الجواهر حول المدينة ويرسل إليها العدد الذي تختاره من الجيوش (من 1 إلى 5). يحسب الجواهر المجموعة في اليوم (بتوقيت غرينتش): من الجيوش المرسلة (المنجم مستوى 1 = 10، مستوى 2 = 20 لكل إرسال) ومن زيادة رصيد الجواهر، ويأخذ الأكبر. عندما يصل المجموع إلى «الحد اليومي» (1200 جوهرة افتراضياً) يتوقف عن إرسال الجيوش للجواهر حتى اليوم الجديد 00:00 غرينتش (04:00 بتوقيت عُمان)، وتذهب الجيوش الفارغة لجمع الموارد العادية. اكتب 0 لإلغاء الحد.",
+  gather_gems: "يبحث البوت عن مناجم الجواهر حول المدينة ويرسل إليها العدد الذي تختاره من الجيوش (من 1 إلى 5). يحسب الجواهر المجموعة في اليوم (بتوقيت غرينتش): من الجيوش المرسلة (المنجم مستوى 1 = 10، مستوى 2 = 20 لكل إرسال) ومن زيادة رصيد الجواهر، ويأخذ الأكبر. عندما يصل المجموع إلى «الحد اليومي» (1200 جوهرة افتراضياً) يتوقف عن إرسال الجيوش للجواهر حتى اليوم الجديد 00:00 غرينتش (04:00 بتوقيت عُمان)، وتذهب الجيوش الفارغة لجمع الموارد العادية. اكتب 0 لإلغاء الحد.\n\n💎 الجمع الذكي: «مستوى المناجم» يحصر الجمع في مناجم المستوى 1–2 (أقل منافسة وأقل خطراً)، «نطاق البحث» يحدد كم يتحرك البوت حول المدينة، «تجنّب الخطوط الحمراء» يتخطى أي منجم قربه مسيرات هجوم أو معركة، و«الساعات الهادئة فقط» يجعل الجمع في ساعات UTC التي تختارها. البوت يأخذ استراحات عشوائية قصيرة بين الإرسالات، ويظهر عدد جواهر اليوم بجانب اسم المهمة. «خطة القادة» ستُستعمل مع ميزة خطط القادة للمهام؛ حتى ذلك الحين يُرسل الجيش الافتراضي.",
   gather: "يرسل البوت كل الجيوش الفارغة تلقائياً لجمع الموارد التي تختارها حتى يصل إلى 5/5. لا يغيّر وجهة أي جيش موجود في الخارج.",
   collect_city: "يجمع فقاعات الموارد من المزارع والمناشر والمحاجر ومناجم الذهب داخل المدينة كل فترة عشوائية بين الرقمين.",
   train: "إذا تم تفعيله يدرّب البوت تلقائياً في كل مبنى عسكري فارغ (الثكنات والرماية والإسطبل والحصار) بالمستوى الذي تختاره. لا يضغط INSTANT أبداً. إذا طلبت اللعبة موارد ناقصة: مع علامة ✅ يستخدم الموارد من الحقيبة، وبدونها يلغي التدريب.",
@@ -3132,6 +3140,11 @@ function uxResCards(r, c) {
 function renderRes(r, city) {
   ["food", "wood", "stone", "gold", "gems"].forEach(k => { const el = $("r-" + k); if (el) el.textContent = r ? fmtAmount(r[k]) : "—"; });
   try { uxResCards(r, city || (lastStatus || {}).city); } catch (e) { console.warn("res cards", e); }
+  try {   // TASK-01: today's gems next to the gem task name
+    const c = city || (lastStatus || {}).city || {}, lb = document.querySelector('label[for="en-gather_gems"]');
+    if (lb) { let b = lb.querySelector(".gem-today"); if (!b) { b = document.createElement("b"); b.className = "gem-today"; lb.insertBefore(b, lb.firstChild.nextSibling); }
+      const n = +c.gems_today || +c.gems_est || 0; b.textContent = " 💎 اليوم: " + n.toLocaleString("en-US"); }
+  } catch (_) {}
   const at = $("res-at"); if (at) at.textContent = r && r.read_at ? "آخر قراءة " + r.read_at : "لم يقرأ البوت الموارد بعد";
 }
 
