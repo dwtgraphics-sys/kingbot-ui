@@ -258,6 +258,9 @@ body.nofx .bg canvas, body.nofx .fog, body.nofx .bg-glow { display: none; }
 .gn-table th { opacity: .75; font-weight: 600; }
 /* EARN-01: every column stays visible (RTL too): compact numbers, sticky day column, tighter cells on phones */
 .gn-table td[data-full] { cursor: pointer; }
+.gn-rng { margin-inline-start: 6px; }
+#gn-res, #gn-rng { display: flex; flex-wrap: wrap; gap: 4px; max-width: 100%; } #gn-res button, #gn-rng button { white-space: nowrap; }
+@media (max-width: 560px) { #gn-res button, #gn-rng button { flex: 1 1 auto; padding: 6px 8px; font-size: 12px; min-height: 0; height: auto; } } .gn-leg { display: flex; flex-wrap: wrap; gap: 10px; font-size: 12px; margin-top: 4px; } .gn-leg i { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-inline-end: 4px; vertical-align: -1px; }
 .gn-table th:first-child, .gn-table td:first-child { position: sticky; inset-inline-start: 0; background: rgba(16,20,32,.96); z-index: 1; }
 @media (max-width: 560px) { .gn-table { font-size: 12px; } .gn-table th, .gn-table td { padding: 6px 5px; } .gn-dl { display: none; } }
 
@@ -1698,8 +1701,9 @@ window.addEventListener("error", function(e) {
         <div class="panel-head">
           <h2 id="gn-h">مكاسبي <button type="button" class="info-btn" data-info="gains" aria-label="شرح">❗</button></h2>
           <div class="seg" role="group" aria-label="المورد" id="gn-res">
-            <button type="button" class="on" data-r="food">طعام</button><button type="button" data-r="wood">خشب</button><button type="button" data-r="stone">حجر</button><button type="button" data-r="gold">ذهب</button><button type="button" data-r="gems">جواهر</button>
+            <button type="button" data-r="all">📊 الكل</button><button type="button" class="on" data-r="food">🌾 طعام</button><button type="button" data-r="wood">🪵 خشب</button><button type="button" data-r="stone">🪨 حجر</button><button type="button" data-r="gold">🪙 ذهب</button><button type="button" data-r="gems">💎 جواهر</button>
           </div>
+          <div class="seg gn-rng" role="group" aria-label="الفترة" id="gn-rng"><button type="button" data-d="1">اليوم</button><button type="button" data-d="7">7 أيام</button><button type="button" class="on" data-d="30">30 يوم</button></div>
         </div>
         <div class="gn-tot" id="gn-tot"><span>طعام (30 يوم): <b>315.8M</b></span><span>خشب (30 يوم): <b>23.7M</b></span><span>حجر (30 يوم): <b>17.7M</b></span><span>ذهب (30 يوم): <b>12.0M</b></span><span>جواهر (30 يوم): <b>384</b></span></div>
         <div class="gn-chart" id="gn-chart"><svg viewBox="0 0 600 220" role="img" aria-label="مكاسب طعام اليومية"><rect class="bar" x="53.8" y="197.3" width="40.0" height="2.7" rx="2"><title>2026-11-19: 3,000,000</title></rect><text x="73.8" y="214" text-anchor="middle">11-19</text><rect class="bar" x="149.5" y="14.0" width="40.0" height="186.0" rx="2"><title>2026-11-20: 204,700,000</title></rect><text x="169.5" y="214" text-anchor="middle">11-20</text><rect class="bar" x="245.2" y="109.7" width="40.0" height="90.3" rx="2"><title>2026-11-21: 99,400,000</title></rect><text x="265.2" y="214" text-anchor="middle">11-21</text><rect class="bar" x="340.8" y="198.0" width="40.0" height="2.0" rx="2"><title>2026-11-22: 2,200,000</title></rect><text x="360.8" y="214" text-anchor="middle">11-22</text><rect class="bar" x="436.5" y="194.6" width="40.0" height="5.4" rx="2"><title>2026-11-23: 5,900,000</title></rect><text x="456.5" y="214" text-anchor="middle">11-23</text><rect class="bar" x="532.2" y="198.0" width="40.0" height="2.0" rx="2"><title>2026-11-24: 600,000</title></rect><text x="552.2" y="214" text-anchor="middle">11-24</text><text x="2" y="12">204.7M</text></svg></div>
@@ -2248,6 +2252,8 @@ if (["home", "acts", "sched", "log", "gains", "about", "subs", "contact"].includ
 
 /* ---------- v105: مكاسبي + الإشعارات ---------- */
 const GN_NAMES = { food: "طعام", wood: "خشب", stone: "حجر", gold: "ذهب", gems: "جواهر" };
+const GN_ICO = { food: "🌾", wood: "🪵", stone: "🪨", gold: "🪙", gems: "💎" }, GN_COL = { food: "#e0a93b", wood: "#b07a45", stone: "#9aa3ad", gold: "#f3d35a", gems: "#e2446c" };   // EARN-02
+let gnRange = 30;
 let gnHist = [], gnRes = "food", ntAll = [], ntKind = "", ntSeen = 0;
 try { ntSeen = +(localStorage.getItem("kb_nt_seen") || 0); } catch (_) {}
 const fmtN = n => { n = +n || 0; return n >= 1e9 ? (n / 1e9).toFixed(2) + "B" : n >= 1e6 ? (n / 1e6).toFixed(1) + "M" : n >= 1e3 ? (n / 1e3).toFixed(1) + "K" : String(Math.round(n)); };
@@ -2259,22 +2265,36 @@ document.addEventListener("click", e => { const td = e.target.closest && e.targe
 function renderGains() {
   const tot = document.getElementById("gn-tot"), ch = document.getElementById("gn-chart"), tb = document.getElementById("gn-table");
   if (!tot) return;
-  const h = gnHist.slice(-30);
+  const h = gnHist.slice(-gnRange);
   if (!h.length) { tot.innerHTML = ""; tb.innerHTML = ""; return; }
-  tot.innerHTML = Object.keys(GN_NAMES).map(k => "<span>" + GN_NAMES[k] + " (30 يوم): <b>" + fmtN(h.reduce((a, d) => a + (+d[k] || 0), 0)) + "</b></span>").join("");
-  const W = 600, H = 200, pad = 26, max = Math.max(1, ...h.map(d => +d[gnRes] || 0)), bw = (W - pad) / h.length;
-  let svg = '<svg viewBox="0 0 ' + W + ' ' + (H + 20) + '" role="img" aria-label="مكاسب ' + GN_NAMES[gnRes] + ' اليومية">';
-  h.forEach((d, i) => {
+  const rl = gnRange === 1 ? "اليوم" : gnRange + " يوم";
+  tot.innerHTML = Object.keys(GN_NAMES).map(k => "<span>" + GN_ICO[k] + " " + GN_NAMES[k] + " (" + rl + "): <b>" + fmtN(h.reduce((a, d) => a + (+d[k] || 0), 0)) + "</b></span>").join("");
+  const W = 600, H = 200, pad = 26;
+  if (gnRes === "all") {   // EARN-02: all four resources side by side per day (gems have their own tab - too small to compare)
+    const KS = ["food", "wood", "stone", "gold"], mx = Math.max(1, ...h.flatMap(d => KS.map(k => +d[k] || 0))), bw = (W - pad) / h.length, sw = Math.min(bw * .8, 48) / 4;
+    let sv = '<svg viewBox="0 0 ' + W + ' ' + (H + 20) + '" role="img" aria-label="كل الموارد">';
+    h.forEach((d, i) => { const x0 = pad + i * bw + (bw - sw * 4) / 2;
+      KS.forEach((k, j) => { const v = +d[k] || 0, bh = Math.max(v ? 2 : 0, (H - 14) * v / mx); sv += '<rect x="' + (x0 + j * sw).toFixed(1) + '" y="' + (H - bh).toFixed(1) + '" width="' + (sw * .9).toFixed(1) + '" height="' + bh.toFixed(1) + '" fill="' + GN_COL[k] + '" rx="1"><title>' + d.day + ' ' + GN_NAMES[k] + ': ' + v.toLocaleString() + '</title></rect>'; });
+      if (h.length <= 10 || i % Math.ceil(h.length / 10) === 0) sv += '<text x="' + (pad + i * bw + bw / 2).toFixed(1) + '" y="' + (H + 14) + '" text-anchor="middle">' + d.day.slice(5) + '</text>'; });
+    sv += '<text x="2" y="12">' + fmtN(mx) + '</text></svg><div class="gn-leg">' + KS.map(k => '<span><i style="background:' + GN_COL[k] + '"></i>' + GN_ICO[k] + " " + GN_NAMES[k] + "</span>").join("") + "</div>";
+    ch.innerHTML = sv;
+  }
+  const max = Math.max(1, ...h.map(d => +d[gnRes] || 0)), bw = (W - pad) / h.length;
+  let svg = '<svg viewBox="0 0 ' + W + ' ' + (H + 20) + '" role="img" aria-label="مكاسب ' + (GN_NAMES[gnRes] || "") + ' اليومية">';
+  if (gnRes !== "all") h.forEach((d, i) => {
     const v = +d[gnRes] || 0, bh = Math.max(v ? 2 : 0, (H - 14) * v / max), x = pad + i * bw;
     svg += '<rect class="bar" x="' + (x + (bw - Math.min(bw * .7, 40)) / 2).toFixed(1) + '" y="' + (H - bh).toFixed(1) + '" width="' + Math.min(bw * .7, 40).toFixed(1) + '" height="' + bh.toFixed(1) + '" rx="2"><title>' + d.day + ': ' + v.toLocaleString() + '</title></rect>';
     if (h.length <= 10 || i % Math.ceil(h.length / 10) === 0) svg += '<text x="' + (x + bw / 2).toFixed(1) + '" y="' + (H + 14) + '" text-anchor="middle">' + d.day.slice(5) + '</text>';
   });
   svg += '<text x="2" y="12">' + fmtN(max) + '</text></svg>';
-  ch.innerHTML = svg;
-  tb.innerHTML = "<tr><th>اليوم</th>" + Object.values(GN_NAMES).map(n => "<th>" + n + "</th>").join("") + "<th>برابرة</th><th>حصون</th></tr>" +
+  if (gnRes !== "all") ch.innerHTML = svg;
+  tb.innerHTML = "<tr><th>اليوم</th>" + Object.keys(GN_NAMES).map(k => "<th>" + GN_ICO[k] + " " + GN_NAMES[k] + "</th>").join("") + "<th>برابرة</th><th>حصون</th></tr>" +
     h.slice().reverse().map(d => "<tr><td><span class=\"gn-dl\">" + d.day.slice(0, 5) + "</span>" + d.day.slice(5) + "</td>" + Object.keys(GN_NAMES).map(k => '<td title="' + (+d[k] || 0).toLocaleString("en-US") + '" data-full="' + (+d[k] || 0).toLocaleString("en-US") + '">' + gnShort(d[k]) + "</td>").join("") +
       "<td>" + (+d.barb || 0) + "</td><td>" + ((+d.rally || 0) + (+d.rally_join || 0)) + "</td></tr>").join("");
 }
+document.querySelectorAll("#gn-rng button").forEach(b => b.addEventListener("click", () => {   // EARN-02: Today / 7 / 30 days
+  gnRange = +b.dataset.d; document.querySelectorAll("#gn-rng button").forEach(x => x.classList.toggle("on", x === b)); renderGains();
+}));
 document.querySelectorAll("#gn-res button").forEach(b => b.addEventListener("click", () => {
   gnRes = b.dataset.r; document.querySelectorAll("#gn-res button").forEach(x => x.classList.toggle("on", x === b)); renderGains();
 }));
@@ -2336,7 +2356,7 @@ const PAGE_INFO = {
   uxq: { name: "في المدينة", text: "بطاقات الطوابير النشطة في مدينتك كما قرأها البوت من «نظرة عامة على الطوابير»: تدريب المشاة والفرسان والرماة والحصار (مع المستوى المختار في إعدادات الطوابير)، إنتاج المواد، والعلاج. العدّاد ينقص كل ثانية، والشريط يقارن الوقت المتبقي بأطول وقت رآه البوت لنفس الطابور (اللعبة لا تعرض المدة الكاملة). يقرأ البوت الطوابير كل 10 دقائق تقريباً وبعد تبديل الشخصية." },
   ref: { name: "الإحالات", text: "رابط الإحالة فيه اسم حسابك في اللوحة. انسخه وأرسله لأصدقائك؛ عند تسجيلهم من الرابط يُسجَّل أنهم جاؤوا عن طريقك. المكافآت يحددها المشرف." },
   menu: { name: "القائمة", text: "القائمة الرئيسية: الدليل، الدعم، الإحالات، حسابي، ثم «أدوات مجانية» (تفتح بالضغط) وروابط المجتمع (ديسكورد، واتساب، تيليجرام، يوتيوب) — الروابط تُقرأ من إعدادات kingbot-syn فيتغيّر الرابط بدون تحديث الصفحة. تسجيل الخروج في الأسفل." },
-  gains: { name: "مكاسبي", text: "يسجل البوت كل يوم (بتوقيت غرينتش) ما تكسبه من طعام وخشب وحجر وذهب وجواهر لآخر 30 يوماً. يقرأ شريط الموارد بعد كل جولة ويحسب الزيادات فقط (الجمع من الخريطة، جمع فقاعات المدينة، المكافآت)، أما الصرف على التدريب والبناء فلا يُخصم. الجواهر تُحسب من الزيادة في رصيد الجواهر خلال اليوم. اختر المورد لعرض الرسم البياني، والجدول يعرض كل الموارد مع عدد البرابرة والحصون. الأرقام في الجدول مختصرة (3.3M = 3,300,000 و 130K = 130,000) — مرّر المؤشر أو اضغط على الرقم لرؤيته كاملاً، وعمود اليوم ثابت عند التمرير على الجوال." },
+  gains: { name: "مكاسبي", text: "يسجل البوت كل يوم (بتوقيت غرينتش) ما تكسبه من طعام وخشب وحجر وذهب وجواهر لآخر 30 يوماً. يقرأ شريط الموارد بعد كل جولة ويحسب الزيادات فقط (الجمع من الخريطة، جمع فقاعات المدينة، المكافآت)، أما الصرف على التدريب والبناء فلا يُخصم. الجواهر تُحسب من الزيادة في رصيد الجواهر خلال اليوم. اختر المورد لعرض الرسم البياني، والجدول يعرض كل الموارد مع عدد البرابرة والحصون. الأرقام في الجدول مختصرة (3.3M = 3,300,000 و 130K = 130,000) — مرّر المؤشر أو اضغط على الرقم لرؤيته كاملاً، وعمود اليوم ثابت عند التمرير على الجوال. «الكل» يعرض الطعام والخشب والحجر والذهب جنباً إلى جنب لكل يوم (الجواهر لها تبويب خاص لأن أرقامها صغيرة)، وأزرار «اليوم / 7 أيام / 30 يوم» تغيّر الفترة في البطاقات والرسم والجدول معاً." },
   notes: { name: "الإشعارات", text: "تصل هنا إشعارات البوت مباشرة: هجوم على المدينة أو على جيوشك، رسائل البريد الخاصة، وملخص نهاية اليوم عند 00:00 بتوقيت غرينتش (مجموع الموارد والجواهر وعدد البرابرة والحصون). تصل نفس الإشعارات إلى بوت تيليجرام. تحتها سجل الأحداث الكامل. ما دامت اللوحة مفتوحة يظهر كل إشعار جديد كرسالة منبثقة، ومع «تنبيه بصوت واهتزاز» يصدر صوتاً عند الهجوم. تنبيهات المتصفح خارج اللوحة لا يسمح بها موقع claude.ai، لذلك تصل الإشعارات فوراً إلى تيليجرام @CrownKingsBot." }
 };
 document.querySelectorAll('.info-btn[data-info]').forEach(b => b.addEventListener("click", () => showInfo({ name: PAGE_INFO[b.dataset.info].name, hint: PAGE_INFO[b.dataset.info].text })));
