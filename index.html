@@ -965,6 +965,10 @@ main, .view, .panel, #top, .kbar { min-width: 0; max-width: 100%; box-sizing: bo
 .mc-pr{display:flex;gap:8px;align-items:flex-start;margin-top:8px;font-size:13px}.mc-pr ol{margin:0;padding-inline-start:18px;display:grid;gap:4px}.mc-pr li button{margin-inline-start:4px;padding:0 6px;border-radius:6px;border:1px solid #ffffff22;background:#ffffff0a;color:inherit;cursor:pointer}
 .ref-box{display:flex;gap:8px;margin:10px 0}.ref-box input{flex:1;min-width:0;padding:10px 12px;border-radius:12px;border:1px solid #ffffff22;background:#0005;color:inherit;font:inherit}
 /* TOOLS-03: speedup calculator */
+.spd-crumb{font-size:12px;opacity:.75;margin:0 4px 8px}.spd-crumb a{color:inherit}.spd-tabs{display:flex;margin:10px 0}.spd-bag-h{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:4px}
+.spd-form{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px}.spd-form label{display:flex;flex-direction:column;gap:4px;font-size:12.5px}.spd-form input,.spd-form select{padding:8px;border-radius:10px;border:1px solid #ffffff22;background:#0005;color:inherit;font:inherit;min-width:0}
+.spd-out{margin-top:10px;display:grid;gap:6px}.spd-out div{display:flex;justify-content:space-between;gap:8px;padding:8px 11px;border-radius:10px;background:#ffffff0a;font-size:13px}.spd-out .ok{background:#2ecc711f;color:#bff5d3}.spd-out .no{background:#e74c3c22;color:#ffc2b8}
+.spd-grid label span{display:inline-flex;align-items:center;justify-content:center;gap:3px}.spd-grid label span::before{content:"⏱";font-size:10px;opacity:.7}
 .spd-tot{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px;margin:10px 0}.spd-tot div{padding:9px 11px;border-radius:12px;background:#ffffff0a;border:1px solid #ffffff14;min-width:0}.spd-tot div.all{grid-column:1/-1;background:rgba(242,140,40,.14);border-color:#f28c2866}.spd-tot small{display:block;font-size:11px;opacity:.7}.spd-tot b{font-size:14px}
 .spd-cats{display:grid;gap:10px}.spd-cat{border-radius:14px;border:1px solid #ffffff14;background:#ffffff06;overflow:hidden}.spd-cat>button{width:100%;display:flex;justify-content:space-between;align-items:center;gap:8px;padding:10px 12px;border:0;background:none;color:inherit;font:inherit;font-weight:700;cursor:pointer}.spd-cat>button em{font-style:normal;font-weight:400;opacity:.75;font-size:12px}
 .spd-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(84px,1fr));gap:6px;padding:0 10px 10px}.spd-cat.closed .spd-grid{display:none}.spd-grid label{display:flex;flex-direction:column;gap:3px;padding:6px;border-radius:10px;background:#0003;font-size:11.5px;text-align:center}.spd-grid input{width:100%;min-width:0;padding:5px;border-radius:8px;border:1px solid #ffffff22;background:#0005;color:inherit;font:inherit;text-align:center}
@@ -1914,12 +1918,29 @@ window.addEventListener("error", function(e) {
       </section>
     </div>
     <div class="view tool-view" id="v-tool-speed">
+      <nav class="spd-crumb" aria-label="مسار الصفحة"><a href="#" data-go="v-home">الرئيسية</a> / <span>حاسبة التسريعات في Rise of Kingdoms</span></nav>
       <section class="panel"><div class="panel-head"><h2>⏱️ حاسبة التسريعات</h2><span class="slug">أداة مجانية</span></div>
         <p class="gd-p">احسب مجموع تسريعاتك (عامة، تدريب، بناء، بحث، علاج) بالأيام والساعات. <button type="button" class="info-btn" data-info="speedcalc" aria-label="شرح">❗</button></p>
-        <!-- TOOLS-03: speedup calculator -->
-        <div class="spd-tot" id="spd-tot"></div>
-        <div class="spd-cats" id="spd-cats"></div>
-        <div class="spd-act"><button type="button" class="btn" id="spd-clear">🗑️ مسح الكل</button></div>
+        <p class="gd-p spd-src">أوقات التدريب الأساسية وقوة الجنود من بيانات اللعبة؛ تحقق دائماً من الرقم النهائي في نافذة اللعبة.</p>
+        <!-- TOOLS-03B: 3 tabs -->
+        <div class="seg spd-tabs" role="tablist" aria-label="وضع الحاسبة"><button type="button" class="on" data-spd="bag" role="tab" aria-selected="true">⏱️ التسريعات</button><button type="button" data-spd="train" role="tab" aria-selected="false">⚔️ التدريب</button><button type="button" data-spd="heal" role="tab" aria-selected="false">➕ العلاج</button></div>
+        <div class="spd-pane" data-pane="bag">
+          <div class="spd-bag-h"><b>🎒 التسريعات في حقيبتك</b><button type="button" class="btn" id="spd-clear">🗑️ مسح الحقيبة</button></div>
+          <!-- TOOLS-03: speedup calculator -->
+          <div class="spd-tot" id="spd-tot"></div>
+          <div class="spd-cats" id="spd-cats"></div>
+        </div>
+        <div class="spd-pane" data-pane="train" hidden>
+          <div class="spd-form"><label>المستوى <select id="spt-tier"><option value="1">T1</option><option value="2">T2</option><option value="3">T3</option><option value="4" selected>T4</option><option value="5">T5</option></select></label>
+            <label>عدد الجنود <input type="number" id="spt-n" min="0" placeholder="10000"></label>
+            <label>سرعة التدريب % <input type="number" id="spt-b" min="0" max="500" placeholder="0"></label></div>
+          <div class="spd-out" id="spt-out"></div>
+        </div>
+        <div class="spd-pane" data-pane="heal" hidden>
+          <div class="spd-form"><label>وقت العلاج كما في المستشفى — أيام <input type="number" id="sph-d" min="0" placeholder="0"></label>
+            <label>ساعات <input type="number" id="sph-h" min="0" max="23" placeholder="0"></label><label>دقائق <input type="number" id="sph-m" min="0" max="59" placeholder="0"></label></div>
+          <div class="spd-out" id="sph-out"></div>
+        </div>
       </section>
     </div>
     <div class="view tool-view" id="v-tool-equip">
@@ -2463,7 +2484,7 @@ const PAGE_INFO = {
   cpresets: { name: "قادة كل مهمة", text: "اختر قائداً أساسياً وثانوياً لكل مهمة (جمع الطعام/الخشب/الحجر/الذهب، البرابرة، الحشود، الحراس). عند تجهيز المسيرة يبدّل البوت القادة في نافذة الجيش الجديد إلى من اخترته (يبحث عن الاسم في قائمة القادة). إذا لم تختر قائداً تبقى التشكيلة المحفوظة في اللعبة كما هي. إذا كان القائد في مسيرة أخرى يكمل البوت بالتشكيلة المحفوظة. القادة الظاهرون أولاً هم الذين قرأهم البوت من حسابك." },
   smartsched: { name: "جلسات عمل واستراحات", text: "يقسّم البوت وقت عمله اليومي إلى جلسات (مثلاً 90 دقيقة) تليها استراحات (مثلاً 20 دقيقة) مثل اللاعب الحقيقي، ويتوقف لبقية اليوم عند بلوغ «حد الساعات اليومي» (يُحسب وقت تنفيذ المهام فقط، ويبدأ العد من جديد 00:00 بتوقيت غرينتش). «العشوائية ±%» تغيّر أطوال الجلسات والاستراحات وفترات الانتظار قليلاً، وتُحرّك كل نقرة ±5 بكسل حتى لا تتكرر بنفس المكان. يعمل داخل ساعات «الجدولة الذكية» إن كانت مفعّلة. الشريط يعرض الساعات المستخدمة اليوم والحالة: يعمل / استراحة / انتهى حد اليوم." },
   mrcards: { name: "الجيوش المرسلة", text: "العدّاد يعرض عدد الجيوش خارج المدينة من الحد الأقصى (مثل 2/5). كل بطاقة: صورة القائد الأساسي والثانوي واسمهما (تُقرأ من نافذة الجيش في اللعبة، وإن لم تظهر تُؤخذ من «قادة كل مهمة»)، الإحداثيات ونوع المهمة [جمع / البرابرة / حشد]، عدد الجنود، الحالة (يجمع، ذاهب للهجوم، في حشد، عائد…) وشريط الصحة عندما تظهر النسبة. تتحدث مع «تحديث المسيرات» في المساعد أو تلقائياً." },
-  speedcalc: { name: "حاسبة التسريعات", text: "اكتب عدد كل فئة تسريع في حقيبتك (1د، 5د … 7 أيام) تحت كل نوع. المجموع يظهر فوراً بالأيام والساعات والدقائق لكل نوع، ومع «العامة» (لأن التسريع العام يُستعمل للتدريب والبناء والبحث والعلاج). الأرقام تُحفظ في هذا المتصفح فقط؛ «مسح الكل» يصفّرها." },
+  speedcalc: { name: "حاسبة التسريعات", text: "ثلاثة أوضاع: «التسريعات» لعدّ حقيبتك، «التدريب» لحساب وقت تدريب عدد من الجنود حسب المستوى ونسبة سرعة التدريب (مع القوة المضافة وهل تكفي تسريعاتك)، و«العلاج» لمقارنة وقت المستشفى بتسريعات العلاج والعامة. اكتب عدد كل فئة تسريع في حقيبتك (1د، 5د … 7 أيام) تحت كل نوع. المجموع يظهر فوراً بالأيام والساعات والدقائق لكل نوع، ومع «العامة» (لأن التسريع العام يُستعمل للتدريب والبناء والبحث والعلاج). الأرقام تُحفظ في هذا المتصفح فقط؛ «مسح الكل» يصفّرها." },
   captcha: { name: "نافذة التحقق (كابتشا)", text: "أحياناً تطلب اللعبة إثبات أنك لست برنامجاً. عندما يكتشفها البوت يتوقف فوراً عن أي نقرة، يرسل صورة الشاشة، تتحول الحالة إلى «نافذة تحقق» ويصلك تنبيه صوتي هنا وعلى تيليجرام. حلّها يدوياً على السيرفر ثم اضغط «تم الحل — استئناف»: يتأكد البوت أن النافذة اختفت قبل أن يكمل، وإن كانت ما زالت ظاهرة يبقى متوقفاً ويخبرك. البوت لا يحاول حل التحقق بنفسه." },
   march: { name: "أولوية المسيرات والمهلة", text: "«أقصى عدد جيوش في نفس الوقت»: البوت لا يرسل جيش جمع جديداً إذا كان هذا العدد في الخارج (فارغ أو 0 = حسب خانات اللعبة). «مهلة البحث»: إذا علِق البحث في الخريطة أطول من هذه الثواني (الافتراضي 15) يلغيه ويرجع للمدينة بدل أن يتجمد. «الترتيب»: أي نوع مسيرات يُنفَّذ أولاً في كل جولة — الحشود، الجمع، البرابرة — بالأسهم ▲▼." },
   ref: { name: "الإحالات", text: "رابط الإحالة فيه اسم حسابك في اللوحة. انسخه وأرسله لأصدقائك؛ عند تسجيلهم من الرابط يُسجَّل أنهم جاؤوا عن طريقك. المكافآت يحددها المشرف." },
@@ -3030,6 +3051,28 @@ document.addEventListener("click", async e => { const t = e.target; if (!t || !t
     const ul = document.createElement("ul"); g.items.forEach(it => { const li = document.createElement("li"); const b = document.createElement("b"); b.textContent = it.name; li.appendChild(b);
       if (it.hint) { const h = document.createElement("small"); h.textContent = it.hint; li.appendChild(h); } ul.appendChild(li); }); d.append(sm, ul); box.appendChild(d); }); };
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", f); else setTimeout(f, 0); })();
+// TOOLS-03B: speedup calculator tabs (Speedups / Training / Healing) with time, power and sufficiency
+(function spdTabs() {
+  const T_SEC = { 1: 15, 2: 30, 3: 60, 4: 80, 5: 120 }, T_POW = { 1: 1, 2: 2, 3: 3, 4: 4, 5: 10 };
+  const fmt = m => { m = Math.max(0, Math.round(m)); const d = Math.floor(m / 1440), h = Math.floor(m % 1440 / 60), mm = m % 60; return (d ? d + " يوم " : "") + (d || h ? h + " س " : "") + mm + " د"; };
+  const row = (box, a, b, cls) => { const d = document.createElement("div"); if (cls) d.className = cls; const x = document.createElement("span"); x.textContent = a; const y = document.createElement("b"); y.textContent = b; d.append(x, y); box.appendChild(d); };
+  const enough = (box, need, have, label) => row(box, have >= need ? "✅ تسريعاتك تكفي (" + label + ")" : "❌ ينقصك (" + label + ")", have >= need ? "يتبقى " + fmt(have - need) : fmt(need - have), have >= need ? "ok" : "no");
+  function train() { const box = document.getElementById("spt-out"); if (!box) return; box.innerHTML = ""; const tier = +document.getElementById("spt-tier").value || 4;
+    const n = Math.max(0, +document.getElementById("spt-n").value || 0), b = Math.max(0, +document.getElementById("spt-b").value || 0); if (!n) { row(box, "اكتب عدد الجنود", "—"); return; }
+    const need = n * T_SEC[tier] / (1 + b / 100) / 60, t = window.spdTotals ? window.spdTotals() : { universal: 0, training: 0 };
+    row(box, "وقت التدريب", fmt(need)); row(box, "القوة المضافة", (n * T_POW[tier]).toLocaleString("en-US"));
+    enough(box, need, t.training + t.universal, "تدريب + عامة"); }
+  function heal() { const box = document.getElementById("sph-out"); if (!box) return; box.innerHTML = "";
+    const need = (+document.getElementById("sph-d").value || 0) * 1440 + (+document.getElementById("sph-h").value || 0) * 60 + (+document.getElementById("sph-m").value || 0);
+    if (!need) { row(box, "اكتب وقت العلاج الظاهر في المستشفى", "—"); return; } const t = window.spdTotals ? window.spdTotals() : { universal: 0, healing: 0 };
+    row(box, "وقت العلاج", fmt(need)); enough(box, need, t.healing, "علاج فقط"); enough(box, need, t.healing + t.universal, "علاج + عامة"); }
+  document.addEventListener("click", e => { const b = e.target.closest && e.target.closest(".spd-tabs button[data-spd]"); if (!b) return;
+    document.querySelectorAll(".spd-tabs button").forEach(x => { const on = x === b; x.classList.toggle("on", on); x.setAttribute("aria-selected", String(on)); });
+    document.querySelectorAll("#v-tool-speed .spd-pane").forEach(p => p.hidden = p.dataset.pane !== b.dataset.spd); train(); heal(); });
+  document.addEventListener("input", e => { const id = e.target && e.target.id || ""; if (/^spt-/.test(id)) train(); if (/^sph-/.test(id)) heal(); });
+  document.addEventListener("change", e => { if (e.target && e.target.id === "spt-tier") train(); });
+  setTimeout(() => { try { train(); heal(); } catch (_) {} }, 0);
+})();
 // TASK-08: smart_schedule {enabled, daily_active_hours_limit, work_session_minutes, break_duration_minutes, jitter_percent}
 const SSX = { "ssx-lim": ["daily_active_hours_limit", 1, 24, 14], "ssx-work": ["work_session_minutes", 10, 600, 90], "ssx-brk": ["break_duration_minutes", 1, 240, 20], "ssx-jit": ["jitter_percent", 0, 50, 15] };
 function ssxGet() { if (typeof settings !== "object" || !settings) return {}; const c = settings.smart_schedule = (settings.smart_schedule && typeof settings.smart_schedule === "object") ? settings.smart_schedule : {};
