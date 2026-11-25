@@ -921,6 +921,7 @@ main, .view, .panel, #top, .kbar { min-width: 0; max-width: 100%; box-sizing: bo
 .ast-in .ast-send:disabled{opacity:.5;cursor:default;box-shadow:none}.ast-in input{min-height:40px}
 .ast-m{font-size:13.5px;line-height:1.55;overflow-wrap:anywhere}.ast-m.me{border-end-start-radius:4px}.ast-m.bot{border-end-end-radius:4px}
 .ast-srv{padding:8px 12px 10px;border-top:1px solid #ffffff14;font-size:12px}.ast-srv>b{display:flex;align-items:center;gap:6px;margin-bottom:6px;opacity:.85}.ast-srv>div{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}.ast-srv button[type=button]:not(.info-btn){padding:8px 6px;border-radius:10px;border:1px solid #ffffff22;background:#ffffff0a;color:inherit;font:inherit;font-size:12px;cursor:pointer;min-width:0}.ast-srv button.busy{opacity:.7;cursor:wait}.ast-srv button.ok{border-color:#2ecc71}#ast-pause.res{border-color:#2ecc7188;background:#2ecc711f}
+.cap-modal .ibox{border:2px solid #e74c3c;animation:capflash 1s ease-in-out infinite alternate;max-width:560px}.cap-img{margin:10px 0;min-height:120px;display:grid;place-items:center;border-radius:12px;background:#0006;overflow:hidden;font-size:13px}.cap-img img{max-width:100%;display:block}.cap-btns{display:flex;flex-wrap:wrap;gap:8px}.cap-p{font-size:13.5px;line-height:1.6}@keyframes capflash{from{box-shadow:0 0 0 0 #e74c3c00}to{box-shadow:0 0 28px 4px #e74c3caa}}
 .ast-disc{margin:0;padding:0 12px 9px;font-size:10.5px;line-height:1.4;opacity:.6;text-align:center}
 /* ---------- roadmap v18 GUIDE: guide page ---------- */
 #v-guide,.gd{min-width:0;max-width:100%}.gd{overflow:hidden}.gd-steps li>div,.gd-points li,.gd-card{min-width:0;overflow-wrap:anywhere}
@@ -2457,6 +2458,7 @@ const PAGE_INFO = {
   smartsched: { name: "جلسات عمل واستراحات", text: "يقسّم البوت وقت عمله اليومي إلى جلسات (مثلاً 90 دقيقة) تليها استراحات (مثلاً 20 دقيقة) مثل اللاعب الحقيقي، ويتوقف لبقية اليوم عند بلوغ «حد الساعات اليومي» (يُحسب وقت تنفيذ المهام فقط، ويبدأ العد من جديد 00:00 بتوقيت غرينتش). «العشوائية ±%» تغيّر أطوال الجلسات والاستراحات وفترات الانتظار قليلاً، وتُحرّك كل نقرة ±5 بكسل حتى لا تتكرر بنفس المكان. يعمل داخل ساعات «الجدولة الذكية» إن كانت مفعّلة. الشريط يعرض الساعات المستخدمة اليوم والحالة: يعمل / استراحة / انتهى حد اليوم." },
   mrcards: { name: "الجيوش المرسلة", text: "العدّاد يعرض عدد الجيوش خارج المدينة من الحد الأقصى (مثل 2/5). كل بطاقة: صورة القائد الأساسي والثانوي واسمهما (تُقرأ من نافذة الجيش في اللعبة، وإن لم تظهر تُؤخذ من «قادة كل مهمة»)، الإحداثيات ونوع المهمة [جمع / البرابرة / حشد]، عدد الجنود، الحالة (يجمع، ذاهب للهجوم، في حشد، عائد…) وشريط الصحة عندما تظهر النسبة. تتحدث مع «تحديث المسيرات» في المساعد أو تلقائياً." },
   speedcalc: { name: "حاسبة التسريعات", text: "اكتب عدد كل فئة تسريع في حقيبتك (1د، 5د … 7 أيام) تحت كل نوع. المجموع يظهر فوراً بالأيام والساعات والدقائق لكل نوع، ومع «العامة» (لأن التسريع العام يُستعمل للتدريب والبناء والبحث والعلاج). الأرقام تُحفظ في هذا المتصفح فقط؛ «مسح الكل» يصفّرها." },
+  captcha: { name: "نافذة التحقق (كابتشا)", text: "أحياناً تطلب اللعبة إثبات أنك لست برنامجاً. عندما يكتشفها البوت يتوقف فوراً عن أي نقرة، يرسل صورة الشاشة، تتحول الحالة إلى «نافذة تحقق» ويصلك تنبيه صوتي هنا وعلى تيليجرام. حلّها يدوياً على السيرفر ثم اضغط «تم الحل — استئناف»: يتأكد البوت أن النافذة اختفت قبل أن يكمل، وإن كانت ما زالت ظاهرة يبقى متوقفاً ويخبرك. البوت لا يحاول حل التحقق بنفسه." },
   march: { name: "أولوية المسيرات والمهلة", text: "«أقصى عدد جيوش في نفس الوقت»: البوت لا يرسل جيش جمع جديداً إذا كان هذا العدد في الخارج (فارغ أو 0 = حسب خانات اللعبة). «مهلة البحث»: إذا علِق البحث في الخريطة أطول من هذه الثواني (الافتراضي 15) يلغيه ويرجع للمدينة بدل أن يتجمد. «الترتيب»: أي نوع مسيرات يُنفَّذ أولاً في كل جولة — الحشود، الجمع، البرابرة — بالأسهم ▲▼." },
   ref: { name: "الإحالات", text: "رابط الإحالة فيه اسم حسابك في اللوحة. انسخه وأرسله لأصدقائك؛ عند تسجيلهم من الرابط يُسجَّل أنهم جاؤوا عن طريقك. المكافآت يحددها المشرف." },
   menu: { name: "القائمة", text: "القائمة الرئيسية: الدليل، الدعم، الإحالات، حسابي، ثم «أدوات مجانية» (تفتح بالضغط) وروابط المجتمع (ديسكورد، واتساب، تيليجرام، يوتيوب) — الروابط تُقرأ من إعدادات kingbot-syn فيتغيّر الرابط بدون تحديث الصفحة. تسجيل الخروج في الأسفل." },
@@ -2995,6 +2997,27 @@ setInterval(() => { try { astSrvPaint(); } catch (_) {} }, 5000);
     totals(); }
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", build); else build();
 })();
+// TASK-09: captcha alert - urgent modal with the screenshot, sound, "Solved - Resume" (settings.captcha_resume = id)
+let capShown = "", capHidden = "", capMuted = false, capBeepT = null;
+function capBeep() { if (capMuted) return; try { const C = window.AudioContext || window.webkitAudioContext; const a = new C(), o = a.createOscillator(), g = a.createGain();
+  o.type = "square"; o.frequency.value = 880; g.gain.value = .08; o.connect(g); g.connect(a.destination); o.start(); setTimeout(() => { o.frequency.value = 660; }, 250); setTimeout(() => { o.stop(); a.close(); }, 600); } catch (_) {} }
+async function capImg() { const box = document.getElementById("cap-img"); try { const f = await newestFile(OUTBOX_FOLDER, "screen.jpg"); if (!f) { box.textContent = "لم تصل الصورة بعد."; return; }
+  const b = await kbImg(await download(f.id)); if (!b) { box.textContent = "🔐 الصورة مشفّرة: أدخل عبارة المرور."; return; }
+  box.innerHTML = ""; const i = new Image(); i.alt = "صورة نافذة التحقق"; i.src = "data:image/jpeg;base64," + b; box.appendChild(i); } catch (e) { box.textContent = "تعذّر تحميل الصورة."; } }
+function capCheck(s) { const c = s && s.city && s.city.captcha, m = document.getElementById("cap-modal"); if (!m) return;
+  const on = !!(c && c.id) || s.state === "captcha_required";
+  if (!on) { if (!m.hidden) { m.hidden = true; m.classList.remove("open"); } clearInterval(capBeepT); capBeepT = null; capShown = ""; document.title = document.title.replace(/^⚠️ /, ""); return; }
+  const id = (c && c.id) || "x";
+  if (c && c.still) setMsg("m-cap", "ما زالت نافذة التحقق ظاهرة في اللعبة — حلّها أولاً ثم اضغط استئناف من جديد.", "err");
+  if (id !== capShown) { capShown = id; capImg(); }
+  if (capHidden === id) return;
+  m.hidden = false; m.classList.add("open"); if (!/^⚠️/.test(document.title)) document.title = "⚠️ " + document.title;
+  if (!capBeepT) { capBeep(); capBeepT = setInterval(capBeep, 20000); } }
+document.addEventListener("click", async e => { const t = e.target; if (!t || !t.closest) return;
+  if (t.closest("#cap-mute")) { capMuted = true; clearInterval(capBeepT); capBeepT = null; return; }
+  if (t.closest("#cap-x")) { capHidden = capShown; const m = document.getElementById("cap-modal"); m.hidden = true; m.classList.remove("open"); return; }
+  if (t.closest("#cap-ok")) { const b = t.closest("#cap-ok"); const id = (lastStatus && lastStatus.city && lastStatus.city.captcha && lastStatus.city.captcha.id) || ""; if (!id) return;
+    settings.captcha_resume = id; if (await sendSettings({ captcha_resume: id }, "m-cap", b)) setMsg("m-cap", "✅ أُرسل. يتأكد البوت أن النافذة اختفت ثم يكمل (خلال دقيقة تقريباً).", "ok"); } });
 // TASK-08: smart_schedule {enabled, daily_active_hours_limit, work_session_minutes, break_duration_minutes, jitter_percent}
 const SSX = { "ssx-lim": ["daily_active_hours_limit", 1, 24, 14], "ssx-work": ["work_session_minutes", 10, 600, 90], "ssx-brk": ["break_duration_minutes", 1, 240, 20], "ssx-jit": ["jitter_percent", 0, 50, 15] };
 function ssxGet() { if (typeof settings !== "object" || !settings) return {}; const c = settings.smart_schedule = (settings.smart_schedule && typeof settings.smart_schedule === "object") ? settings.smart_schedule : {};
@@ -3573,7 +3596,7 @@ document.querySelectorAll("#logf button").forEach(b => b.addEventListener("click
   logFilter = b.dataset.l; document.querySelectorAll("#logf button").forEach(x => x.classList.toggle("on", x === b)); renderLog();
 }));
 
-const STATES = { working: ["يعمل الآن", "s-good"], waiting: ["ينتظر الجولة القادمة", "s-good"], sleeping: ["خارج ساعات العمل", "s-idle"], paused: ["موقوف مؤقتاً", "s-warn"], stopped: ["متوقف (F12)", "s-bad"] };
+const STATES = { captcha_required: ["⚠️ نافذة تحقق — يحتاج حلّك", "s-bad"], working: ["يعمل الآن", "s-good"], waiting: ["ينتظر الجولة القادمة", "s-good"], sleeping: ["خارج ساعات العمل", "s-idle"], paused: ["موقوف مؤقتاً", "s-warn"], stopped: ["متوقف (F12)", "s-bad"] };
 
 function fmtAmount(v) {
   if (v === undefined || v === null || isNaN(v)) return "—";
@@ -3774,7 +3797,7 @@ async function refreshStatus(btn) {
     try { checkCharChange(s); checkWatched(s); astTick(s); } catch (_) {}
     try { if (window.liveUpdate) liveUpdate(s); } catch (_) {}
     try { if (window.qmUpdate) qmUpdate(s); } catch (_) {}
-    try { renderStats(s.city); renderChars(s.city); lastStatus = s; renderAccount(); renderPages(); renderMarches(s.city); try { ssxShow(); } catch (_) {} rotNow = (s.city || {}).rotation || null; renderRotNow(); } catch (_) {}
+    try { renderStats(s.city); renderChars(s.city); lastStatus = s; renderAccount(); renderPages(); renderMarches(s.city); try { ssxShow(); } catch (_) {} try { capCheck(s); } catch (_) {} rotNow = (s.city || {}).rotation || null; renderRotNow(); } catch (_) {}
     logLines = s.log || []; renderLog();
     recorded = s.recorded || []; renderActs();
     setPill($("conn"), "s-good", "متصل · " + fmtTime(s.updated)); setMsg("m-status", "");
@@ -4690,6 +4713,14 @@ document.getElementById("cond-ic").innerHTML = gsvg("conduct", 46);
 </script>
 
 <button type="button" class="ast-fab" id="ast-fab" aria-label="المساعد" title="المساعد" hidden>🤖<span class="dot"></span></button>
+<div class="imodal cap-modal" id="cap-modal" role="alertdialog" aria-modal="true" aria-labelledby="cap-h" hidden>   <!-- TASK-09 -->
+  <div class="ibox"><h3 id="cap-h">⚠️ نافذة تحقق (كابتشا) في اللعبة <button type="button" class="info-btn" data-info="captcha" aria-label="شرح">❗</button></h3>
+    <p class="cap-p">البوت <b>أوقف كل النقرات</b> لأن اللعبة تطلب التحقق. حلّها على السيرفر (الاتصال بسطح المكتب البعيد أو من فريق الدعم)، ثم اضغط «تم الحل — استئناف».</p>
+    <div class="cap-img" id="cap-img">⏳ جارٍ تحميل صورة الشاشة…</div>
+    <div class="msg" id="m-cap"></div>
+    <div class="cap-btns"><button type="button" class="btn primary" id="cap-ok">✅ تم الحل — استئناف</button><button type="button" class="btn" id="cap-mute">🔇 إيقاف التنبيه</button><button type="button" class="btn" id="cap-x">إخفاء</button></div>
+  </div>
+</div>
 <section class="ast" id="ast" aria-label="المساعد">
   <div class="ast-h"><span class="ast-badge" aria-hidden="true">🤖</span><div class="ast-tt"><b>المساعد الذكي</b><small>أسئلتك عن الأنشطة، اللوحة، الإعدادات والخطط — وأوامر سريعة للبوت</small></div><button type="button" id="ast-info" title="ما هذا؟">❗</button><button type="button" id="ast-x" aria-label="إغلاق">✕</button></div>
   <div class="ast-q" id="ast-q"></div>
