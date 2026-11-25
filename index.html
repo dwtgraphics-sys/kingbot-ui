@@ -882,6 +882,32 @@ main, .view, .panel, #top, .kbar { min-width: 0; max-width: 100%; box-sizing: bo
 .ast-in{display:flex;gap:6px;padding:10px 12px;border-top:1px solid #ffffff14}
 .ast-in input{flex:1;min-width:0;padding:9px 12px;border-radius:12px;border:1px solid #ffffff22;background:rgba(0,0,0,.35);color:inherit;font:inherit}
 .ast-in button{padding:0 14px;border-radius:12px;border:0;background:var(--accent,#f28c28);color:#2a1600;font-weight:800;cursor:pointer}
+/* ---------- v194: server switcher ---------- */
+.kbar-srv{display:inline-flex;align-items:center;gap:6px;height:36px;max-width:190px;padding:0 10px;border-radius:12px;border:1px solid rgba(226,176,74,.45);background:#16120a;color:#f3dca0;font-weight:700;font-size:13px;cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.kbar-srv i{flex:none;width:8px;height:8px;border-radius:50%;background:#777}
+.kbar-srv i.on{background:#3ecf6e}.kbar-srv i.off{background:#ff5a5a}
+@media (max-width:640px){.kbar-srv{max-width:44px;padding:0 8px;font-size:0}.kbar-srv i{width:10px;height:10px}}
+.srv-pop{position:fixed;z-index:9000;top:74px;left:50%;transform:translateX(-50%);width:min(560px,94vw);max-height:80vh;overflow:auto;padding:14px;border-radius:16px;border:1px solid rgba(226,176,74,.45);background:linear-gradient(180deg,#1f190d,#0e0b06);box-shadow:0 20px 60px #000c;display:none}
+.srv-pop.open{display:block}
+.srv-pop h3{margin:0 0 10px;color:#ffd46a;font-size:16px;display:flex;align-items:center;gap:8px}
+.srv-pop h3 .sp{flex:1}
+.srv-pop h3 button{height:30px;padding:0 10px;border-radius:9px;border:1px solid #ffffff2a;background:#ffffff0d;color:#eee;cursor:pointer}
+.srv-card{display:grid;grid-template-columns:auto 1fr auto;gap:4px 12px;align-items:center;padding:10px 12px;margin-bottom:8px;border-radius:12px;border:1px solid #ffffff1a;background:#ffffff08;cursor:pointer;text-align:start;width:100%;color:inherit;font:inherit}
+.srv-card:hover{border-color:rgba(226,176,74,.6)}
+.srv-card.cur{border-color:#ffd46a;background:rgba(255,212,106,.08)}
+.srv-card .dot{width:12px;height:12px;border-radius:50%;background:#777;grid-row:span 2}
+.srv-card .dot.on{background:#3ecf6e;box-shadow:0 0 10px #3ecf6e88}.srv-card .dot.off{background:#ff5a5a}
+.srv-card b{font-size:14px;color:#fff}
+.srv-card small{opacity:.7;font-size:12px}
+.srv-card .st{font-size:12px;font-weight:700;text-align:end}
+.srv-card .meta{grid-column:2/4;display:flex;flex-wrap:wrap;gap:6px;font-size:12px}
+.srv-card .meta span{padding:2px 8px;border-radius:999px;background:#ffffff10}
+.srv-pop .row{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}
+.srv-pop .row button,.srv-pop select{height:36px;padding:0 12px;border-radius:10px;border:1px solid rgba(226,176,74,.45);background:#1d170c;color:#ffd46a;font-weight:700;cursor:pointer}
+.srv-pop select{color:#eee;font-weight:400}
+.srv-pop .clone{margin-top:10px;padding:10px;border-radius:12px;border:1px dashed rgba(226,176,74,.4);display:none}
+.srv-pop .clone.open{display:block}
+.srv-pop label{display:flex;gap:6px;align-items:center;font-size:13px;margin:6px 0}
 /* ---------- v192: live stream ---------- */
 .kbar-live{display:inline-flex;align-items:center;gap:6px;height:36px;padding:0 12px;border-radius:12px;border:1px solid rgba(226,176,74,.55);background:linear-gradient(180deg,#2a2112,#16120a);color:#ffd46a;font-weight:800;font-size:13px;letter-spacing:.5px;cursor:pointer}
 .kbar-live i{width:9px;height:9px;border-radius:50%;background:#6b6b6b}
@@ -2578,6 +2604,34 @@ async function ghApi(path, method = "GET", body = null) {
   if (!res.ok) throw new Error(`GitHub HTTP ${res.status}`);
   return await res.json();
 }
+/* ---------- v194: multi-server (kingbot-syn/servers/index.json) ---------- */
+const SRV_BUILTIN = { id: "vps-01-main", name: "السيرفر الرئيسي", legacy: true, control: "control/control.json", status: "outbox/status.json", screen: "outbox/screen.jpg" };
+let SERVERS = [SRV_BUILTIN];
+function curServerId() { try { return localStorage.getItem("kb_server") || "vps-01-main"; } catch (_) { return "vps-01-main"; } }
+function curServer() { return SERVERS.find(s => s.id === curServerId()) || SERVERS.find(s => s.id === "vps-01-main") || SRV_BUILTIN; }
+const SRV_PFX = () => (curServerId() === "vps-01-main" ? "" : curServerId() + "_");
+async function loadServers() {
+  try {
+    const m = await ghApi("servers/index.json", "GET");
+    const d = m && m.content ? JSON.parse(b64ToText(m.content.replace(/\n/g, ""))) : null;
+    if (d && Array.isArray(d.servers) && d.servers.length) SERVERS = d.servers;
+  } catch (_) {}
+  if (!SERVERS.some(s => s.id === curServerId())) try { localStorage.setItem("kb_server", "vps-01-main"); } catch (_) {}
+  try { window.dispatchEvent(new Event("kb-servers")); } catch (_) {}
+}
+async function ghPutJson(path, obj, message) {
+  let sha = null;
+  try { const ex = await ghApi(path, "GET"); if (ex && ex.sha) sha = ex.sha; } catch (_) {}
+  const payload = { message, content: utf8ToB64(JSON.stringify(obj, null, 2)) };
+  if (sha) payload.sha = sha;
+  return ghApi(path, "PUT", payload);
+}
+async function ghGetJson(path) {
+  const m = await ghApi(path, "GET");
+  if (!m || !m.content) return null;
+  const d = JSON.parse(b64ToText(m.content.replace(/\n/g, "")));
+  return d;
+}
 function utf8ToB64(str) {
   const bytes = new TextEncoder().encode(str);
   let bin = "";
@@ -2586,20 +2640,24 @@ function utf8ToB64(str) {
 }
 async function call(tool, input) {
   if (tool === "create_file") {
-    const path = "control/control.json";
-    let sha = null;
-    try { const ex = await ghApi(path, "GET"); if (ex && ex.sha) sha = ex.sha; } catch (_) {}
-    const payload = { message: "dashboard: update control.json", content: utf8ToB64(input.textContent || "{}") };
-    if (sha) payload.sha = sha;
-    await ghApi(path, "PUT", payload);
+    const srv = curServer(), paths = [srv.control || "control/control.json"];
+    if (srv.mirror_legacy && !paths.includes("control/control.json")) paths.push("control/control.json");  // during the move
+    for (const path of paths) {
+      let sha = null;
+      try { const ex = await ghApi(path, "GET"); if (ex && ex.sha) sha = ex.sha; } catch (_) {}
+      const payload = { message: `dashboard: update ${srv.id} control`, content: utf8ToB64(input.textContent || "{}") };
+      if (sha) payload.sha = sha;
+      await ghApi(path, "PUT", payload);
+    }
     return { ok: true };
   }
   return {};
 }
 async function newestFile(folder, title) {
+  const srv = curServer();
   const path = (folder === OUTBOX_FOLDER)
-    ? `outbox/${title || "status.json"}`
-    : "control/control.json";
+    ? ((title || "status.json") === "screen.jpg" ? (srv.screen || "outbox/screen.jpg") : (srv.status || "outbox/status.json"))
+    : (srv.control || "control/control.json");
   const meta = await ghApi(path, "GET");
   if (!meta || !meta.content) return null;
   const modTime = (meta.commit && meta.commit.committer && meta.commit.committer.date) || new Date().toISOString();
@@ -2789,7 +2847,7 @@ function checkCharChange(s) {
   const p = c.profile || {};
   const same = (a, b) => a && b && a.toLowerCase().replace(/\s/g, "") === b.toLowerCase().replace(/\s/g, "");
   if (was && !same(was, now)) {
-    try { localStorage.removeItem("kb_c_profile"); localStorage.removeItem("kb_c_marches"); localStorage.removeItem("kb_c_cmdrs"); } catch (_) {}
+    try { ["profile", "marches", "cmdrs"].forEach(k => localStorage.removeItem("kb_c_" + SRV_PFX() + k)); } catch (_) {}
     charPending = true; fastPoll(300);
     setMsg("m-acc", "🔄 تم التبديل إلى " + now + " — جارٍ تحديث بيانات الشخصية…", "ok");
   }
@@ -2878,8 +2936,8 @@ function resetIn() {
 }
 function frozenUntil() { const f = settings.freeze_until; if (!f) return null; const d = new Date(f); return d > new Date() ? d : null; }
 function kbCache(key, val) {
-  try { if (val && (Array.isArray(val) ? val.length : Object.keys(val).length)) { localStorage.setItem("kb_c_" + key, JSON.stringify(val)); return val; }
-    return JSON.parse(localStorage.getItem("kb_c_" + key) || "null"); } catch (_) { return val; }
+  try { if (val && (Array.isArray(val) ? val.length : Object.keys(val).length)) { localStorage.setItem("kb_c_" + SRV_PFX() + key, JSON.stringify(val)); return val; }
+    return JSON.parse(localStorage.getItem("kb_c_" + SRV_PFX() + key) || "null"); } catch (_) { return val; }
 }
 window.renderAccount = window.renderAccount = function renderAccount() {
   const s = lastStatus || {}, c = s.city || {}, p = kbCache("profile", c.profile) || {};
@@ -3106,7 +3164,7 @@ $("b-shot").addEventListener("click", requestShot);
 renderAll();
 (async () => {
   if (!getGhToken()) { setPill($("conn"), "s-bad", "اضغط هنا لإدخال رمز GitHub"); setMsg("m-status", "أدخل رمز GitHub Token بالضغط على شارة الاتصال في الأعلى.", "err"); return; }
-  await loadSettings(); await refreshStatus(); showLastShot();
+  await loadServers(); await loadSettings(); await refreshStatus(); showLastShot();
   setInterval(() => { if (!document.hidden) refreshStatus(); }, 60000);
 })();
 
@@ -3879,6 +3937,103 @@ document.getElementById("cond-ic").innerHTML = gsvg("conduct", 46);
     if (location.hash === "#live") go();
   }
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init); else init();
+})();
+</script>
+<script>
+/* ---------- v194: server switcher + clone config ---------- */
+(function kbServers() {
+  const $s = id => document.getElementById(id);
+  const ROLE = { main: "👑", pilot: "🧭", farms: "🌾" };
+  const STATE_AR = { working: "يعمل", waiting: "ينتظر الجولة", paused: "موقوف", stopped: "متوقف", restarting: "يعيد التشغيل", no_screen: "الشاشة مطفأة" };
+  const esc = t => String(t == null ? "" : t).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+  const btn = document.createElement("button");
+  btn.type = "button"; btn.className = "kbar-srv"; btn.id = "kbar-srv"; btn.title = "تبديل السيرفر";
+  const pop = document.createElement("div"); pop.className = "srv-pop"; pop.id = "srv-pop"; pop.setAttribute("role", "dialog");
+  pop.innerHTML = '<h3>🖥 السيرفرات<span class="sp"></span><button type="button" data-a="info">❗</button><button type="button" data-a="ref">↻</button><button type="button" data-a="x">✕</button></h3>' +
+    '<div class="msg" id="m-srv"></div><div id="srv-list"></div>' +
+    '<div class="row"><button type="button" data-a="clone">📋 نسخ الإعدادات إلى سيرفر آخر</button></div>' +
+    '<div class="clone" id="srv-clone"><div>انسخ إعدادات <b id="srv-from"></b> إلى:</div><select id="srv-to"></select>' +
+    '<label><input type="checkbox" id="srv-keep-run" checked> احتفظ بحالة التشغيل/الإيقاف في السيرفر الهدف</label>' +
+    '<label><input type="checkbox" id="srv-keep-rot" checked> احتفظ بقائمة تبديل الشخصيات في السيرفر الهدف</label>' +
+    '<div class="row"><button type="button" data-a="do-clone">✅ نسخ الآن</button></div></div>';
+  document.body.appendChild(pop);
+  const live = $s("kbar-live"); live.parentNode.insertBefore(btn, live);
+  const info = {};   // id -> {status, control}
+  function label() {
+    const s = curServer(), st = info[s.id];
+    const on = st && st.status && minutesAgo(st.status.updated) < 10;
+    btn.innerHTML = `<i class="${st ? (on ? "on" : "off") : ""}"></i>${ROLE[s.role] || "🖥"} ${esc(s.name || s.id)}`;
+  }
+  function accounts(c) {
+    const rot = (c && c.char_rotation) || {};
+    const n = rot.enabled ? (rot.slots || []).filter(x => x && x.name).length : 0;
+    return n || (c ? 1 : 0);
+  }
+  function card(s) {
+    const st = info[s.id] || {}, d = st.status, c = st.control;
+    const age = d ? minutesAgo(d.updated) : Infinity, on = age < 10;
+    const paused = c && c.running === false;
+    const state = !d ? "لا توجد حالة بعد" : !on ? "متوقف (آخر حالة قبل " + (age < 120 ? Math.round(age) + " د" : Math.round(age / 60) + " س") + ")" : (paused ? "موقوف من اللوحة" : (STATE_AR[d.state] || d.state || "متصل"));
+    const sys = (d && d.sys) || {};
+    const meta = [];
+    if (sys.cpu != null) meta.push(`<span>CPU ${sys.cpu}%</span>`);
+    if (sys.ram != null) meta.push(`<span>RAM ${sys.ram}%</span>`);
+    if (c) meta.push(`<span>👤 ${accounts(c)} حساب نشط</span>`);
+    if (d && d.version) meta.push(`<span>v${esc(d.version)}</span>`);
+    if (s.legacy || s.mirror_legacy) meta.push(`<span>${s.legacy ? "مسار قديم" : "نقل جارٍ"}</span>`);
+    return `<button type="button" class="srv-card${s.id === curServerId() ? " cur" : ""}" data-id="${esc(s.id)}">` +
+      `<span class="dot ${d ? (on ? "on" : "off") : ""}"></span><span><b>${ROLE[s.role] || "🖥"} ${esc(s.name || s.id)}</b><br><small>${esc(s.desc || s.id)}</small></span>` +
+      `<span class="st" style="color:${on ? (paused ? "#ffcf6a" : "#3ecf6e") : "#ff8a8a"}">${esc(state)}</span><span class="meta">${meta.join("")}</span></button>`;
+  }
+  function draw() { $s("srv-list").innerHTML = SERVERS.map(card).join(""); label(); }
+  async function fetchAll() {
+    await Promise.all(SERVERS.map(async s => {
+      const r = info[s.id] = info[s.id] || {};
+      try { r.status = await ghGetJson(s.status); } catch (_) {}
+      try { r.control = await ghGetJson(s.control); } catch (_) {}
+    }));
+    draw();
+  }
+  btn.addEventListener("click", e => { e.stopPropagation(); pop.classList.toggle("open"); if (pop.classList.contains("open")) { draw(); fetchAll(); } });
+  document.addEventListener("click", e => { if (!pop.contains(e.target) && e.target !== btn) pop.classList.remove("open"); });
+  pop.addEventListener("click", async e => {
+    const c = e.target.closest(".srv-card");
+    if (c) {
+      if (c.dataset.id === curServerId()) { pop.classList.remove("open"); return; }
+      try { localStorage.setItem("kb_server", c.dataset.id); } catch (_) {}
+      setMsg("m-srv", "🔄 جارٍ فتح " + c.dataset.id + " …", "ok"); location.reload(); return;
+    }
+    const a = e.target.closest("[data-a]"); if (!a) return;
+    const act = a.dataset.a;
+    if (act === "x") pop.classList.remove("open");
+    if (act === "ref") fetchAll();
+    if (act === "info") setMsg("m-srv", "❗ كل سيرفر له إعداداته وحالته الخاصة في GitHub (kingbot-syn/servers). اختر سيرفراً لتتحكم به؛ كل أزرار اللوحة تعمل على السيرفر المختار فقط. النقطة الخضراء = وصلت حالة منه خلال آخر 10 دقائق. «الحسابات النشطة» = عدد الشخصيات في تبديل الشخصيات (أو 1). «نسخ الإعدادات» ينسخ الأنشطة والجدول والإعدادات المحفوظة من السيرفر الحالي إلى سيرفر آخر.", "ok");
+    if (act === "clone") {
+      const box = $s("srv-clone"); box.classList.toggle("open");
+      $s("srv-from").textContent = curServer().name || curServerId();
+      $s("srv-to").innerHTML = SERVERS.filter(s => s.id !== curServerId()).map(s => `<option value="${esc(s.id)}">${esc(s.name || s.id)}</option>`).join("");
+    }
+    if (act === "do-clone") {
+      const to = SERVERS.find(s => s.id === $s("srv-to").value); if (!to) return;
+      if (!confirm(`نسخ إعدادات «${curServer().name}» إلى «${to.name}»؟ ستُستبدل إعدادات السيرفر الهدف.`)) return;
+      a.disabled = true;
+      try {
+        const src = (await ghGetJson(curServer().control)) || settings;
+        const old = (await ghGetJson(to.control)) || {};
+        const out = JSON.parse(JSON.stringify(src));
+        ["shot_request", "action_request", "run_now", "probe_request"].forEach(k => delete out[k]);
+        if ($s("srv-keep-run").checked) { out.running = old.running === undefined ? false : old.running; out.freeze_until = old.freeze_until || null; }
+        if ($s("srv-keep-rot").checked) out.char_rotation = old.char_rotation || { enabled: false, slots: [] };
+        out.sent_at = new Date().toISOString(); out.cloned_from = curServerId();
+        await ghPutJson(to.control, out, `dashboard: clone settings ${curServerId()} -> ${to.id}`);
+        if (to.mirror_legacy) await ghPutJson("control/control.json", out, `dashboard: clone settings -> ${to.id} (old path)`);
+        setMsg("m-srv", `✅ نُسخت الإعدادات إلى ${to.name}.`, "ok"); $s("srv-clone").classList.remove("open"); fetchAll();
+      } catch (err) { setMsg("m-srv", "تعذّر النسخ: " + (err.message || err), "err"); }
+      a.disabled = false;
+    }
+  });
+  window.addEventListener("kb-servers", () => { draw(); fetchAll(); });
+  label();
 })();
 </script>
 </body></html>
