@@ -882,6 +882,10 @@ main, .view, .panel, #top, .kbar { min-width: 0; max-width: 100%; box-sizing: bo
 .ast-in{display:flex;gap:6px;padding:10px 12px;border-top:1px solid #ffffff14}
 .ast-in input{flex:1;min-width:0;padding:9px 12px;border-radius:12px;border:1px solid #ffffff22;background:rgba(0,0,0,.35);color:inherit;font:inherit}
 .ast-in button{padding:0 14px;border-radius:12px;border:0;background:var(--accent,#f28c28);color:#2a1600;font-weight:800;cursor:pointer}
+/* MOD-01: assistant on phones - full width sheet, compact 3-column buttons, no long scrolling */
+@media (max-width:560px){.ast{left:6px;right:6px;bottom:6px;width:auto;max-height:calc(100dvh - 70px);border-radius:16px}
+.ast-q{grid-template-columns:repeat(3,1fr);gap:5px;padding:8px}.ast-q button{flex-direction:column;justify-content:center;text-align:center;gap:2px;padding:6px 4px;font-size:11px;line-height:1.25}
+.ast-q button.wide,.ast-live{grid-column:1/-1;flex-direction:row;padding:8px}.ast-log{min-height:50px}.ast-h{padding:9px 12px}.ast-in{padding:8px}}
 /* ---------- v197: live queue monitor ---------- */
 .qm-card{border:1px solid rgba(226,176,74,.4);background:linear-gradient(180deg,rgba(32,25,12,.92),rgba(12,10,6,.95))}
 .qm-head{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:10px}
@@ -2306,6 +2310,7 @@ function astTick(s) {
 }
 function astInit() {
   const q = $("ast-q");
+  if (q.dataset.ready) return; q.dataset.ready = "1"; q.innerHTML = "";   // MOD-01: build the quick buttons once (the static copies doubled them)
   AST_CMDS.forEach(c => { const b = document.createElement("button"); b.type = "button"; b.textContent = c.ico + " " + c.name; b.addEventListener("click", () => astAdd([{ do: c.k }])); q.appendChild(b); });
   const all = document.createElement("button"); all.type = "button"; all.className = "wide"; all.textContent = "⚡ تحديث الكل (الملف، الموارد، المسيرات، الشخصيات)";
   all.addEventListener("click", () => astAdd(AST_ALL.map(k => ({ do: k })))); q.appendChild(all);
@@ -3909,7 +3914,7 @@ document.getElementById("cond-ic").innerHTML = gsvg("conduct", 46);
 <button type="button" class="ast-fab" id="ast-fab" aria-label="المساعد" title="المساعد" hidden>🤖<span class="dot"></span></button>
 <section class="ast" id="ast" aria-label="المساعد">
   <div class="ast-h"><b>🤖 المساعد</b><button type="button" id="ast-info" title="ما هذا؟">❗</button><button type="button" id="ast-x" aria-label="إغلاق">✕</button></div>
-  <div class="ast-q" id="ast-q"><button type="button">👤 تحديث اسم المستخدم والملف</button><button type="button">🧑‍🤝‍🧑 تحديث الشخصيات</button><button type="button">⚔️ تحديث القادة</button><button type="button">💰 تحديث الموارد</button><button type="button">🏹 تحديث المسيرات</button><button type="button">📸 صورة من اللعبة الآن</button><button type="button" class="wide">⚡ تحديث الكل (الملف، الموارد، المسيرات، الشخصيات)</button><a class="ast-live" href="#live" target="_blank" rel="noopener">📺 فتح البث المباشر للعبة</a><button type="button" class="wide">⚙️ تغيير رابط البث</button></div>
+  <div class="ast-q" id="ast-q"></div>
   <div class="ast-log" id="ast-log"><div class="ast-m bot">أهلاً! اضغط أمراً أو اكتب طلبك، وأنا أرسله للبوت وأتابعه حتى ينتهي.</div></div>
   <form class="ast-in" id="ast-form"><input id="ast-text" autocomplete="off" placeholder="اكتب طلبك… مثال: حدّث القادة والموارد"><button type="submit">إرسال</button></form>
 </section>
