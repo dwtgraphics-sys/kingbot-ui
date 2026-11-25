@@ -904,6 +904,30 @@ main, .view, .panel, #top, .kbar { min-width: 0; max-width: 100%; box-sizing: bo
 .ast-in{display:flex;gap:6px;padding:10px 12px;border-top:1px solid #ffffff14}
 .ast-in input{flex:1;min-width:0;padding:9px 12px;border-radius:12px;border:1px solid #ffffff22;background:rgba(0,0,0,.35);color:inherit;font:inherit}
 .ast-in button{padding:0 14px;border-radius:12px;border:0;background:var(--accent,#f28c28);color:#2a1600;font-weight:800;cursor:pointer}
+/* ---------- roadmap v18 GUIDE: guide page ---------- */
+#v-guide,.gd{min-width:0;max-width:100%}.gd{overflow:hidden}.gd-steps li>div,.gd-points li,.gd-card{min-width:0;overflow-wrap:anywhere}
+.gd .gd-toc{border:1px solid #ffffff1a;border-radius:14px;background:#ffffff08;padding:8px 12px;margin-bottom:14px;position:sticky;top:76px;z-index:5;backdrop-filter:blur(10px)}
+.gd .gd-toc summary{cursor:pointer;font-weight:700}
+.gd-jump{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}.gd-jump a{padding:5px 11px;border-radius:999px;background:rgba(242,140,40,.13);border:1px solid #f28c2855;color:inherit;text-decoration:none;font-size:12.5px}
+.gd-jump a:hover{background:rgba(242,140,40,.3)}
+.gd-sec{margin:22px 0 10px;font-size:17px;color:#ffd46a;scroll-margin-top:150px}.gd-sub{margin:16px 0 8px;scroll-margin-top:150px}
+.gd-steps,.gd-points,.gd-legend{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.gd-steps li{display:flex;gap:10px;align-items:flex-start;padding:10px;border-radius:14px;background:#ffffff08;border:1px solid #ffffff12}
+.gd-steps li>i{flex:none;width:28px;height:28px;border-radius:50%;display:grid;place-items:center;font-style:normal;font-weight:800;color:#1b1205;background:linear-gradient(180deg,#f3c45a,#c98d22)}
+.gd-steps p,.gd-card p,.gd-p{margin:3px 0 0;font-size:13px;line-height:1.6;opacity:.85}
+.gd-pill{display:inline-block;padding:0 8px;border-radius:999px;background:#5aa9ff22;border:1px solid #5aa9ff55;font-size:12px;}
+.gd-call{margin:10px 0;padding:10px 12px;border-radius:12px;font-size:13px;line-height:1.6}.gd-call.info{background:#5aa9ff14;border:1px solid #5aa9ff44}.gd-call.warn{background:#f2b33a1c;border:1px solid #f2b33a77;color:#ffd98a}
+.gd-n{display:inline-grid;place-items:center;width:20px;height:20px;border-radius:50%;background:#e74c3c;color:#fff;font-size:11px;font-weight:800;flex:none;margin-inline-end:4px}
+.gd-mock{display:grid;grid-template-columns:110px 1fr;gap:8px;padding:10px;border-radius:14px;border:1px dashed #ffffff33;background:#0006;font-size:11.5px;margin-bottom:10px}
+.gm-side,.gm-box,.gm-head{border-radius:10px;background:#ffffff0c;border:1px solid #ffffff14;padding:7px;display:flex;flex-wrap:wrap;gap:4px;align-items:center}
+.gm-side{flex-direction:column;align-items:stretch}.gm-side u{display:block;height:14px;border-radius:6px;background:#ffffff14}
+.gm-main{display:grid;gap:6px}.gm-row{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.gm-side em,.gm-head em{font-style:normal;padding:1px 6px;border-radius:999px;background:#ffffff14}.gm-head em.go{background:#2ecc7133}.gm-head s{text-decoration:none;color:#5fd38a}
+.gd-points li{display:block;font-size:13px;line-height:1.7;padding:6px 8px;border-radius:10px;background:#ffffff06}
+.gd-card{padding:10px 12px;border-radius:14px;background:#ffffff08;border:1px solid #ffffff12;margin-bottom:8px}
+.gd-legend li{display:flex;gap:10px;align-items:center;font-size:13px}.gd-st{flex:none;min-width:150px;text-align:center;padding:4px 10px;border-radius:999px;font-size:12px;font-weight:700}
+.gd-st.ok{background:#2ecc7126;color:#6be39a}.gd-st.info{background:#3aa7ff26;color:#8fd0ff}.gd-st.wait{background:#f2b33a26;color:#ffd27a}.gd-st.warn{background:#e67e2226;color:#ffb27a}.gd-st.off{background:#95a5a626;color:#c8d0d4}.gd-st.err{background:#e74c3c26;color:#ff8f80}
+@media (max-width:560px){.gd-mock{grid-template-columns:1fr}.gm-row{grid-template-columns:1fr}.gd-legend li{flex-direction:column;align-items:flex-start;gap:3px}.gd-st{min-width:0}.gd .gd-toc{top:70px}}
 /* MOD-01: assistant on phones - full width sheet, compact 3-column buttons, no long scrolling */
 @media (max-width:560px){.ast{left:6px;right:6px;bottom:6px;width:auto;max-height:calc(100dvh - 70px);border-radius:16px}
 .ast-q{grid-template-columns:repeat(3,1fr);gap:5px;padding:8px}.ast-q button{flex-direction:column;justify-content:center;text-align:center;gap:2px;padding:6px 4px;font-size:11px;line-height:1.25}
@@ -1198,6 +1222,7 @@ window.addEventListener("error", function(e) {
       <div class="kbar-pop kbar-mpop" id="kbar-mpop" role="menu" dir="rtl">
         <button type="button" data-go="v-account" class="kbar-acc"><span data-i="user"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"></circle><path d="M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7"></path></svg></span><span>الحساب<small id="kbar-user">CrownLord</small></span></button>
         <hr>
+        <button type="button" data-go="v-guide"><span data-i="book"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2z"></path><path d="M4 21V5M8 7h7M8 11h5"></path></svg></span>الدليل</button>
         <button type="button" data-go="v-home"><span data-i="home"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l9-7 9 7"></path><path d="M5 10v10h14V10"></path></svg></span>الرئيسية</button>
         <button type="button" data-go="v-live"><span><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="6" width="13" height="12" rx="2"></rect><path d="m16 10 5-3v10l-5-3"></path></svg></span>البث المباشر</button>
         <button type="button" data-go="assistant"><span><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="8" width="14" height="11" rx="3"></rect><path d="M12 4v4M9 13h.01M15 13h.01M9 16h6"></path></svg></span>المساعد</button>
@@ -1612,6 +1637,85 @@ window.addEventListener("error", function(e) {
         <div class="gn-tot" id="gn-tot"><span>طعام (30 يوم): <b>315.8M</b></span><span>خشب (30 يوم): <b>23.7M</b></span><span>حجر (30 يوم): <b>17.7M</b></span><span>ذهب (30 يوم): <b>12.0M</b></span><span>جواهر (30 يوم): <b>384</b></span></div>
         <div class="gn-chart" id="gn-chart"><svg viewBox="0 0 600 220" role="img" aria-label="مكاسب طعام اليومية"><rect class="bar" x="53.8" y="197.3" width="40.0" height="2.7" rx="2"><title>2026-11-19: 3,000,000</title></rect><text x="73.8" y="214" text-anchor="middle">11-19</text><rect class="bar" x="149.5" y="14.0" width="40.0" height="186.0" rx="2"><title>2026-11-20: 204,700,000</title></rect><text x="169.5" y="214" text-anchor="middle">11-20</text><rect class="bar" x="245.2" y="109.7" width="40.0" height="90.3" rx="2"><title>2026-11-21: 99,400,000</title></rect><text x="265.2" y="214" text-anchor="middle">11-21</text><rect class="bar" x="340.8" y="198.0" width="40.0" height="2.0" rx="2"><title>2026-11-22: 2,200,000</title></rect><text x="360.8" y="214" text-anchor="middle">11-22</text><rect class="bar" x="436.5" y="194.6" width="40.0" height="5.4" rx="2"><title>2026-11-23: 5,900,000</title></rect><text x="456.5" y="214" text-anchor="middle">11-23</text><rect class="bar" x="532.2" y="198.0" width="40.0" height="2.0" rx="2"><title>2026-11-24: 600,000</title></rect><text x="552.2" y="214" text-anchor="middle">11-24</text><text x="2" y="12">204.7M</text></svg></div>
         <div class="gn-table-wrap"><table class="gn-table" id="gn-table"><tbody><tr><th>اليوم</th><th>طعام</th><th>خشب</th><th>حجر</th><th>ذهب</th><th>جواهر</th><th>برابرة</th><th>حصون</th></tr><tr><td>2026-11-24</td><td>600,000</td><td>700,000</td><td>500,000</td><td>300,000</td><td>0</td><td>0</td><td>0</td></tr><tr><td>2026-11-23</td><td>5,900,000</td><td>4,800,000</td><td>4,500,000</td><td>3,000,000</td><td>0</td><td>0</td><td>0</td></tr><tr><td>2026-11-22</td><td>2,200,000</td><td>2,700,000</td><td>1,800,000</td><td>1,300,000</td><td>265</td><td>0</td><td>0</td></tr><tr><td>2026-11-21</td><td>99,400,000</td><td>1,200,000</td><td>700,000</td><td>700,000</td><td>11</td><td>24</td><td>0</td></tr><tr><td>2026-11-20</td><td>204,700,000</td><td>13,700,000</td><td>8,600,000</td><td>5,800,000</td><td>108</td><td>61</td><td>16</td></tr><tr><td>2026-11-19</td><td>3,000,000</td><td>600,000</td><td>1,600,000</td><td>900,000</td><td>0</td><td>5</td><td>0</td></tr></tbody></table></div>
+      </section>
+    </div>
+
+    <!-- GUIDE (roadmap v18: GUIDE-01..) -->
+    <div class="view" id="v-guide">
+      <section class="panel gd">
+        <div class="panel-head"><h2 id="gd-h">📘 الدليل <button type="button" class="info-btn" data-info="guide" aria-label="شرح">❗</button></h2></div>
+        <details class="gd-toc" open><summary>📑 في هذه الصفحة</summary>
+          <nav class="gd-jump">
+            <a href="#gd-start">البداية</a><a href="#gd-panel">لوحتك</a><a href="#gd-adv">ميزات متقدمة</a><a href="#gd-sched">الجدولة الذكية</a><a href="#gd-gains">مكاسبي</a><a href="#gd-log">سجل الأحداث</a><a href="#gd-acc">الحساب والإشعارات</a><a href="#gd-habits">عادات جيدة</a><a href="#gd-support">الدعم</a><a href="#gd-discord">ديسكورد</a><a href="#gd-faq">الأسئلة</a>
+          </nav>
+        </details>
+
+        <h3 class="gd-sec" id="gd-start">🚀 البداية — 5 خطوات</h3>
+        <ol class="gd-steps">
+          <li><i>1</i><div><b>اشترِ أو فعّل خانة</b><p>من <span class="gd-pill">الاشتراكات</span> اختر خطة أو فعّل التجربة. كل خانة تشغّل حساب لعبة واحداً.</p></div></li>
+          <li><i>2</i><div><b>جهّز حسابك</b><p>اربط حساب اللعبة ببريد أو حساب يمكنك الدخول به، وتأكد أن المدينة ليست في منتصف حدث مهم أو حرب.</p></div></li>
+          <li><i>3</i><div><b>سجّل الدخول للعبة</b><p>من <span class="gd-pill">حساب اللعبة</span> أدخل بيانات الدخول. إن طُلب رمز تحقق ستصلك نافذة لإدخاله.</p></div></li>
+          <li><i>4</i><div><b>اختر الأنشطة واحفظ</b><p>افتح <span class="gd-pill">إعدادات البوت</span>، فعّل الأنشطة التي تريدها، ثم <span class="gd-pill">حفظ وإرسال</span>.</p></div></li>
+          <li><i>5</i><div><b>اضغط START</b><p>يبدأ البوت خلال دقيقة تقريباً، وتظهر حالته وما يفعله في الصفحة الرئيسية.</p></div></li>
+        </ol>
+        <div class="gd-call info">💡 عند التشغيل يضبط البوت الرسومات على أقل مستوى ويكتم الصوت تلقائياً — هذا طبيعي ويجعل اللعبة أخف وأسرع.</div>
+
+        <h3 class="gd-sec" id="gd-panel">🧭 لوحتك</h3>
+        <div class="gd-mock" aria-label="مخطط اللوحة">
+          <div class="gm-side"><span class="gd-n">1</span><b>الخانات</b><em>🔍 بحث</em><em>الكل / النشطة</em><u></u><u></u><u></u></div>
+          <div class="gm-main">
+            <div class="gm-head"><span class="gd-n">2</span>✏️ اسم الخانة · <s>يعمل</s> · ينتهي بعد 12 يوم <em>مساعدة</em><em>حساب اللعبة</em><em class="go">START / STOP</em></div>
+            <div class="gm-row"><div class="gm-box"><span class="gd-n">3</span>👑 الحاكم · CH25 · VIP12 · القوة · نقاط القتل</div>
+              <div class="gm-box"><span class="gd-n">4</span>🖼️ معاينة · 📺 بث · المهمة · 5 موارد (+اليوم) · AP · مكاسبي</div></div>
+            <div class="gm-row"><div class="gm-box"><span class="gd-n">5</span>⚙️ فتح إعدادات البوت · 🕒 تعديل الجدولة</div>
+              <div class="gm-box"><span class="gd-n">6</span>🏹 الجيوش المرسلة</div></div>
+            <div class="gm-box"><span class="gd-n">7</span>📜 سجل الأحداث</div>
+          </div>
+        </div>
+        <ol class="gd-points">
+          <li><span class="gd-n">1</span><b>قائمة الخانات:</b> كل خانة حساب. ابحث بالاسم واستعمل <span class="gd-pill">الكل</span> / <span class="gd-pill">النشطة</span> للتصفية.</li>
+          <li><span class="gd-n">2</span><b>رأس الخانة:</b> غيّر الاسم بالقلم ✏️، شاهد الحالة وتاريخ الانتهاء، واستعمل <span class="gd-pill">مساعدة</span> و<span class="gd-pill">حساب اللعبة</span> و<span class="gd-pill">START / STOP</span>.</li>
+          <li><span class="gd-n">3</span><b>بطاقة الحاكم:</b> الصورة، الاسم، مستوى القاعة (CH)، VIP، التحالف، القوة ونقاط القتل — تُقرأ من الملف الشخصي في اللعبة.</li>
+          <li><span class="gd-n">4</span><b>الحالة المباشرة:</b> آخر صورة من اللعبة، زر <span class="gd-pill">البث المباشر</span>، المهمة الحالية، الموارد الخمسة مع مكسب اليوم، نقاط الحركة (AP) و<span class="gd-pill">مكاسبي</span>.</li>
+          <li><span class="gd-n">5</span><b>الإعدادات:</b> <span class="gd-pill">فتح إعدادات البوت</span> لاختيار الأنشطة، و<span class="gd-pill">تعديل الجدولة</span> لساعات العمل.</li>
+          <li><span class="gd-n">6</span><b>الجيوش المرسلة:</b> كل جيش خارج المدينة: القائد، الهدف والحالة.</li>
+          <li><span class="gd-n">7</span><b>سجل الأحداث:</b> كل ما فعله البوت بالترتيب، مع الإشعارات المهمة (هجوم، بريد، ملخص يومي).</li>
+        </ol>
+
+        <h3 class="gd-sec" id="gd-adv">🧩 ميزات متقدمة</h3>
+        <div class="gd-card"><b>🏙️ شريط «في المدينة»</b><p>يعرض الأبحاث (ومنها أبحاث الكريستال)، البناء، تدريب الجنود، مواد الحداد، وعلاج المستشفى مع الوقت المتبقي. يقرؤه البوت من «نظرة عامة على الطوابير» كل 10 دقائق تقريباً، وبعد كل تبديل شخصية.</p></div>
+        <div class="gd-card"><b>👥 الشخصيات الأخرى</b><p>للشخصيات غير النشطة يعرض البوت <u>تقديراً</u> لعدد الجيوش التي ما زالت خارج المدينة، محسوباً من آخر قراءة ومدة المسيرات — قد يختلف قليلاً عن الواقع حتى يعود البوت لتلك الشخصية.</p></div>
+        <div class="gd-card"><b>🧊 تجميد الأيام</b><p>يوقف عدّاد أيام الخانة مؤقتاً (للخانات المدفوعة فقط، ليس التجربة): حتى <b>7 أيام مجمّدة في أي 30 يوماً</b>. زر <span class="gd-pill">إنهاء التجميد الآن</span> يعيد البوت للعمل، يعدّل تاريخ الانتهاء ويُرجع الأيام الكاملة غير المستعملة.</p></div>
+        <div class="gd-card"><b>⏯️ START / STOP</b><p><span class="gd-pill">STOP</span> يوقف البوت بعد إنهاء الخطوة الحالية (يصل للسيرفر خلال دقيقة) ولا يغيّر تاريخ الانتهاء. <span class="gd-pill">START</span> يشغّله من جديد بنفس الإعدادات المحفوظة.</p></div>
+
+        <h4 class="gd-sub" id="gd-status">🚦 معنى الحالة</h4>
+        <ul class="gd-legend">
+          <li><span class="gd-st ok">البوت يعمل</span>ينفّذ المهام الآن.</li>
+          <li><span class="gd-st info">جارٍ التشغيل…</span>يفتح اللعبة (عادة 1–2 دقيقة؛ إذا علِق أكثر من ~6 دقائق يعيد المحاولة تلقائياً).</li>
+          <li><span class="gd-st wait">متوقف مؤقتاً</span>توقف قصير لصيانة أو فحص، ويعود وحده.</li>
+          <li><span class="gd-st warn">الجهاز لا يستجيب</span>مشكلة اتصال مؤقتة، تُحل غالباً خلال دقائق.</li>
+          <li><span class="gd-st warn">لا استجابة من اللعبة</span>اللعبة متجمدة؛ يعيد النظام تشغيل الجهاز تلقائياً (بحد أقصى يومي).</li>
+          <li><span class="gd-st off">البوت غير متصل</span>العامل غير متصل؛ أوامرك تنتظر حتى يعود.</li>
+          <li><span class="gd-st err">خطأ</span>تفاصيل الخطأ تحت المعاينة؛ غالباً يتعافى وحده.</li>
+        </ul>
+        <div class="gd-call warn">⚠️ إذا استمرت حالة «الجهاز لا يستجيب» أو «البوت غير متصل» أكثر من بضع دقائق، افتح تذكرة في <span class="gd-pill">الدعم</span>.</div>
+
+        <h3 class="gd-sec" id="gd-sched">🕒 الجدولة الذكية</h3>
+        <p class="gd-p">تحدد ساعات عمل البوت بتوقيت غرينتش (UTC) مع إزاحة عشوائية بسيطة. خارج الساعات ينتظر ولا يلمس اللعبة.</p>
+        <h3 class="gd-sec" id="gd-gains">💰 مكاسبي</h3>
+        <p class="gd-p">ما كسبته كل يوم من الموارد والجواهر لآخر 30 يوماً، مع رسم بياني وجدول.</p>
+        <h3 class="gd-sec" id="gd-log">📜 سجل الأحداث</h3>
+        <p class="gd-p">كل خطوة قام بها البوت، والإشعارات (هجوم، بريد، ملخص يومي) مع فلاتر حسب النوع.</p>
+        <h3 class="gd-sec" id="gd-acc">🔔 الحساب والإشعارات</h3>
+        <p class="gd-p">من <span class="gd-pill">حسابي</span> تغيّر البريد وكلمة المرور، وتربط تيليجرام لتصلك التنبيهات.</p>
+        <h3 class="gd-sec" id="gd-habits">🌱 عادات جيدة</h3>
+        <p class="gd-p">راجع اللوحة مرة أو مرتين يومياً، ابدأ بأنشطة قليلة ثم زد، واقرأ الشرح ❗ قبل تفعيل أي ميزة.</p>
+        <h3 class="gd-sec" id="gd-support">🛟 الدعم</h3>
+        <p class="gd-p">من <span class="gd-pill">الدعم</span> في القائمة افتح تذكرة وأرفق صورة إن أمكن.</p>
+        <h3 class="gd-sec" id="gd-discord">💬 ديسكورد</h3>
+        <p class="gd-p">انضم لسيرفر ديسكورد للأخبار والمسابقات والمساعدة السريعة من المجتمع.</p>
+        <h3 class="gd-sec" id="gd-faq">❓ الأسئلة</h3>
+        <p class="gd-p">اسأل <span class="gd-pill">المساعد</span> من القائمة — عنده أجوبة سريعة لأكثر الأسئلة.</p>
       </section>
     </div>
 
@@ -2064,6 +2168,7 @@ function pushBrowser(list) {
 }
 const PAGE_INFO = {
   ap_card: { name: "نقاط الحركة وبطاقات الموارد", text: "كل بطاقة مورد تعرض الرصيد الحالي، وتحته ما كسبته اليوم (بتوقيت غرينتش، من جدول مكاسبي) وشريطاً صغيراً يقارن المورد بأكبر مورد عندك. بطاقة نقاط الحركة (AP) تعرض الحالية / القصوى ونسبة الامتلاء، ويقرؤها البوت من الملف الشخصي للحاكم (عند «تحديث اسم المستخدم والملف» في المساعد، أو تلقائياً كل فترة). يصير الشريط أحمر تحت 20%. البوت لا يستعمل الجواهر لشراء نقاط حركة أبداً." },
+  guide: { name: "الدليل", text: "دليل استعمال اللوحة خطوة بخطوة: اضغط أي عنوان في «في هذه الصفحة» للانتقال إليه مباشرة. الأرقام 1–7 في مخطط «لوحتك» تطابق الشرح تحته، و«معنى الحالة» يشرح كل حالة تظهر في رأس الخانة." },
   gains: { name: "مكاسبي", text: "يسجل البوت كل يوم (بتوقيت غرينتش) ما تكسبه من طعام وخشب وحجر وذهب وجواهر لآخر 30 يوماً. يقرأ شريط الموارد بعد كل جولة ويحسب الزيادات فقط (الجمع من الخريطة، جمع فقاعات المدينة، المكافآت)، أما الصرف على التدريب والبناء فلا يُخصم. الجواهر تُحسب من الزيادة في رصيد الجواهر خلال اليوم. اختر المورد لعرض الرسم البياني، والجدول يعرض كل الموارد مع عدد البرابرة والحصون. الأرقام في الجدول مختصرة (3.3M = 3,300,000 و 130K = 130,000) — مرّر المؤشر أو اضغط على الرقم لرؤيته كاملاً، وعمود اليوم ثابت عند التمرير على الجوال." },
   notes: { name: "الإشعارات", text: "تصل هنا إشعارات البوت مباشرة: هجوم على المدينة أو على جيوشك، رسائل البريد الخاصة، وملخص نهاية اليوم عند 00:00 بتوقيت غرينتش (مجموع الموارد والجواهر وعدد البرابرة والحصون). تصل نفس الإشعارات إلى بوت تيليجرام. تحتها سجل الأحداث الكامل. ما دامت اللوحة مفتوحة يظهر كل إشعار جديد كرسالة منبثقة، ومع «تنبيه بصوت واهتزاز» يصدر صوتاً عند الهجوم. تنبيهات المتصفح خارج اللوحة لا يسمح بها موقع claude.ai، لذلك تصل الإشعارات فوراً إلى تيليجرام @CrownKingsBot." }
 };
@@ -2394,6 +2499,9 @@ function astInit() {
     astAdd(st); });
   astDraw();
 }
+// GUIDE-01: "On this page" links scroll inside the guide (they must not change the view hash)
+document.addEventListener("click", e => { const a = e.target.closest && e.target.closest(".gd-jump a[href^='#gd-']"); if (!a) return;
+  e.preventDefault(); const t = document.getElementById(a.getAttribute("href").slice(1)); if (t) t.scrollIntoView({ behavior: "smooth", block: "start" }); });
 if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", astInit); else setTimeout(astInit, 0);
 /* ---------- v192: approved commander list = pictures in kingbot-ui/commanders (GitHub) ---------- */
 // same commander, different spellings ("Suleiman" / "Suleiman I", "Edward" / "Edward of Woodstock") share one key
@@ -3570,7 +3678,7 @@ document.getElementById("cond-ic").innerHTML = gsvg("conduct", 46);
   const lo = document.getElementById("langs"); if (lo) new MutationObserver(syncLang).observe(lo, { attributes: true, subtree: true, attributeFilter: ["class"] }); syncLang();
 
   // v139: address pill = current page + bot status; tap = refresh status
-  const PG = { "v-home": "الرئيسية", "v-acts": "المهام", "v-sched": "الجدولة", "v-gains": "مكاسبي", "v-log": "سجل الأحداث", "v-account": "الحساب", "v-about": "نبذة", "v-subs": "الاشتراكات", "v-contact": "التواصل", "v-live": "البث المباشر" };
+  const PG = { "v-home": "الرئيسية", "v-acts": "المهام", "v-sched": "الجدولة", "v-gains": "مكاسبي", "v-log": "سجل الأحداث", "v-account": "الحساب", "v-about": "نبذة", "v-subs": "الاشتراكات", "v-contact": "التواصل", "v-live": "البث المباشر", "v-guide": "الدليل" };
   const pgEl = document.getElementById("kbar-page"), urlB = document.getElementById("kbar-url"), dot = document.getElementById("kbar-dot");
   const syncPage = () => { const v = document.querySelector(".view.show"); if (pgEl) pgEl.textContent = PG[v && v.id] || "الرئيسية"; };
   document.querySelectorAll(".view").forEach(v => new MutationObserver(syncPage).observe(v, { attributes: true, attributeFilter: ["class"] })); syncPage();
