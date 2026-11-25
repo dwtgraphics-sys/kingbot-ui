@@ -1,4 +1,10 @@
-<!DOCTYPE html><html lang="ar" dir="rtl"><head><!-- frame-runtime --><!-- /frame-runtime -->
+<!DOCTYPE html><html lang="ar" dir="rtl"><head>
+<script>
+window.gsvg = window.gsvg || function(k) {
+  return '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>';
+};
+</script>
+<!-- frame-runtime --><!-- /frame-runtime -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>لوحة تحكم Kingbot</title>
@@ -3124,8 +3130,6 @@ renderAll();
   apply(saved && LANGS.some(x => x[0] === saved) ? saved : "ar");
 })();
 
-}
-
 } catch (err) {
   let b = document.getElementById('kb-err-banner') || document.body.appendChild(Object.assign(document.createElement('div'), {id:'kb-err-banner', style:'position:fixed;top:0;left:0;right:0;z-index:999999;background:#b91c1c;color:#fff;padding:12px;font:12px monospace;direction:ltr;word-break:break-all;'}));
   b.textContent = 'RUNTIME ERROR: ' + err.message + ' | ' + (err.stack || '').split('\n')[1];
@@ -3779,7 +3783,178 @@ input:checked+.slider{background:var(--gold)}input:checked+.slider:before{transf
 .day-chip.active,.day-chip:hover{border-color:var(--blue);background:rgba(59,130,246,0.2);color:#93c5fd}
 .toast{position:fixed;top:68px;left:50%;transform:translateX(-50%);z-index:300;background:#1f2937;color:#fff;border:1px solid var(--gold);padding:10px 18px;border-radius:12px;font-size:13px;font-weight:700;display:none}
 </style></head>
-<body><div class="toast" id="toast"></div>
+<body>
+
+<style id="kb-enhancements-css">
+  .kb-top-menu {
+    display: flex; flex-wrap: wrap; gap: 6px; justify-content: center;
+    padding: 8px 12px; background: rgba(15,18,24,0.92);
+    border-bottom: 1px solid rgba(245,158,11,0.22); position: sticky; top: 0; z-index: 9998;
+    backdrop-filter: blur(10px);
+  }
+  .kb-top-menu button {
+    background: rgba(255,255,255,0.06); color: #f3f4f6; border: 1px solid rgba(255,255,255,0.12);
+    padding: 6px 11px; border-radius: 999px; font-size: 12px; font-weight: 700; cursor: pointer;
+  }
+  .kb-top-menu button:hover, .kb-top-menu button.active {
+    background: rgba(245,158,11,0.18); border-color: #f59e0b; color: #fbbf24;
+  }
+  .kb-top-menu button.kb-lang-pill { background: #f59e0b; color: #111; border: none; }
+  .kb-pop-bg {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.78); backdrop-filter: blur(6px);
+    z-index: 99999; display: none; align-items: center; justify-content: center; padding: 16px;
+  }
+  .kb-pop-bg.open { display: flex; }
+  .kb-pop-card {
+    background: #161b24; border: 1px solid rgba(245,158,11,0.35); border-radius: 20px;
+    width: 100%; max-width: 440px; padding: 18px; color: #f3f4f6; display: flex; flex-direction: column; gap: 12px;
+  }
+  .kb-pop-head { display: flex; justify-content: space-between; align-items: center; }
+  .kb-pop-head h3 { margin: 0; font-size: 16px; color: #f59e0b; }
+  .kb-pop-x { background: rgba(255,255,255,0.08); border: none; color: #fff; width: 30px; height: 30px; border-radius: 9px; cursor: pointer; }
+  .kb-fdays { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  .kb-fchip {
+    background: #1f2633; border: 1px solid rgba(255,255,255,0.1); color: #e5e7eb;
+    padding: 9px; border-radius: 11px; font-weight: 700; font-size: 12px; cursor: pointer; text-align: center;
+  }
+  .kb-fchip.sel, .kb-fchip:hover { border-color: #3b82f6; background: rgba(59,130,246,0.22); color: #93c5fd; }
+  .kb-pop-input {
+    width: 100%; background: #1f2633; border: 1px solid rgba(255,255,255,0.14); color: #fff;
+    padding: 9px 11px; border-radius: 11px; font-size: 13px; box-sizing: border-box;
+  }
+  .kb-pop-save {
+    width: 100%; padding: 11px; border-radius: 12px; border: none; font-weight: 800; font-size: 14px;
+    background: linear-gradient(135deg, #f59e0b, #d97706); color: #111; cursor: pointer;
+  }
+</style>
+
+<div class="kb-top-menu" id="kb-top-menu">
+  <button class="active" onclick="kbOpenTab('home', this)">????????</button>
+  <button onclick="kbOpenTab('about', this)">???? ?? ?????</button>
+  <button onclick="kbOpenTab('subs', this)">??????????</button>
+  <button onclick="kbOpenTab('settings', this)">?????????</button>
+  <button onclick="kbOpenTab('freeze', this)">?? ???????</button>
+  <button onclick="kbOpenTab('logout', this)" style="color:#fca5a5">????? ??????</button>
+  <button class="kb-lang-pill" onclick="kbSwitchLang()">AR / EN</button>
+</div>
+
+<div class="kb-pop-bg" id="kb-pop-modal">
+  <div class="kb-pop-card">
+    <div class="kb-pop-head"><h3 id="kb-pop-title">???????</h3><button class="kb-pop-x" onclick="kbClosePop()">?</button></div>
+    <div id="kb-pop-body"></div>
+  </div>
+</div>
+
+<script id="kb-enhancements-js">
+(function() {
+  const CMDS = ["Minamoto no Yoshitsune","Cao Cao","Aethelflaed","Sun Tzu","Boudica","Lohar","Belisarius","Pelagius","Baibars","Hermann","Kusunoki Masashige","Joan of Arc","Richard I","Yi Seong-Gye","Alexander the Great","Saladin","Genghis Khan","Takeda Shingen","Attila","Guan Yu","Leonidas I","Xiang Yu","William I","Nevsky","Joan of Arc Prime","Huon","Boudica Prime","Zhuge Liang","Scipio Africanus Prime","Liu Che","Hermann Prime","Arthur Pendragon"];
+
+  // Replace old broken freeze button behavior with smart days modal
+  document.addEventListener("click", function(e) {
+    const oldFrz = e.target.closest("#ac-freeze");
+    if (oldFrz) {
+      e.preventDefault(); e.stopImmediatePropagation();
+      kbOpenTab("freeze");
+      return;
+    }
+    const oldRun = e.target.closest("#ac-run");
+    if (oldRun && window.settings && typeof window.sendSettings === "function") {
+      e.preventDefault(); e.stopImmediatePropagation();
+      const next = !window.settings.running;
+      window.settings.running = next;
+      window.sendSettings({ running: next }, "m-acc", oldRun).then(() => {
+        if (typeof window.renderAccount === "function") window.renderAccount();
+      });
+    }
+  }, true);
+
+  // Inject Primary & Secondary Commander selectors inside rally_fort card if missing
+  function ensureFortCommanders() {
+    const fortBox = document.querySelector("[data-act='rally_fort'], #act-rally_fort");
+    if (!fortBox || fortBox.querySelector(".kb-fort-cmds")) return;
+    const opts = fortBox.querySelector(".act-opts, .opts, .a-body") || fortBox;
+    const cur1 = (window.settings && window.settings.acts && window.settings.acts.rally_fort && window.settings.acts.rally_fort.primary_commander) || "Minamoto no Yoshitsune";
+    const cur2 = (window.settings && window.settings.acts && window.settings.acts.rally_fort && window.settings.acts.rally_fort.secondary_commander) || "Cao Cao";
+    const wrap = document.createElement("div");
+    wrap.className = "kb-fort-cmds";
+    wrap.style.cssText = "display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px;padding-top:8px;border-top:1px solid rgba(255,255,255,0.08);";
+    wrap.innerHTML = `
+      <div><label style="font-size:11px;color:#9ca3af;display:block;margin-bottom:4px">?????? ???????</label>
+        <select class="kb-pop-input" id="kb-fort-c1">${CMDS.map(c=>`<option value="${c}" ${c===cur1?"selected":""}>${c}</option>`).join("")}</select></div>
+      <div><label style="font-size:11px;color:#9ca3af;display:block;margin-bottom:4px">?????? ???????</label>
+        <select class="kb-pop-input" id="kb-fort-c2">${CMDS.map(c=>`<option value="${c}" ${c===cur2?"selected":""}>${c}</option>`).join("")}</select></div>`;
+    opts.appendChild(wrap);
+    wrap.querySelector("#kb-fort-c1").onchange = function() { if (window.settings?.acts?.rally_fort) window.settings.acts.rally_fort.primary_commander = this.value; };
+    wrap.querySelector("#kb-fort-c2").onchange = function() { if (window.settings?.acts?.rally_fort) window.settings.acts.rally_fort.secondary_commander = this.value; };
+  }
+  setInterval(ensureFortCommanders, 900);
+
+  window.kbClosePop = () => document.getElementById("kb-pop-modal").classList.remove("open");
+  window.kbSwitchLang = () => {
+    const cur = localStorage.getItem("kb_lang") || "ar";
+    const next = cur === "ar" ? "en" : "ar";
+    localStorage.setItem("kb_lang", next);
+    const nativeBtn = document.querySelector("#b-lang, .lang-btn, [data-lang]");
+    if (nativeBtn) nativeBtn.click(); else location.reload();
+  };
+
+  window.kbOpenTab = function(tab, btn) {
+    document.querySelectorAll("#kb-top-menu button").forEach(b => b.classList.remove("active"));
+    if (btn) btn.classList.add("active");
+    if (tab === "home") { kbClosePop(); return; }
+    const t = document.getElementById("kb-pop-title"), b = document.getElementById("kb-pop-body");
+    if (tab === "freeze") {
+      t.textContent = "?? ??????? ????? ??????";
+      b.innerHTML = `
+        <p style="font-size:12px;color:#9ca3af;margin:0 0 10px">???? ??? ???? ??????? ??????? ?? ???? ????? ?????????:</p>
+        <div class="kb-fdays">
+          <div class="kb-fchip" onclick="kbPickDay(1,this)">1 ???</div>
+          <div class="kb-fchip" onclick="kbPickDay(3,this)">3 ????</div>
+          <div class="kb-fchip" onclick="kbPickDay(7,this)">7 ????</div>
+          <div class="kb-fchip" onclick="kbPickDay(14,this)">14 ???</div>
+          <div class="kb-fchip" onclick="kbPickDay(30,this)">30 ???</div>
+          <div class="kb-fchip" style="color:#fca5a5" onclick="kbPickDay(0,this)">????? ???????</div>
+        </div>
+        <div style="margin:10px 0"><label style="font-size:11px;color:#9ca3af;display:block;margin-bottom:4px">??? ???? ???? (???????):</label>
+          <input type="number" id="kb-f-custom" class="kb-pop-input" min="0" max="365" placeholder="????: 5"></div>
+        <button class="kb-pop-save" onclick="kbSaveFreeze()">????? ???? ???????</button>`;
+    } else if (tab === "about") {
+      t.textContent = "???? ?? ????? ? KINGBOT";
+      b.innerHTML = `<p style="font-size:13px;line-height:1.7;color:#d1d5db">???? <b>KINGBOT</b> ?????? ?????? ?????? Rise of Kingdoms ??? ???? ?????? ????? ???? ???? ?? ????? ?????? ????? ?????? ??????? ?????? ?? ??????.</p>`;
+    } else if (tab === "subs") {
+      t.textContent = "?????????? ????????";
+      b.innerHTML = `<div style="background:#1f2633;padding:12px;border-radius:12px;border:1px solid #f59e0b"><b style="color:#fbbf24">?????? ?????? ? VIP</b><p style="font-size:12px;color:#9ca3af;margin:6px 0 0">????? ????? ??????? ???? ???????? ?????? ?? ????? ??????? ?? ?????? ??????.</p></div>`;
+    } else if (tab === "settings") {
+      t.textContent = "??????? ?????? ??????";
+      b.innerHTML = `<p style="font-size:12px;color:#9ca3af;margin-bottom:10px">???? ?? ??? ????????? ??? ?? <b>??? ??????</b> ???? ?????? ????????? ?? ??????? ?????.</p>
+        <button class="kb-pop-save" onclick="kbClosePop()">?????? ?????</button>`;
+    } else if (tab === "logout") {
+      t.textContent = "????? ??????";
+      b.innerHTML = `<p style="font-size:13px;margin-bottom:12px">?? ???? ????? ?????? ???? ?????? ?????? ????????</p>
+        <button class="kb-pop-save" style="background:#ef4444;color:#fff" onclick="localStorage.clear();location.reload();">????? ????? ??????</button>`;
+    }
+    document.getElementById("kb-pop-modal").classList.add("open");
+  };
+
+  window.kbPickDay = (d, el) => {
+    document.querySelectorAll(".kb-fchip").forEach(c => c.classList.remove("sel"));
+    el.classList.add("sel");
+    document.getElementById("kb-f-custom").value = d;
+  };
+  window.kbSaveFreeze = () => {
+    const d = parseInt(document.getElementById("kb-f-custom").value || "0", 10);
+    const until = d > 0 ? new Date(Date.now() + d * 86400000).toISOString() : null;
+    if (window.settings) {
+      window.settings.freeze_until = until;
+      if (d > 0) window.settings.running = false;
+      if (typeof window.sendSettings === "function") window.sendSettings({ freeze_until: until, running: window.settings.running }, "m-acc");
+      if (typeof window.renderAccount === "function") window.renderAccount();
+    }
+    kbClosePop();
+  };
+})();
+</script>
+<div class="toast" id="toast"></div>
 <header class="topbar"><div class="brand"><span class="status-dot"></span><span>KINGBOT</span></div>
 <nav class="nav-links">
   <button class="nav-btn active" onclick="openNavModal('home',this)" data-i18n="nav_home">????????</button>
