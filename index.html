@@ -159,6 +159,18 @@ svg { display: block; }
 .task { grid-template-columns: auto auto 1fr auto; }
 .slug { font-family: var(--mono); font-size: 11px; direction: ltr; color: #8fa6c0; }
 .stats.res { grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); }
+/* UX-01: 2x3 resource + AP grid */
+.stats.res.ux6 { grid-template-columns: repeat(3, 1fr); }
+@media (max-width: 560px) { .stats.res.ux6 { grid-template-columns: 1fr 1fr; } }
+.stats.res .stat > div { min-width: 0; flex: 1; display: flex; flex-direction: column; gap: 2px; }
+.r-dl { font-size: 11px; opacity: .7; direction: ltr; text-align: start; } .r-dl.up { color: #5fd38a; opacity: 1; }
+.r-bar { display: block; height: 4px; border-radius: 4px; background: rgba(255,255,255,.08); overflow: hidden; margin-top: 3px; }
+.r-bar u { display: block; height: 100%; width: 0; background: linear-gradient(90deg, #e0a93b, #ffd27a); transition: width .5s; }
+.ap-card .remoji { font-size: 26px; } .ap-card .r-bar u { background: linear-gradient(90deg, #3aa7ff, #7fd0ff); }
+.ap-card.low .r-bar u { background: #e05a4a; } .ap-card b { display: flex; align-items: center; gap: 4px; white-space: nowrap; }
+.ap-card b .info-btn { width: 20px; height: 20px; min-width: 0; font-size: 10px; padding: 0; line-height: 1; }
+#r-ap, .ap-card .r-dl { white-space: nowrap; } @media (max-width: 560px) { #r-ap { font-size: 14px; } .ap-card .remoji { display: none; } }
+#r-ap { font-family: var(--mono); font-size: 16px; font-weight: 800; direction: ltr; text-align: start; }
 .info-btn { background: none; border: 1px solid var(--line, #2a3550); border-radius: 50%; width: 30px; height: 30px; cursor: pointer; font-size: 14px; flex: none; }
 .stepwrap { display: inline-flex; flex-direction: column; align-items: center; gap: 2px; }
 .steplab { font-size: 11px; opacity: .8; white-space: nowrap; }
@@ -2045,6 +2057,7 @@ function pushBrowser(list) {
   if (list.length) { ntLastPushed = list[list.length - 1].t; try { localStorage.setItem("kb_nt_pushed", ntLastPushed); } catch (_) {} }
 }
 const PAGE_INFO = {
+  ap_card: { name: "نقاط الحركة وبطاقات الموارد", text: "كل بطاقة مورد تعرض الرصيد الحالي، وتحته ما كسبته اليوم (بتوقيت غرينتش، من جدول مكاسبي) وشريطاً صغيراً يقارن المورد بأكبر مورد عندك. بطاقة نقاط الحركة (AP) تعرض الحالية / القصوى ونسبة الامتلاء، ويقرؤها البوت من الملف الشخصي للحاكم (عند «تحديث اسم المستخدم والملف» في المساعد، أو تلقائياً كل فترة). يصير الشريط أحمر تحت 20%. البوت لا يستعمل الجواهر لشراء نقاط حركة أبداً." },
   gains: { name: "مكاسبي", text: "يسجل البوت كل يوم (بتوقيت غرينتش) ما تكسبه من طعام وخشب وحجر وذهب وجواهر لآخر 30 يوماً. يقرأ شريط الموارد بعد كل جولة ويحسب الزيادات فقط (الجمع من الخريطة، جمع فقاعات المدينة، المكافآت)، أما الصرف على التدريب والبناء فلا يُخصم. الجواهر تُحسب من الزيادة في رصيد الجواهر خلال اليوم. اختر المورد لعرض الرسم البياني، والجدول يعرض كل الموارد مع عدد البرابرة والحصون. الأرقام في الجدول مختصرة (3.3M = 3,300,000 و 130K = 130,000) — مرّر المؤشر أو اضغط على الرقم لرؤيته كاملاً، وعمود اليوم ثابت عند التمرير على الجوال." },
   notes: { name: "الإشعارات", text: "تصل هنا إشعارات البوت مباشرة: هجوم على المدينة أو على جيوشك، رسائل البريد الخاصة، وملخص نهاية اليوم عند 00:00 بتوقيت غرينتش (مجموع الموارد والجواهر وعدد البرابرة والحصون). تصل نفس الإشعارات إلى بوت تيليجرام. تحتها سجل الأحداث الكامل. ما دامت اللوحة مفتوحة يظهر كل إشعار جديد كرسالة منبثقة، ومع «تنبيه بصوت واهتزاز» يصدر صوتاً عند الهجوم. تنبيهات المتصفح خارج اللوحة لا يسمح بها موقع claude.ai، لذلك تصل الإشعارات فوراً إلى تيليجرام @CrownKingsBot." }
 };
@@ -2944,8 +2957,45 @@ function renderCity(c) {
   const tv = $("tavern-t"); if (tv) tv.textContent = "الحانة: " + (c.tavern ? c.tavern + (c.tavern_read ? " (" + c.tavern_read + ")" : "") : "—");
   $("vip-shop-t").textContent = "متجر VIP: " + (c.vip_shop_refresh ? "يتجدد بعد " + c.vip_shop_refresh + (c.vip_shop_read ? " (قراءة " + c.vip_shop_read + ")" : "") : "—");
 }
-function renderRes(r) {
+/* UX-01: 2x3 live cards - each resource gets "+X today" and a small bar (share of the biggest stock),
+   the 6th card is Action Points "cur / max" read by the bot from the governor profile (city.ap). */
+function uxResCards(r, c) {
+  const grid = document.querySelector(".stats.res"); if (!grid) return;
+  grid.classList.add("ux6");
+  const KS = ["food", "wood", "stone", "gold", "gems"], day = new Date().toISOString().slice(0, 10);
+  const hist = (c && Array.isArray(c.history)) ? c.history : (typeof gnHist !== "undefined" ? gnHist : []);
+  const today = hist.length && hist[hist.length - 1].day === day ? hist[hist.length - 1] : null;
+  const big = Math.max(1, ...["food", "wood", "stone", "gold"].map(k => +(r || {})[k] || 0));
+  KS.forEach(k => {
+    const el = $("r-" + k); if (!el) return; const box = el.parentElement;
+    let dl = box.querySelector(".r-dl"), bar = box.querySelector(".r-bar");
+    if (!dl) { dl = document.createElement("small"); dl.className = "r-dl"; box.appendChild(dl); }
+    if (!bar) { bar = document.createElement("i"); bar.className = "r-bar"; bar.innerHTML = "<u></u>"; box.appendChild(bar); }
+    const g = today ? +today[k] || 0 : 0;
+    dl.textContent = today ? (g > 0 ? "+" : "") + (typeof gnShort === "function" ? gnShort(g) : g) + " اليوم" : "—";
+    dl.classList.toggle("up", g > 0);
+    const v = +(r || {})[k] || 0, pct = k === "gems" ? Math.min(100, v / 1000) : Math.round(100 * v / big);
+    bar.firstChild.style.width = (r ? pct : 0) + "%";
+    bar.title = k === "gems" ? "" : pct + "% من أكبر مورد";
+  });
+  let ap = $("ap-card");
+  if (!ap) {
+    ap = document.createElement("div"); ap.className = "stat ap-card"; ap.id = "ap-card";
+    ap.innerHTML = '<span class="remoji" aria-hidden="true">⚡</span><div><b>نقاط الحركة <button type="button" class="info-btn" aria-label="شرح">❗</button></b><span id="r-ap">—</span><small class="r-dl" id="r-ap-pct"></small><i class="r-bar"><u id="r-ap-bar"></u></i></div>';
+    grid.appendChild(ap);
+    const ib = ap.querySelector(".info-btn"); ib.addEventListener("click", () => { try { showInfo({ name: PAGE_INFO.ap_card.name, hint: PAGE_INFO.ap_card.text }); } catch (_) {} });
+  }
+  const a = (c || {}).ap;
+  if (a && +a.max) {
+    const pct = Math.round(100 * (+a.cur || 0) / +a.max);
+    $("r-ap").textContent = (+a.cur || 0).toLocaleString("en-US") + " / " + (+a.max).toLocaleString("en-US");
+    $("r-ap-pct").textContent = pct + "% ممتلئ" + (a.read_at ? " · " + String(a.read_at).slice(11) : "");
+    $("r-ap-bar").style.width = pct + "%"; ap.classList.toggle("low", pct < 20);
+  } else { $("r-ap").textContent = "—"; $("r-ap-pct").textContent = "تُقرأ مع الملف الشخصي"; $("r-ap-bar").style.width = "0"; }
+}
+function renderRes(r, city) {
   ["food", "wood", "stone", "gold", "gems"].forEach(k => { const el = $("r-" + k); if (el) el.textContent = r ? fmtAmount(r[k]) : "—"; });
+  try { uxResCards(r, city || (lastStatus || {}).city); } catch (e) { console.warn("res cards", e); }
   const at = $("res-at"); if (at) at.textContent = r && r.read_at ? "آخر قراءة " + r.read_at : "لم يقرأ البوت الموارد بعد";
 }
 
@@ -3007,7 +3057,7 @@ async function refreshStatus(btn) {
     $("f-task").textContent = s.state === "working" ? (s.task || "—") : "—";
     $("f-last").textContent = fmtTime(s.last_round);
     $("f-next").textContent = s.state === "waiting" ? fmtTime(s.next_round) : "—";
-    renderRes(s.resources);
+    renderRes(s.resources, s.city);
     renderCity(s.city);
     try { renderConduct(s.city); } catch (_) {}
     try { checkCharChange(s); checkWatched(s); astTick(s); } catch (_) {}
