@@ -1,4 +1,329 @@
 {
- "count": 0,
- "commanders": []
+ "count": 81,
+ "commanders": [
+  {
+   "name": "Aethelflaed",
+   "img": "commanders/Aethelflaed.png"
+  },
+  {
+   "name": "Alexander Nevsky",
+   "img": "commanders/Alexander Nevsky.png"
+  },
+  {
+   "name": "Alexander the Great",
+   "img": "commanders/Alexander the Great.png"
+  },
+  {
+   "name": "Amanitore",
+   "img": "commanders/Amanitore.png"
+  },
+  {
+   "name": "Archimedes",
+   "img": "commanders/Archimedes.png"
+  },
+  {
+   "name": "Artemisia I",
+   "img": "commanders/Artemisia I.png"
+  },
+  {
+   "name": "Ashurbanipal",
+   "img": "commanders/Ashurbanipal.png"
+  },
+  {
+   "name": "Attila",
+   "img": "commanders/Attila.png"
+  },
+  {
+   "name": "Babur",
+   "img": "commanders/Babur.png"
+  },
+  {
+   "name": "Baibars",
+   "img": "commanders/Baibars.png"
+  },
+  {
+   "name": "Belisarius Prime",
+   "img": "commanders/Belisarius Prime.png"
+  },
+  {
+   "name": "Belisarius",
+   "img": "commanders/Belisarius.png"
+  },
+  {
+   "name": "Bertrand du Guesclin",
+   "img": "commanders/Bertrand du Guesclin.png"
+  },
+  {
+   "name": "Bjorn Ironside",
+   "img": "commanders/Bjorn Ironside.png"
+  },
+  {
+   "name": "Boudica Prime",
+   "img": "commanders/Boudica Prime.png"
+  },
+  {
+   "name": "Boudica",
+   "img": "commanders/Boudica.png"
+  },
+  {
+   "name": "Cao Cao",
+   "img": "commanders/Cao Cao.png"
+  },
+  {
+   "name": "Chandragupta Maurya",
+   "img": "commanders/Chandragupta Maurya.png"
+  },
+  {
+   "name": "Charlemagne",
+   "img": "commanders/Charlemagne.png"
+  },
+  {
+   "name": "Charles Martel",
+   "img": "commanders/Charles Martel.png"
+  },
+  {
+   "name": "Cheok Jun-gyeong",
+   "img": "commanders/Cheok Jun-gyeong.png"
+  },
+  {
+   "name": "Cleopatra VII",
+   "img": "commanders/Cleopatra VII.png"
+  },
+  {
+   "name": "Constance",
+   "img": "commanders/Constance.png"
+  },
+  {
+   "name": "Constantine I",
+   "img": "commanders/Constantine I.png"
+  },
+  {
+   "name": "Diaochan",
+   "img": "commanders/Diaochan.png"
+  },
+  {
+   "name": "Dido",
+   "img": "commanders/Dido.png"
+  },
+  {
+   "name": "Edward of Woodstock",
+   "img": "commanders/Edward of Woodstock.png"
+  },
+  {
+   "name": "El Cid",
+   "img": "commanders/El Cid.png"
+  },
+  {
+   "name": "Eulji Mundeok",
+   "img": "commanders/Eulji Mundeok.png"
+  },
+  {
+   "name": "Flavius Aetius",
+   "img": "commanders/Flavius Aetius.png"
+  },
+  {
+   "name": "Frederick I",
+   "img": "commanders/Frederick I.png"
+  },
+  {
+   "name": "Gaius Marius",
+   "img": "commanders/Gaius Marius.png"
+  },
+  {
+   "name": "Gajah Mada",
+   "img": "commanders/Gajah Mada.png"
+  },
+  {
+   "name": "Genghis Khan",
+   "img": "commanders/Genghis Khan.png"
+  },
+  {
+   "name": "Gilgamesh",
+   "img": "commanders/Gilgamesh.png"
+  },
+  {
+   "name": "Gorgo",
+   "img": "commanders/Gorgo.png"
+  },
+  {
+   "name": "Harald Sigurdsson",
+   "img": "commanders/Harald Sigurdsson.png"
+  },
+  {
+   "name": "Henry V",
+   "img": "commanders/Henry V.png"
+  },
+  {
+   "name": "Hermann Prime",
+   "img": "commanders/Hermann Prime.png"
+  },
+  {
+   "name": "Hermann",
+   "img": "commanders/Hermann.png"
+  },
+  {
+   "name": "Imhotep",
+   "img": "commanders/Imhotep.png"
+  },
+  {
+   "name": "Joan of Arc Prime",
+   "img": "commanders/Joan of Arc Prime.png"
+  },
+  {
+   "name": "Joan of Arc",
+   "img": "commanders/Joan of Arc.png"
+  },
+  {
+   "name": "Julius Caesar",
+   "img": "commanders/Julius Caesar.png"
+  },
+  {
+   "name": "Keira",
+   "img": "commanders/Keira.png"
+  },
+  {
+   "name": "Kusunoki Masashige",
+   "img": "commanders/Kusunoki Masashige.png"
+  },
+  {
+   "name": "Lancelot",
+   "img": "commanders/Lancelot.png"
+  },
+  {
+   "name": "Leonidas I",
+   "img": "commanders/Leonidas I.png"
+  },
+  {
+   "name": "Lohar",
+   "img": "commanders/Lohar.png"
+  },
+  {
+   "name": "Lu Bu",
+   "img": "commanders/Lu Bu.png"
+  },
+  {
+   "name": "Margaret I",
+   "img": "commanders/Margaret I.png"
+  },
+  {
+   "name": "Matilda of Flanders",
+   "img": "commanders/Matilda of Flanders.png"
+  },
+  {
+   "name": "Minamoto no Yoshitsune",
+   "img": "commanders/Minamoto no Yoshitsune.png"
+  },
+  {
+   "name": "Mulan",
+   "img": "commanders/Mulan.png"
+  },
+  {
+   "name": "Nebuchadnezzar II",
+   "img": "commanders/Nebuchadnezzar II.png"
+  },
+  {
+   "name": "Osman I",
+   "img": "commanders/Osman I.png"
+  },
+  {
+   "name": "Pacal II",
+   "img": "commanders/Pacal II.png"
+  },
+  {
+   "name": "Pakal",
+   "img": "commanders/Pakal.png"
+  },
+  {
+   "name": "Pelagius",
+   "img": "commanders/Pelagius.png"
+  },
+  {
+   "name": "Pericles",
+   "img": "commanders/Pericles.png"
+  },
+  {
+   "name": "Pyrrhus",
+   "img": "commanders/Pyrrhus.png"
+  },
+  {
+   "name": "Ragnar Lodbrok Prime",
+   "img": "commanders/Ragnar Lodbrok Prime.png"
+  },
+  {
+   "name": "Ragnar Lodbrok",
+   "img": "commanders/Ragnar Lodbrok.png"
+  },
+  {
+   "name": "Ramesses II",
+   "img": "commanders/Ramesses II.png"
+  },
+  {
+   "name": "Richard I",
+   "img": "commanders/Richard I.png"
+  },
+  {
+   "name": "Sarka",
+   "img": "commanders/Sarka.png"
+  },
+  {
+   "name": "Scipio Africanus",
+   "img": "commanders/Scipio Africanus.png"
+  },
+  {
+   "name": "Seondeok",
+   "img": "commanders/Seondeok.png"
+  },
+  {
+   "name": "Suleiman I",
+   "img": "commanders/Suleiman I.png"
+  },
+  {
+   "name": "Sun Tzu",
+   "img": "commanders/Sun Tzu.png"
+  },
+  {
+   "name": "Takeda Shingen",
+   "img": "commanders/Takeda Shingen.png"
+  },
+  {
+   "name": "Tariq ibn Ziyad",
+   "img": "commanders/Tariq ibn Ziyad.png"
+  },
+  {
+   "name": "Theodora",
+   "img": "commanders/Theodora.png"
+  },
+  {
+   "name": "Thutmose III",
+   "img": "commanders/Thutmose III.png"
+  },
+  {
+   "name": "Tomoe Gozen",
+   "img": "commanders/Tomoe Gozen.png"
+  },
+  {
+   "name": "Tomyris",
+   "img": "commanders/Tomyris.png"
+  },
+  {
+   "name": "Tribhuwana",
+   "img": "commanders/Tribhuwana.png"
+  },
+  {
+   "name": "William I",
+   "img": "commanders/William I.png"
+  },
+  {
+   "name": "Yi Seong-Gye",
+   "img": "commanders/Yi Seong-Gye.png"
+  },
+  {
+   "name": "Yi Sun-sin",
+   "img": "commanders/Yi Sun-sin.png"
+  },
+  {
+   "name": "Zeno",
+   "img": "commanders/Zeno.png"
+  }
+ ]
 }

@@ -2311,7 +2311,10 @@ function astInit() {
 }
 if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", astInit); else setTimeout(astInit, 0);
 /* ---------- v192: approved commander list = pictures in kingbot-ui/commanders (GitHub) ---------- */
-const cmdKey = n => String(n || "").toLowerCase().normalize("NFKD").replace(/[^a-z0-9]/g, "");
+// same commander, different spellings ("Suleiman" / "Suleiman I", "Edward" / "Edward of Woodstock") share one key
+const CMD_ALIAS = { edwardofwoodstock: "edward", chandraguptamaurya: "chandragupta" };
+const cmdKey = n => { const k = String(n || "").normalize("NFKD").replace(/[̀-ͯ]/g, "").trim()
+  .replace(/\s+(?:i|ii|iii|iv|v|vi|vii)$/i, "").toLowerCase().replace(/[^a-z0-9]/g, ""); return CMD_ALIAS[k] || k; };
 let GH_CMD = {};
 function allCommanders() {
   // GitHub pictures give the approved spelling; the built-in names fill the list until every picture is uploaded
