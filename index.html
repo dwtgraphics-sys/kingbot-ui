@@ -286,6 +286,9 @@ body.nofx .bg canvas, body.nofx .fog, body.nofx .bg-glow { display: none; }
 .pr-item b { display: block; } .pr-item small { opacity: .75; display: block; font-size: 12px; }
 .pr-item .acts { display: flex; gap: 6px; flex-wrap: wrap; } .pr-item .btn, .rot-slot .btn { padding: 5px 12px; font-size: 12px; }
 .pr-item .btn.del, .rot-slot .btn.del { border-color: rgba(229,57,53,.5); }
+.pr-pick { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 10px 0; } .pr-pick select { flex: 1 1 200px; font: inherit; color: var(--ink); background: rgba(0,0,0,.35); border: 1px solid var(--edge); border-radius: 12px; padding: 8px 10px; }
+.pr-sched { margin-top: 12px; padding: 10px 12px; border-radius: 12px; background: rgba(95,178,255,.07); border: 1px solid rgba(95,178,255,.25); display: grid; gap: 8px; } .pr-sched small { opacity: .7; font-size: 12px; }
+.pr-srow { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; } .pr-srow input[type=time], .pr-srow select { font: inherit; color: var(--ink); background: rgba(0,0,0,.35); border: 1px solid var(--edge); border-radius: 10px; padding: 6px 8px; } .pr-srow select { flex: 1 1 160px; }
 .rot-now { margin: 4px 0 10px; padding: 10px 12px; border-radius: 12px; background: rgba(224,169,59,.10); border: 1px solid rgba(224,169,59,.3); font-size: 14px; }
 .rot-slots { display: grid; gap: 8px; }
 .rot-col { margin: 0 0 10px; padding: 10px 12px; border-radius: 12px; background: rgba(95,211,138,.07); border: 1px solid rgba(95,211,138,.25); gap: 10px; } .rot-col small { display: block; opacity: .65; font-size: 12px; margin-top: 2px; }
@@ -1575,7 +1578,11 @@ window.addEventListener("error", function(e) {
         <div class="panel-head"><h2 id="pr-h"><span class="hic" style="background-position:100% 100%"></span>الإعدادات المخصصة <button type="button" class="info-btn" data-info="presets" aria-label="شرح">❗</button></h2><span class="count" id="pr-count">1 محفوظ</span></div>
         <div class="pr-new"><input id="pr-name" type="text" maxlength="40" placeholder="اسم الإعداد، مثلاً: إعداد حشد البربر"><button class="btn primary" id="pr-save" type="button">💾 حفظ الأنشطة الحالية بهذا الاسم</button></div>
         <div class="row" style="margin-top:8px"><button class="btn" id="pr-tpl" type="button">➕ قالب جاهز: حشد البربر (4 جمع + 1 حشد)</button></div>
+        <!-- GUIDE-17: profile dropdown (ready-made / my profiles), scheduled profiles -->
+        <div class="pr-pick"><label for="pr-pick">📂 الملف</label><select id="pr-pick"></select><button class="btn" id="pr-load" type="button">تحميل في الأنشطة</button> <button type="button" class="info-btn" data-info="profiles" aria-label="شرح">❗</button></div>
         <div class="pr-list" id="pr-list"><div class="pr-item"><div><b>85W</b><small>mails · جمع الجواهر · جمع الموارد · جمع موارد المدينة · تدريب القوات · علاج الجرحى +17 · الجولة كل 60 د</small></div><div class="acts"><button type="button" class="btn" data-a="load" data-i="0">تحميل للتعديل</button><button type="button" class="btn" data-a="upd" data-i="0">تحديث من الأنشطة الحالية</button><button type="button" class="btn del" data-a="del" data-i="0">حذف</button></div></div></div>
+        <div class="pr-sched"><b>⏰ ملف حسب الوقت (UTC)</b><small>خلال النافذة يلعب البوت بالملف المختار، وبعد انتهائها يعود تلقائياً لإعداداتك. تبديل الشخصيات يستمر كما هو.</small>
+          <div id="pr-sched-rows"></div><div class="row"><button class="btn" id="pr-sched-add" type="button">+ نافذة</button><button class="btn primary" id="pr-sched-send" type="button"><span class="spin"></span>حفظ وإرسال للبوت</button></div></div>
         <div class="msg" id="m-pr"></div>
       </section>
       <section class="panel" aria-labelledby="rot-h">
@@ -1956,6 +1963,8 @@ window.addEventListener("error", function(e) {
         <div class="gd-card"><b>📱 الدخول من جهاز آخر</b><p>إذا فتحت حسابك من هاتفك أو جهاز آخر تظهر في اللعبة رسالة «دخول من جهاز آخر». البوت <b>ينتظر 10 دقائق</b> (قابلة للتعديل في <span class="gd-pill">الجدولة</span>) ثم يعود، حتى تلعب دون أن يطردك.</p></div>
         <!-- GUIDE-16: settings per character & rotation -->
         <div class="gd-card"><b>👥 الإعدادات لكل شخصية وتبديل الشخصيات</b><p>من <span class="gd-pill">مهمة تبديل الشخصيات</span>: اقرأ قائمة الشخصيات أولاً، ثم أضفها. كل شخصية تلعب بـ<b>«الإعدادات الرئيسية»</b> (العامة) إلا إذا اخترت لها إعداداً محفوظاً فتلعب <b>بإعداداتها الخاصة</b>، و«📋 نسخ الإعداد للبقية» يعمّم إعدادها. لكل شخصية مدة دور خاصة (ثابتة أو عشوائية «من–إلى»): أطول لسلسلة البرابرة وأقصر للجمع. أزل «ضمن التبديل» لإخراجها مؤقتاً، رتّب بـ ▲▼ أو «↺ رجوع لترتيب اللعبة»، وميّز بـ ★ مع «بدّل فقط بين المميزة». «⏭️ بدّل الآن» يعمل فقط إذا مرّت <b>10 دقائق</b> على آخر تبديل.</p></div>
+        <!-- GUIDE-17: profiles -->
+        <div class="gd-card"><b>📂 الملفات وملف حسب الوقت</b><p>من <span class="gd-pill">الإعدادات المخصصة</span>: قائمة «📂 الملف» فيها <b>جاهزة</b> و<b>ملفاتي</b> (حتى 20، مع إعادة تسمية وحذف). تحميل ملف يغيّر الأنشطة فقط ولا يمسح تبديل الشخصيات أو إعداد كل شخصية. «⏰ ملف حسب الوقت» يشغّل ملفاً داخل نافذة بتوقيت UTC، ثم يعود البوت <b>تلقائياً</b> لإعداداتك عند انتهائها.</p></div>
         <!-- GUIDE-14: rallies / recall / city upgrade / Baulur -->
         <div class="gd-card"><b>🏰 حد الحشود اليومي وقائمة اللاعبين</b><p>في خيارات <span class="gd-pill">الانضمام لحشود الحصون</span>: «أقصى عدد انضمامات في اليوم» يوقف الانضمام حتى منتصف الليل <b>UTC</b>، و«انضم فقط لحشود هؤلاء اللاعبين» يجعل البوت ينضم فقط لحشود الأسماء التي تكتبها (مفصولة بفاصلة). البوت يقرأ الاسم من صفحة الحرب، لذلك اكتبه كما يظهر في اللعبة.</p></div>
         <div class="gd-card"><b>🏗️ ترقية المدينة وحقيبة الموارد</b><p>البوت <b>لا يفتح</b> صناديق الموارد من الحقيبة لإكمال نقص الترقية. القاعدة المعتمدة: إذا أُضيف ذلك لاحقاً فلن يفتحها إلا إذا كانت <b>تغطي النقص كاملاً</b>، حتى لا تضيع الموارد على ترقية لن تبدأ.</p></div>
@@ -4408,12 +4417,34 @@ function presetSummary(p) {
   const on = (p.tasks || []).filter(t => t.enabled).map(t => (ALL.find(a => a.routine === t.routine) || {}).name || t.routine);
   return on.length ? on.slice(0, 6).join(" · ") + (on.length > 6 ? " +" + (on.length - 6) : "") : "لا يوجد نشاط مفعّل";
 }
+// GUIDE-17: ready-made profiles (built from the current activities) + my profiles (up to 20) + time-window profiles
+const PR_READY = {
+  "🏹 حشد البربر (4 جمع + 1 حشد)": t => t.routine === "gather" ? { enabled: true, reserve: 1 } : t.routine === "rally_fort" ? { enabled: true } : { enabled: false },
+  "🌾 جمع الموارد فقط": t => ({ enabled: ["gather", "collect_city", "alliance_help", "queue_manager"].includes(t.routine) }),
+  "💎 الجواهر أولاً": t => ({ enabled: ["gather_gems", "gather", "collect_city", "alliance_help", "queue_manager"].includes(t.routine) }),
+  "🏰 المدينة فقط (بدون مسيرات)": t => ({ enabled: ["collect_city", "alliance_help", "alliance_gifts", "queue_manager", "tavern", "daily_objectives", "vip_chests", "read_mail"].includes(t.routine) })
+};
+function prReady(name) { return snapshotTasks().map(t => Object.assign({}, t, PR_READY[name](t))); }
+function renderPrPick() { const sel = $("pr-pick"); if (!sel) return; const ps = presetsObj();
+  sel.innerHTML = '<optgroup label="جاهزة">' + Object.keys(PR_READY).map(n => '<option value="r:' + esc(n) + '">' + esc(n) + '</option>').join("") + '</optgroup>' +
+    '<optgroup label="ملفاتي (' + Object.keys(ps).length + '/20)">' + Object.keys(ps).map(n => '<option value="m:' + esc(n) + '">' + esc(n) + '</option>').join("") + '</optgroup>'; }
+function renderPrSched() { const box = $("pr-sched-rows"); if (!box) return;
+  settings.schedule_profiles = Array.isArray(settings.schedule_profiles) ? settings.schedule_profiles : [];
+  const rows = settings.schedule_profiles, names = Object.keys(presetsObj());
+  box.innerHTML = rows.length ? "" : '<p class="note">لا توجد نوافذ. مثال: من 22:00 إلى 06:00 بملف «جمع الموارد فقط» أثناء نومك.</p>';
+  rows.forEach((r, i) => { const d = document.createElement("div"); d.className = "pr-srow";
+    d.innerHTML = '<label><input type="checkbox" data-k="on"' + (r.on === false ? "" : " checked") + '> </label><label>من <input type="time" data-k="from" value="' + esc(r.from || "22:00") + '"></label><label>إلى <input type="time" data-k="to" value="' + esc(r.to || "06:00") + '"></label>' +
+      '<select data-k="profile"><option value="">— اختر ملفاً من «ملفاتي» —</option>' + names.map(n => '<option' + (n === r.profile ? " selected" : "") + ' value="' + esc(n) + '">' + esc(n) + '</option>').join("") + '</select><button type="button" class="btn del" aria-label="حذف">✕</button>';
+    d.querySelectorAll("[data-k]").forEach(inp => inp.addEventListener("change", () => { r[inp.dataset.k] = inp.type === "checkbox" ? inp.checked : inp.value; }));
+    d.querySelector(".del").addEventListener("click", () => { rows.splice(i, 1); renderPrSched(); });
+    box.appendChild(d); }); }
 function renderPresets() {
+  try { renderPrPick(); renderPrSched(); } catch (_) {}
   const box = $("pr-list"); if (!box) return;
   const ps = presetsObj(), names = Object.keys(ps);
   $("pr-count").textContent = names.length ? names.length + " محفوظ" : "لا يوجد";
   box.innerHTML = names.length ? names.map((n, i) => '<div class="pr-item"><div><b>' + esc(n) + '</b><small>' + esc(presetSummary(ps[n])) + ' · الجولة كل ' + esc(ps[n].loop_minutes || 60) + ' د</small></div><div class="acts">' +
-    '<button type="button" class="btn" data-a="load" data-i="' + i + '">تحميل للتعديل</button><button type="button" class="btn" data-a="upd" data-i="' + i + '">تحديث من الأنشطة الحالية</button><button type="button" class="btn del" data-a="del" data-i="' + i + '">حذف</button></div></div>').join("")
+    '<button type="button" class="btn" data-a="load" data-i="' + i + '">تحميل للتعديل</button><button type="button" class="btn" data-a="upd" data-i="' + i + '">تحديث من الأنشطة الحالية</button><button type="button" class="btn" data-a="ren" data-i="' + i + '">✏️ إعادة تسمية</button><button type="button" class="btn del" data-a="del" data-i="' + i + '">حذف</button></div></div>').join("")
     : '<p class="note">لا توجد إعدادات محفوظة. فعّل الأنشطة التي تريدها في الأسفل ثم اكتب اسماً واضغط «حفظ».</p>';
   box.querySelectorAll("button[data-a]").forEach(b => b.addEventListener("click", async () => {
     const n = names[+b.dataset.i]; if (!n) return;
@@ -4426,9 +4457,18 @@ function renderPresets() {
       ps[n] = { tasks: snapshotTasks(), loop_minutes: settings.loop_minutes };
       renderPresets(); renderRot();
       if (await sendSettings({}, "m-pr", b)) setMsg("m-pr", "حُدّث «" + n + "» وأُرسل للبوت.", "ok");
+    } else if (b.dataset.a === "ren") {   // GUIDE-17: rename (rotation slots and time windows follow the new name)
+      const nn = (prompt("الاسم الجديد للملف:", n) || "").trim().slice(0, 40);
+      if (!nn || nn === n) return; if (ps[nn]) { setMsg("m-pr", "يوجد ملف بهذا الاسم.", "err"); return; }
+      ps[nn] = ps[n]; delete ps[n];
+      rotObj().slots.forEach(x => { if (x.preset === n) x.preset = nn; });
+      (settings.schedule_profiles || []).forEach(x => { if (x.profile === n) x.profile = nn; });
+      renderPresets(); renderRot();
+      if (await sendSettings({}, "m-pr", null)) setMsg("m-pr", "أُعيدت التسمية إلى «" + nn + "».", "ok");
     } else if (b.dataset.a === "del") {
       if (!confirm("حذف الإعداد «" + n + "»؟")) return;
       delete ps[n]; rotObj().slots.forEach(x => { if (x.preset === n) x.preset = ""; });
+      (settings.schedule_profiles || []).forEach(x => { if (x.profile === n) x.profile = ""; });
       renderPresets(); renderRot();
       if (await sendSettings({}, "m-pr", null)) setMsg("m-pr", "حُذف «" + n + "». الشخصيات التي كانت تستخدمه تعمل الآن بالإعدادات الرئيسية.", "ok");
     }
@@ -4439,12 +4479,25 @@ $("pr-save").addEventListener("click", async e => {
   if (!n) { setMsg("m-pr", "اكتب اسماً للإعداد أولاً.", "err"); $("pr-name").focus(); return; }
   const ps = presetsObj();
   if (ps[n] && !confirm("يوجد إعداد بنفس الاسم. استبداله؟")) return;
-  if (!ps[n] && Object.keys(ps).length >= 30) { setMsg("m-pr", "الحد 30 إعداداً.", "err"); return; }
+  if (!ps[n] && Object.keys(ps).length >= 20) { setMsg("m-pr", "الحد 20 ملفاً خاصاً. احذف أو أعد تسمية ملف قديم.", "err"); return; }   // GUIDE-17
   settings.loop_minutes = Number($("loop").value) || settings.loop_minutes;
   ps[n] = { tasks: snapshotTasks(), loop_minutes: settings.loop_minutes };
   renderPresets(); renderRot();
   if (await sendSettings({}, "m-pr", e.currentTarget)) setMsg("m-pr", "حُفظ «" + n + "» (" + ps[n].tasks.filter(t => t.enabled).length + " نشاط مفعّل) وأُرسل للبوت.", "ok");
 });
+$("pr-load").addEventListener("click", () => {   // GUIDE-17: loading a profile changes only the activities (never the rotation)
+  const v = $("pr-pick").value || ""; const k = v.slice(0, 2), n = v.slice(2); if (!n) return;
+  if (k === "r:") settings.tasks = prReady(n);
+  else { const p = presetsObj()[n]; if (!p) return; settings.tasks = JSON.parse(JSON.stringify(p.tasks || [])); settings.loop_minutes = p.loop_minutes || settings.loop_minutes; $("pr-name").value = n; }
+  renderAll();
+  setMsg("m-pr", "حُمّل «" + n + "» في قائمة الأنشطة (تبديل الشخصيات وإعدادات كل شخصية لم تتغير). راجع ثم اضغط «حفظ وإرسال».", "ok"); });
+$("pr-sched-add").addEventListener("click", () => { settings.schedule_profiles = Array.isArray(settings.schedule_profiles) ? settings.schedule_profiles : [];
+  if (settings.schedule_profiles.length >= 6) { setMsg("m-pr", "الحد 6 نوافذ.", "err"); return; }
+  settings.schedule_profiles.push({ from: "22:00", to: "06:00", profile: Object.keys(presetsObj())[0] || "", on: true }); renderPrSched(); });
+$("pr-sched-send").addEventListener("click", async e => { const rows = settings.schedule_profiles || [];
+  if (rows.some(r => r.on !== false && (!r.profile || r.from === r.to))) { setMsg("m-pr", "لكل نافذة مفعّلة اختر ملفاً ووقتين مختلفين.", "err"); return; }
+  if (await sendSettings({}, "m-pr", e.currentTarget)) setMsg("m-pr", rows.length ? "أُرسل. يستخدم البوت الملف داخل كل نافذة (UTC) ويعود لإعداداتك بعدها." : "أُرسل. لا توجد نوافذ ملفات.", "ok"); });
+PAGE_INFO.profiles = { name: "الملفات (Profiles)", text: "📂 القائمة فيها «جاهزة» (قوالب تُبنى من أنشطتك الحالية: حشد البربر، جمع فقط، الجواهر أولاً، المدينة فقط) و«ملفاتي» (حتى 20 ملفاً تحفظها أنت). «تحميل في الأنشطة» يغيّر قائمة الأنشطة فقط — لا يمسح تبديل الشخصيات ولا إعداد كل شخصية. من بطاقة الملف: إعادة تسمية أو حذف.\n\n⏰ «ملف حسب الوقت»: اختر نافذة بتوقيت UTC وملفاً؛ داخل النافذة يلعب البوت بهذا الملف، وعند انتهائها يرجع تلقائياً لإعداداتك. إذا كانت الشخصية في التبديل تلعب بإعداد خاص، فالملف المجدول يغلبه خلال النافذة فقط." };
 $("pr-tpl").addEventListener("click", () => {
   const cur = snapshotTasks();
   const tasks = cur.map(t => {
