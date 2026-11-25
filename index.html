@@ -832,6 +832,7 @@ main, .view, .panel, #top, .kbar { min-width: 0; max-width: 100%; box-sizing: bo
 .ct-form textarea { min-height: 120px; resize: vertical; }
 
 .mr-list { display: grid; gap: 10px; }
+.mr-cmd{display:flex;flex-wrap:wrap;gap:6px 12px;margin-top:6px}.mr-c{display:inline-flex;align-items:center;gap:6px;min-width:0}.mr-c .cmdface{width:30px;height:30px;flex:none}.mr-c .cmdface img,.mr-c .cmdface .cmdav{width:30px;height:30px}.mr-c small{font-size:11.5px;opacity:.85}.mr-mis{color:#ffd08a;font-weight:700}.mr-hp i{background:linear-gradient(90deg,#e74c3c,#2ecc71)!important}
 .mr { display: grid; grid-template-columns: 52px minmax(0, 1fr); gap: 12px; align-items: center; padding: 10px 12px; border-radius: 14px; background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.09); }
 .mr img, .mr .noav { width: 52px; height: 52px; border-radius: 12px; object-fit: cover; background: rgba(255,255,255,.08); }
 .mr-top { display: flex; flex-wrap: wrap; gap: 6px 10px; align-items: center; }
@@ -1430,7 +1431,7 @@ window.addEventListener("error", function(e) {
 
       <section class="panel" aria-labelledby="mr-h">
         <div class="panel-head">
-          <h2 id="mr-h">الجيوش المرسلة <span class="slug" id="mr-n">1 / 5</span></h2>
+          <h2 id="mr-h">الجيوش المرسلة <span class="slug" id="mr-n">1/5 مسيرات خارجاً</span> <button type="button" class="info-btn" data-info="mrcards" aria-label="شرح">❗</button></h2>
           <span class="hint" id="mr-at">آخر قراءة 2026-11-22 14:05</span>
         </div>
         <div class="mr-list" id="mr-list"></div>
@@ -2444,6 +2445,7 @@ const PAGE_INFO = {
   uxq: { name: "في المدينة", text: "بطاقات الطوابير النشطة في مدينتك كما قرأها البوت من «نظرة عامة على الطوابير»: تدريب المشاة والفرسان والرماة والحصار (مع المستوى المختار في إعدادات الطوابير)، إنتاج المواد، والعلاج. العدّاد ينقص كل ثانية، والشريط يقارن الوقت المتبقي بأطول وقت رآه البوت لنفس الطابور (اللعبة لا تعرض المدة الكاملة). يقرأ البوت الطوابير كل 10 دقائق تقريباً وبعد تبديل الشخصية." },
   cpresets: { name: "قادة كل مهمة", text: "اختر قائداً أساسياً وثانوياً لكل مهمة (جمع الطعام/الخشب/الحجر/الذهب، البرابرة، الحشود، الحراس). عند تجهيز المسيرة يبدّل البوت القادة في نافذة الجيش الجديد إلى من اخترته (يبحث عن الاسم في قائمة القادة). إذا لم تختر قائداً تبقى التشكيلة المحفوظة في اللعبة كما هي. إذا كان القائد في مسيرة أخرى يكمل البوت بالتشكيلة المحفوظة. القادة الظاهرون أولاً هم الذين قرأهم البوت من حسابك." },
   smartsched: { name: "جلسات عمل واستراحات", text: "يقسّم البوت وقت عمله اليومي إلى جلسات (مثلاً 90 دقيقة) تليها استراحات (مثلاً 20 دقيقة) مثل اللاعب الحقيقي، ويتوقف لبقية اليوم عند بلوغ «حد الساعات اليومي» (يُحسب وقت تنفيذ المهام فقط، ويبدأ العد من جديد 00:00 بتوقيت غرينتش). «العشوائية ±%» تغيّر أطوال الجلسات والاستراحات وفترات الانتظار قليلاً، وتُحرّك كل نقرة ±5 بكسل حتى لا تتكرر بنفس المكان. يعمل داخل ساعات «الجدولة الذكية» إن كانت مفعّلة. الشريط يعرض الساعات المستخدمة اليوم والحالة: يعمل / استراحة / انتهى حد اليوم." },
+  mrcards: { name: "الجيوش المرسلة", text: "العدّاد يعرض عدد الجيوش خارج المدينة من الحد الأقصى (مثل 2/5). كل بطاقة: صورة القائد الأساسي والثانوي واسمهما (تُقرأ من نافذة الجيش في اللعبة، وإن لم تظهر تُؤخذ من «قادة كل مهمة»)، الإحداثيات ونوع المهمة [جمع / البرابرة / حشد]، عدد الجنود، الحالة (يجمع، ذاهب للهجوم، في حشد، عائد…) وشريط الصحة عندما تظهر النسبة. تتحدث مع «تحديث المسيرات» في المساعد أو تلقائياً." },
   march: { name: "أولوية المسيرات والمهلة", text: "«أقصى عدد جيوش في نفس الوقت»: البوت لا يرسل جيش جمع جديداً إذا كان هذا العدد في الخارج (فارغ أو 0 = حسب خانات اللعبة). «مهلة البحث»: إذا علِق البحث في الخريطة أطول من هذه الثواني (الافتراضي 15) يلغيه ويرجع للمدينة بدل أن يتجمد. «الترتيب»: أي نوع مسيرات يُنفَّذ أولاً في كل جولة — الحشود، الجمع، البرابرة — بالأسهم ▲▼." },
   ref: { name: "الإحالات", text: "رابط الإحالة فيه اسم حسابك في اللوحة. انسخه وأرسله لأصدقائك؛ عند تسجيلهم من الرابط يُسجَّل أنهم جاؤوا عن طريقك. المكافآت يحددها المشرف." },
   menu: { name: "القائمة", text: "القائمة الرئيسية: الدليل، الدعم، الإحالات، حسابي، ثم «أدوات مجانية» (تفتح بالضغط) وروابط المجتمع (ديسكورد، واتساب، تيليجرام، يوتيوب) — الروابط تُقرأ من إعدادات kingbot-syn فيتغيّر الرابط بدون تحديث الصفحة. تسجيل الخروج في الأسفل." },
@@ -3861,7 +3863,8 @@ $("ac-ref").addEventListener("click", async () => {
 });
 
 /* ---------- v131: marches ---------- */
-const MR_ST = { gather: "يجمع الموارد", standby: "متوقف في الخريطة", return: "عائد للمدينة", attack: "يهاجم", march: "في مسيرة" };
+const MR_ST = { gather: "يجمع الموارد", standby: "متوقف في الخريطة", return: "عائد للمدينة", attack: "ذاهب للهجوم", march: "في مسيرة", rally: "في حشد" };
+const MR_MIS = { gather: "جمع", barbarians: "البرابرة", rally: "حشد" };   // UX-03
 function renderMarches(c) {
   const box = document.getElementById("mr-list"); if (!box) return;
   let list = c && Array.isArray(c.marches) ? kbCache("marches", c.marches.length ? c.marches : null) : null;
@@ -3869,7 +3872,7 @@ function renderMarches(c) {
   if (!list) { list = kbCache("marches", null); at = (kbCache("marches_at", null) || {}).t; }
   if (!list) return;
   const mx = (c && c.marches_max) || 5;
-  document.getElementById("mr-n").textContent = list.length + " / " + mx;
+  document.getElementById("mr-n").textContent = list.length + "/" + mx + " مسيرات خارجاً";   // UX-03
   document.getElementById("mr-at").textContent = at ? "آخر قراءة " + at : "";
   if (!list.length) { box.innerHTML = '<p class="note">لا توجد جيوش خارج المدينة.</p>'; return; }
   const okAv = v => typeof v === "string" && /^data:image\/jpeg;base64,[A-Za-z0-9+/=]+$/.test(v);
@@ -3879,10 +3882,14 @@ function renderMarches(c) {
     return '<div class="mr">' + (okAv(a.avatar) ? '<img alt="" src="' + a.avatar + '">' : '<span class="noav"></span>') +
       '<div><div class="mr-top"><b>الجيش ' + esc(a.slot) + '</b><span class="mr-chip ' + esc(a.status) + '">' + (MR_ST[a.status] || esc(a.status)) + '</span>' +
       (a.troops ? '<span>⚔️ ' + fmtInt(a.troops) + ' جندي</span>' : '') + '</div>' +
-      '<div class="mr-sub">' + loc + (a.target ? ' · ' + esc(a.target) : '') + '</div>' +
+      '<div class="mr-sub">' + loc + (MR_MIS[a.mission] ? ' <span class="mr-mis">[' + MR_MIS[a.mission] + ']</span>' : '') + (a.target ? ' · ' + esc(a.target) : '') + '</div>' +
+      (Array.isArray(a.commanders) && a.commanders.length ? '<div class="mr-cmd" data-cmd="' + esc(a.commanders.slice(0, 2).join("|")) + '"' + (a.commanders_from === "preset" ? ' title="حسب «قادة كل مهمة»"' : '') + '></div>' : '') +
+      (a.health != null ? '<div class="mr-sub">❤️ الصحة ' + (+a.health) + '%</div><div class="mr-bar mr-hp"><i style="width:' + Math.max(0, Math.min(100, +a.health)) + '%"></i></div>' : '') +
       (pct != null ? '<div class="mr-sub">عداد الجمع: ' + (a.cap ? fmtInt(a.got) + ' من ' + fmtInt(a.cap) + ' · ' : '') + pct + '%</div><div class="mr-bar"><i style="width:' + pct + '%"></i></div>' : '') +
       '</div></div>';
   }).join("");
+  box.querySelectorAll(".mr-cmd[data-cmd]").forEach(el => { el.dataset.cmd.split("|").forEach((n, i) => { const w = document.createElement("span"); w.className = "mr-c";
+    try { w.appendChild(cmdFace(n)); } catch (_) {} const t = document.createElement("small"); t.textContent = (i ? "ثانوي: " : "أساسي: ") + n; w.appendChild(t); el.appendChild(w); }); });
 }
 setInterval(() => { try { renderAccount(); } catch (_) {} }, 60000);
 try { renderMarches({}); } catch (_) {}
