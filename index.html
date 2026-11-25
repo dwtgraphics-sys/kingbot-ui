@@ -1514,6 +1514,13 @@ window.addEventListener("error", function(e) {
         <div class="ehx-cmd"><span>قادة الحراس:</span><div id="ehx-c1"></div><div id="ehx-c2"></div><label>هجمات لكل جولة <input type="number" id="ehx-n" min="1" max="5" placeholder="2"></label></div>
         <p class="gd-p">تُحفظ مع «حفظ وإرسال».</p>
       </section>
+      <section class="panel mtx" aria-labelledby="mtx-h">   <!-- TASK-11 -->
+        <div class="panel-head"><h2 id="mtx-h">🛒 التاجر الغامض والحانة <button type="button" class="info-btn" data-info="mtav" aria-label="شرح">❗</button></h2><span class="count" id="mtx-cnt">اليوم: —</span></div>
+        <label class="row ehx-r" for="mtx-tav"><span>🍺 فتح صناديق الحانة المجانية</span><span class="switch"><input type="checkbox" id="mtx-tav"><span></span></span></label>
+        <label class="row ehx-r" for="mtx-res"><span>🪙 الشراء من التاجر بالموارد فقط (دائماً)</span><span class="switch"><input type="checkbox" id="mtx-res" checked disabled><span></span></span></label>
+        <label class="row ehx-r" for="mtx-ref"><span>🔄 استعمال التحديث المجاني للتاجر</span><span class="switch"><input type="checkbox" id="mtx-ref"><span></span></span></label>
+        <p class="gd-p">تُحفظ مع «حفظ وإرسال».</p>
+      </section>
       <section class="panel" aria-labelledby="pr-h">
         <div class="panel-head"><h2 id="pr-h"><span class="hic" style="background-position:100% 100%"></span>الإعدادات المخصصة <button type="button" class="info-btn" data-info="presets" aria-label="شرح">❗</button></h2><span class="count" id="pr-count">1 محفوظ</span></div>
         <div class="pr-new"><input id="pr-name" type="text" maxlength="40" placeholder="اسم الإعداد، مثلاً: إعداد حشد البربر"><button class="btn primary" id="pr-save" type="button">💾 حفظ الأنشطة الحالية بهذا الاسم</button></div>
@@ -2515,6 +2522,7 @@ const PAGE_INFO = {
   speedcalc: { name: "حاسبة التسريعات", text: "ثلاثة أوضاع: «التسريعات» لعدّ حقيبتك، «التدريب» لحساب وقت تدريب عدد من الجنود حسب المستوى ونسبة سرعة التدريب (مع القوة المضافة وهل تكفي تسريعاتك)، و«العلاج» لمقارنة وقت المستشفى بتسريعات العلاج والعامة. اكتب عدد كل فئة تسريع في حقيبتك (1د، 5د … 7 أيام) تحت كل نوع. المجموع يظهر فوراً بالأيام والساعات والدقائق لكل نوع، ومع «العامة» (لأن التسريع العام يُستعمل للتدريب والبناء والبحث والعلاج). الأرقام تُحفظ في هذا المتصفح فقط؛ «مسح الكل» يصفّرها." },
   captcha: { name: "نافذة التحقق (كابتشا)", text: "أحياناً تطلب اللعبة إثبات أنك لست برنامجاً. عندما يكتشفها البوت يتوقف فوراً عن أي نقرة، يرسل صورة الشاشة، تتحول الحالة إلى «نافذة تحقق» ويصلك تنبيه صوتي هنا وعلى تيليجرام. حلّها يدوياً على السيرفر ثم اضغط «تم الحل — استئناف»: يتأكد البوت أن النافذة اختفت قبل أن يكمل، وإن كانت ما زالت ظاهرة يبقى متوقفاً ويخبرك. البوت لا يحاول حل التحقق بنفسه." },
   evhunt: { name: "وادي الغروب وصيد الحراس", text: "«وادي الغروب»: يلعب المحاولات المجانية اليومية فقط ضد أضعف خصم ويتخطى المعركة — لا يضغط تحديث ولا يشتري محاولات بالجواهر. «صيد الحراس»: يبحث عن الحراس حول مدينتك في الخريطة ويرسل جيشاً بالقادة الذين تختارهم هنا (نفس «قادة كل مهمة ← الحراس»). لا يستعمل نقاط الحركة ولا الجرعات؛ إذا طلبت اللعبة ذلك يغلق النافذة ويتوقف. يحتاج صورة الحارس مسجّلة مرة واحدة على السيرفر." },
+  mtav: { name: "التاجر الغامض والحانة", text: "عندما يظهر التاجر الغامض في مدينتك يشتري البوت كل ما سعره طعام أو خشب أو حجر أو ذهب فقط — العناصر بالجواهر تُتخطى دائماً وأي نافذة جواهر يُجاب عليها «لا». «التحديث المجاني» يُضغط فقط إذا كان مجانياً، والتحديث المدفوع لا يُضغط أبداً. الحانة: يفتح الصناديق المجانية فقط. العدّاد يعرض ما اشتراه وفتحه اليوم. يحتاج صورة التاجر مسجّلة مرة واحدة على السيرفر." },
   march: { name: "أولوية المسيرات والمهلة", text: "«أقصى عدد جيوش في نفس الوقت»: البوت لا يرسل جيش جمع جديداً إذا كان هذا العدد في الخارج (فارغ أو 0 = حسب خانات اللعبة). «مهلة البحث»: إذا علِق البحث في الخريطة أطول من هذه الثواني (الافتراضي 15) يلغيه ويرجع للمدينة بدل أن يتجمد. «الترتيب»: أي نوع مسيرات يُنفَّذ أولاً في كل جولة — الحشود، الجمع، البرابرة — بالأسهم ▲▼." },
   ref: { name: "الإحالات", text: "رابط الإحالة فيه اسم حسابك في اللوحة. انسخه وأرسله لأصدقائك؛ عند تسجيلهم من الرابط يُسجَّل أنهم جاؤوا عن طريقك. المكافآت يحددها المشرف." },
   menu: { name: "القائمة", text: "القائمة الرئيسية: الدليل، الدعم، الإحالات، حسابي، ثم «أدوات مجانية» (تفتح بالضغط) وروابط المجتمع (ديسكورد، واتساب، تيليجرام، يوتيوب) — الروابط تُقرأ من إعدادات kingbot-syn فيتغيّر الرابط بدون تحديث الصفحة. تسجيل الخروج في الأسفل." },
@@ -3134,6 +3142,18 @@ function gnMetrics(h) { const box = document.getElementById("gn-met"); if (!box)
   const card = (t, v, n) => { const d = document.createElement("div"); d.textContent = t; const b = document.createElement("b"); b.textContent = v; const sm = document.createElement("small"); sm.textContent = n; d.append(b, sm); box.appendChild(d); };
   card("⚡ كفاءة الجمع (" + lbl + ")", mins >= 6 ? fmtN(gain / (mins / 60)) + " / ساعة عمل" : "—", mins >= 6 ? "ساعات عمل البوت في الفترة: " + (mins / 60).toFixed(1) : "تظهر بعد أول جولات من الإصدار 219");
   card("🧾 الصافي بعد الإرسال (" + lbl + ")", fmtN(gain - sent), sent ? "أُرسل للحلفاء/النقل: " + fmtN(sent) : "لا يوجد إرسال موارد مسجّل في الفترة"); }
+// TASK-11: merchant_tavern {tavern_free_chests, merchant_buy_resources_only (always true), merchant_free_refresh} + today's counter
+function mtxGet() { if (typeof settings !== "object" || !settings) return {}; const m = settings.merchant_tavern = (settings.merchant_tavern && typeof settings.merchant_tavern === "object") ? settings.merchant_tavern : {};
+  if (m.tavern_free_chests == null) { const t = (settings.tasks || []).find(x => x.routine === "tavern"); m.tavern_free_chests = t ? t.enabled !== false : true; }
+  m.merchant_buy_resources_only = true; if (m.merchant_free_refresh == null) m.merchant_free_refresh = false; return m; }
+function mtxFill() { const a = document.getElementById("mtx-tav"); if (!a || typeof settings !== "object" || !settings) return; const m = mtxGet();
+  a.checked = !!m.tavern_free_chests; document.getElementById("mtx-ref").checked = !!m.merchant_free_refresh; mtxCount(); }
+function mtxCount() { const el = document.getElementById("mtx-cnt"); if (!el) return; const d = (typeof gnHist !== "undefined" && gnHist.length) ? gnHist[gnHist.length - 1] : null;
+  el.textContent = d ? "اليوم: 🛒 " + (+d.merchant || 0) + " مشتريات · 🍺 " + (+d.tavern || 0) + " صناديق" : "اليوم: —"; }
+document.addEventListener("change", e => { const id = e.target && e.target.id; if (!/^mtx-/.test(id || "")) return; const m = mtxGet();
+  if (id === "mtx-tav") { m.tavern_free_chests = e.target.checked; const t = (settings.tasks || []).find(y => y.routine === "tavern"); if (t) t.enabled = e.target.checked; const sw = document.getElementById("en-tavern"); if (sw) sw.checked = e.target.checked; }
+  if (id === "mtx-ref") m.merchant_free_refresh = e.target.checked; });
+setTimeout(() => { try { mtxFill(); } catch (_) {} }, 0); setInterval(() => { try { mtxCount(); } catch (_) {} }, 60000);
 // TASK-08: smart_schedule {enabled, daily_active_hours_limit, work_session_minutes, break_duration_minutes, jitter_percent}
 const SSX = { "ssx-lim": ["daily_active_hours_limit", 1, 24, 14], "ssx-work": ["work_session_minutes", 10, 600, 90], "ssx-brk": ["break_duration_minutes", 1, 240, 20], "ssx-jit": ["jitter_percent", 0, 50, 15] };
 function ssxGet() { if (typeof settings !== "object" || !settings) return {}; const c = settings.smart_schedule = (settings.smart_schedule && typeof settings.smart_schedule === "object") ? settings.smart_schedule : {};
@@ -3930,11 +3950,12 @@ async function loadSettings() {
     if (f) {
       const d = await kbParse(await download(f.id), curServer().control);
       if (d._locked) { setMsg("m-send", "🔐 الإعدادات مشفّرة: أدخل عبارة المرور لعرضها وتعديلها.", "err"); renderAll(); return; }
-      settings = { running: d.running !== false, loop_minutes: d.loop_minutes || 60, tasks: Array.isArray(d.tasks) ? d.tasks : settings.tasks, schedule: d.schedule || settings.schedule, daily_pause: d.daily_pause || settings.daily_pause, freeze_until: d.freeze_until || null, presets: (d.presets && typeof d.presets === "object") ? d.presets : (settings.presets || {}), char_rotation: d.char_rotation || settings.char_rotation || { enabled: false, slots: [] }, stream: (d.stream && typeof d.stream === "object") ? d.stream : (settings.stream || { enabled: true }), march_control: (d.march_control && typeof d.march_control === "object") ? d.march_control : (settings.march_control || {}), commander_presets: (d.commander_presets && typeof d.commander_presets === "object") ? d.commander_presets : (settings.commander_presets || {}), smart_schedule: (d.smart_schedule && typeof d.smart_schedule === "object") ? d.smart_schedule : (settings.smart_schedule || undefined), events_hunter: (d.events_hunter && typeof d.events_hunter === "object") ? d.events_hunter : (settings.events_hunter || undefined), relogin_cooldown_min: d.relogin_cooldown_min || settings.relogin_cooldown_min || undefined, conduct_min: d.conduct_min || settings.conduct_min || undefined };
+      settings = { running: d.running !== false, loop_minutes: d.loop_minutes || 60, tasks: Array.isArray(d.tasks) ? d.tasks : settings.tasks, schedule: d.schedule || settings.schedule, daily_pause: d.daily_pause || settings.daily_pause, freeze_until: d.freeze_until || null, presets: (d.presets && typeof d.presets === "object") ? d.presets : (settings.presets || {}), char_rotation: d.char_rotation || settings.char_rotation || { enabled: false, slots: [] }, stream: (d.stream && typeof d.stream === "object") ? d.stream : (settings.stream || { enabled: true }), march_control: (d.march_control && typeof d.march_control === "object") ? d.march_control : (settings.march_control || {}), commander_presets: (d.commander_presets && typeof d.commander_presets === "object") ? d.commander_presets : (settings.commander_presets || {}), smart_schedule: (d.smart_schedule && typeof d.smart_schedule === "object") ? d.smart_schedule : (settings.smart_schedule || undefined), events_hunter: (d.events_hunter && typeof d.events_hunter === "object") ? d.events_hunter : (settings.events_hunter || undefined), merchant_tavern: (d.merchant_tavern && typeof d.merchant_tavern === "object") ? d.merchant_tavern : (settings.merchant_tavern || undefined), relogin_cooldown_min: d.relogin_cooldown_min || settings.relogin_cooldown_min || undefined, conduct_min: d.conduct_min || settings.conduct_min || undefined };
       try { mcFill(); } catch (_) {}
       try { cpzFill(); } catch (_) {}
       try { ssxFill(); } catch (_) {}
       try { ehxFill(); } catch (_) {}
+      try { mtxFill(); } catch (_) {}
       lastShotRequest = d.shot_request || null;
     }
   } catch (e) { setMsg("m-send", errText(e), "err"); }
