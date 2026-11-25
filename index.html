@@ -249,7 +249,7 @@ body.nofx .bg canvas, body.nofx .fog, body.nofx .bg-glow { display: none; }
 .nt-today { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
 .nt-today span, .gn-tot span { padding: 6px 10px; border-radius: 8px; background: rgba(255,255,255,.06); font-size: 13px; }
 .gn-chars{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}.gn-chars button{white-space:nowrap}
-.gn-kpi{margin:8px 0}.gn-kpi-h{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:6px}
+.gn-kpi{margin:8px 0}.gn-kpi-h .seg{display:inline-flex;gap:4px}.gn-kpi-h .seg button{white-space:nowrap;padding:4px 12px;font-size:12px}.gn-kpi-h{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:6px}
 .gn-kpi-c,.gn-did-c{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
 .gn-kpi-c div,.gn-did-c div{padding:10px 12px;border-radius:12px;background:#ffffff0a;border:1px solid #ffffff14;display:flex;flex-direction:column;gap:2px;min-width:0}
 .gn-kpi-c small,.gn-did-c small{opacity:.75;font-size:12px}.gn-kpi-c b,.gn-did-c b{font-size:20px}.gn-kpi-c em,.gn-did-c em{font-style:normal;font-size:11px;opacity:.7}
@@ -2488,7 +2488,7 @@ function gnUx04() {
     '<div class="gn-kpi-c"><div><small>الإجمالي</small><b>' + fmtN(total) + '</b></div>' +
     '<div><small>المتوسط لكل يوم نشط</small><b>' + fmtN(act.length ? Math.round(total / act.length) : 0) + '</b></div>' +
     '<div><small>أفضل يوم</small><b>' + (best ? fmtN(val(best)) : "—") + '</b><em>' + (best ? esc(best.day || "") : "") + '</em></div>' +
-    '<div><small>الأيام النشطة</small><b>' + act.length + ' / ' + h.length + '</b></div></div>';
+    '<div><small>الأيام النشطة</small><b>' + act.length + ' <small>من ' + h.length + '</small></b></div></div>';
   const last30 = gnHist.slice(-30), today = gnHist[gnHist.length - 1] || {};
   const sum = k => last30.reduce((a, d) => a + (+d[k] || 0), 0);
   const DID = [["barb", "⚔️", "برابرة هُزموا"], ["gem_mines", "💎", "مناجم جواهر جُمعت"], ["rally", "🏰", "حشود حصون بدأها"], ["rally_join", "🚩", "حشود انضم إليها"]];
