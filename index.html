@@ -883,7 +883,13 @@ main, .view, .panel, #top, .kbar { min-width: 0; max-width: 100%; box-sizing: bo
 .ast.open{display:flex;animation:astin .18s ease-out}
 @keyframes astin{from{opacity:0;transform:translateY(10px)}}
 .ast-h{display:flex;align-items:center;gap:8px;padding:12px 14px;border-bottom:1px solid #ffffff14}
-.ast-h b{flex:1;font-size:15px}
+.ast-h b{font-size:15px}
+.ast-tt{flex:1;display:flex;flex-direction:column;min-width:0}.ast-tt small{font-size:11px;opacity:.65;line-height:1.35}
+.ast-badge{width:34px;height:34px;border-radius:11px;display:grid;place-items:center;font-size:19px;background:radial-gradient(circle at 30% 30%,#ffb54a,#d9711b);box-shadow:0 0 0 3px #f28c2826;flex:none}
+.ast-chips{display:flex;gap:6px;padding:0 12px 8px;overflow-x:auto;scrollbar-width:none}.ast-chips::-webkit-scrollbar{display:none}
+.ast-chips button{flex:none;padding:6px 11px;border-radius:999px;border:1px solid #5aa9ff55;background:rgba(90,169,255,.12);color:inherit;font:inherit;font-size:12px;cursor:pointer;white-space:nowrap}
+.ast-chips button:hover{background:rgba(90,169,255,.25)}
+.ast-go{align-self:flex-end;padding:5px 12px;border-radius:999px;border:1px solid #f28c2866;background:rgba(242,140,40,.14);color:inherit;font:inherit;font-size:12px;cursor:pointer}
 .ast-h button{background:none;border:0;color:inherit;font-size:18px;cursor:pointer;opacity:.7}
 .ast-q{display:grid;grid-template-columns:1fr 1fr;gap:7px;padding:10px 12px}
 .ast-q button{display:flex;align-items:center;gap:7px;padding:9px 10px;border-radius:12px;border:1px solid #ffffff1c;background:rgba(255,255,255,.05);color:inherit;font:inherit;font-size:12.5px;cursor:pointer;text-align:start}
@@ -2274,7 +2280,8 @@ function astSay(text, who, st) { astLog.push({ text, who: who || "bot", st: st |
 function astDraw() {
   const box = $("ast-log"); box.innerHTML = "";
   if (!astLog.length) { const m = document.createElement("div"); m.className = "ast-m bot"; m.textContent = "أهلاً! اضغط أمراً أو اكتب طلبك، وأنا أرسله للبوت وأتابعه حتى ينتهي."; box.appendChild(m); }
-  astLog.forEach(x => { const m = document.createElement("div"); m.className = "ast-m " + x.who; m.textContent = x.text; if (x.st) { const s = document.createElement("span"); s.className = "st"; s.textContent = x.st; m.appendChild(s); } box.appendChild(m); });
+  astLog.forEach(x => { const m = document.createElement("div"); m.className = "ast-m " + x.who; m.textContent = x.text; if (x.st) { const s = document.createElement("span"); s.className = "st"; s.textContent = x.st; m.appendChild(s); } box.appendChild(m);
+    if (x.go) { const b = document.createElement("button"); b.type = "button"; b.className = "ast-go"; b.textContent = "↩ افتح الصفحة"; b.addEventListener("click", () => { try { showView(x.go); } catch (_) {} $("ast").classList.remove("open"); }); box.appendChild(b); } });
   box.scrollTop = box.scrollHeight;
   $("ast-fab").classList.toggle("busy", !!(astCur || astQueue.length));
 }
@@ -2330,9 +2337,30 @@ function astTick(s) {
   }
   astDraw();
 }
+/* AI-01: answers for common questions - the chips send the question and the answer appears at once.
+   Free text that is not a bot command is matched against these too. */
+const AST_KB = [
+  { q: "كيف أجهّز جمع الجواهر؟", w: ["جوهر", "جواهر", "gem"], a: "💎 جمع الجواهر:\n1) افتح «إعدادات البوت» ← المهام، وفعّل «جمع الجواهر».\n2) اختر عدد الجيوش والقائد المناسب (قائد جمع).\n3) احفظ ثم اضغط START.\nالبوت يرسل الجيوش لمناجم الجواهر القريبة، يتجنب مناطق القتال، ويسجّل جواهر اليوم في «مكاسبي». الحد الآمن 18 ساعة جمع في اليوم.", go: "v-acts" },
+  { q: "ما هي الخطط والأسعار؟", w: ["خطة", "خطط", "سعر", "اسعار", "أسعار", "اشتراك", "price", "plan"], a: "💳 الخطط والأسعار في صفحة «الاشتراكات»: كل خانة (Slot) تشغّل حساب لعبة واحد، وتقدر تفعّل التجربة أو تشتري خانة وتجددها من هناك. اضغط الزر بالأسفل لفتح الصفحة.", go: "v-subs" },
+  { q: "هل هو آمن بدون مخاطر؟", w: ["امن", "آمن", "خطر", "مخاطر", "حظر", "باند", "ban", "risk", "safe"], a: "🛡️ البوت يتصرف كلاعب حقيقي: نقرات بمواقع وأوقات عشوائية، فترات راحة، وجدولة ذكية. لا يستعمل الجواهر أبداً، لا يضغط «فوري (INSTANT)»، ولا يشتري بالجواهر من المتاجر. لا يوجد ضمان 100% في أي بوت، لكن هذه القواعد تقلل المخاطر كثيراً. ابدأ بأنشطة قليلة وراقب سجل الأحداث." },
+  { q: "بماذا تستطيع مساعدتي؟", w: ["تساعد", "تقدر", "help", "مساعدة"], a: "🤖 أستطيع:\n• إرسال أوامر سريعة للبوت (تحديث الملف، الشخصيات، القادة، الموارد، المسيرات، صورة من اللعبة).\n• شرح الأنشطة والإعدادات والجدولة والخطط.\n• تبديل الشخصية: اكتب «بدّل إلى <الاسم>».\nاكتب سؤالك أو اضغط أحد الأسئلة السريعة." },
+  { q: "كيف تعمل الجدولة؟", w: ["جدول", "جدولة", "وقت", "schedule"], a: "🕒 «الجدولة» تحدد ساعات عمل البوت (بتوقيت غرينتش UTC) مع إزاحة عشوائية بسيطة حتى لا يبدأ بنفس الدقيقة كل يوم. خارج الساعات ينتظر البوت ولا يلمس اللعبة.", go: "v-sched" },
+  { q: "كيف أوقف البوت مؤقتاً؟", w: ["ايقاف", "إيقاف", "اوقف", "أوقف", "تجميد", "stop", "pause"], a: "⏸️ اضغط STOP في رأس الخانة: يصل الأمر للسيرفر خلال دقيقة. ولإيقاف عدة أيام استعمل «تجميد أيام» — يرجع البوت تلقائياً بعدها." },
+];
+function astAnswer(t) {
+  const n = String(t || "").toLowerCase().replace(/[أإآ]/g, "ا");
+  return AST_KB.find(k => k.q === t) || AST_KB.find(k => k.w.some(w => n.includes(w.toLowerCase().replace(/[أإآ]/g, "ا")))) || null;
+}
+function astAsk(t) {
+  astSay(t, "me"); const k = astAnswer(t);
+  if (!k) { astSay("لم أجد جواباً جاهزاً. جرّب سؤالاً من الأسئلة السريعة، أو افتح «الدعم» من القائمة."); return; }
+  astSay(k.a);
+  if (k.go) { astLog[astLog.length - 1].go = k.go; astDraw(); }
+}
 function astInit() {
   const q = $("ast-q");
-  if (q.dataset.ready) return; q.dataset.ready = "1"; q.innerHTML = "";   // MOD-01: build the quick buttons once (the static copies doubled them)
+  if (q.dataset.ready) return; q.dataset.ready = "1"; q.innerHTML = "";
+  const chips = $("ast-chips"); if (chips) { chips.innerHTML = ""; AST_KB.slice(0, 4).forEach(k => { const c = document.createElement("button"); c.type = "button"; c.textContent = k.q; c.addEventListener("click", () => astAsk(k.q)); chips.appendChild(c); }); }   // MOD-01: build the quick buttons once (the static copies doubled them)
   AST_CMDS.forEach(c => { const b = document.createElement("button"); b.type = "button"; b.textContent = c.ico + " " + c.name; b.addEventListener("click", () => astAdd([{ do: c.k }])); q.appendChild(b); });
   const all = document.createElement("button"); all.type = "button"; all.className = "wide"; all.textContent = "⚡ تحديث الكل (الملف، الموارد، المسيرات، الشخصيات)";
   all.addEventListener("click", () => astAdd(AST_ALL.map(k => ({ do: k })))); q.appendChild(all);
@@ -2362,7 +2390,7 @@ function astInit() {
   $("ast-form").addEventListener("submit", e => { e.preventDefault(); const t = $("ast-text").value.trim(); if (!t) return; $("ast-text").value = "";
     const mm = t.match(/^رابط البث\s*[:：]\s*(https:\/\/\S+)$/);
     if (mm) { try { localStorage.setItem("kb_stream", mm[1]); } catch (_) {} document.querySelector(".ast-live").href = mm[1]; astSay("✅ حُفظ رابط البث على هذا الجهاز."); return; }
-    const st = astParse(t); if (!st.length) { astSay(t, "me"); astSay("لم أفهم الطلب. جرّب: الاسم، الشخصيات، القادة، الموارد، المسيرات، صورة، الكل، أو «بدّل إلى …»."); return; }
+    const st = astParse(t); if (!st.length && astAnswer(t)) { astAsk(t); return; } if (!st.length) { astSay(t, "me"); astSay("لم أفهم الطلب. جرّب: الاسم، الشخصيات، القادة، الموارد، المسيرات، صورة، الكل، أو «بدّل إلى …»."); return; }
     astAdd(st); });
   astDraw();
 }
@@ -3972,8 +4000,9 @@ document.getElementById("cond-ic").innerHTML = gsvg("conduct", 46);
 
 <button type="button" class="ast-fab" id="ast-fab" aria-label="المساعد" title="المساعد" hidden>🤖<span class="dot"></span></button>
 <section class="ast" id="ast" aria-label="المساعد">
-  <div class="ast-h"><b>🤖 المساعد</b><button type="button" id="ast-info" title="ما هذا؟">❗</button><button type="button" id="ast-x" aria-label="إغلاق">✕</button></div>
+  <div class="ast-h"><span class="ast-badge" aria-hidden="true">🤖</span><div class="ast-tt"><b>المساعد الذكي</b><small>أسئلتك عن الأنشطة، اللوحة، الإعدادات والخطط — وأوامر سريعة للبوت</small></div><button type="button" id="ast-info" title="ما هذا؟">❗</button><button type="button" id="ast-x" aria-label="إغلاق">✕</button></div>
   <div class="ast-q" id="ast-q"></div>
+  <div class="ast-chips" id="ast-chips" aria-label="أسئلة سريعة"></div>
   <div class="ast-log" id="ast-log"><div class="ast-m bot">أهلاً! اضغط أمراً أو اكتب طلبك، وأنا أرسله للبوت وأتابعه حتى ينتهي.</div></div>
   <form class="ast-in" id="ast-form"><input id="ast-text" autocomplete="off" placeholder="اكتب طلبك… مثال: حدّث القادة والموارد"><button type="submit">إرسال</button></form>
 </section>
