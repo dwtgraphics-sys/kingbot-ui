@@ -182,6 +182,10 @@ svg { display: block; }
 .qgrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 10px; }
 .qcard { border: 1px solid var(--line, #2a3550); border-radius: 12px; padding: 10px 12px; background: rgba(255,255,255,.02); }
 .qcard .qk { font-size: 12px; font-weight: 800; letter-spacing: .04em; color: #7fd3a6; }
+.uxq-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}@media (max-width:560px){.uxq-grid{grid-template-columns:1fr 1fr}}
+.uxq .uxq-h{display:flex;align-items:center;gap:6px;font-size:13px}.uxq-i{font-size:18px}.uxq-t{font-size:14px;font-weight:800;margin:4px 0;text-align:start}.uxq-t[data-end]{font-family:var(--mono,monospace);font-size:15px;direction:ltr}
+.uxq small{display:block;font-size:11px;opacity:.7;margin-top:3px}.uxq.idle{opacity:.55}.uxq.done .uxq-t{color:#6be39a}
+.uxq.infantry .qbar i{background:#5aa9ff}.uxq.cavalry .qbar i{background:#e0a93b}.uxq.archer .qbar i{background:#6be39a}.uxq.siege .qbar i{background:#c9a0f0}.uxq.mat .qbar i{background:#e0c46c}.uxq.heal .qbar i{background:#f08a8a}
 .qcard.mat .qk { color: #e0c46c; } .qcard.heal .qk { color: #f08a8a; } .qcard.res .qk { color: #8ab4f0; } .qcard.build .qk { color: #c9a0f0; }
 .qcard .qt { font-weight: 800; margin: 3px 0; }
 .qcard .ql { font-family: var(--mono); color: #7fd3a6; direction: ltr; text-align: right; }
@@ -1402,6 +1406,12 @@ window.addEventListener("error", function(e) {
         </div>
       </section>
 
+      <section class="panel" aria-labelledby="uxq-h">
+        <div class="panel-head"><h2 id="uxq-h">🏙️ في المدينة <button type="button" class="info-btn" data-info="uxq" aria-label="شرح">❗</button></h2><span class="slug" id="uxq-at">—</span></div>
+        <div class="uxq-grid" id="uxq-box"></div>
+      </section>
+
+
       <section class="panel" aria-labelledby="mr-h">
         <div class="panel-head">
           <h2 id="mr-h">الجيوش المرسلة <span class="slug" id="mr-n">1 / 5</span></h2>
@@ -2309,6 +2319,7 @@ const PAGE_INFO = {
   ap_card: { name: "نقاط الحركة وبطاقات الموارد", text: "كل بطاقة مورد تعرض الرصيد الحالي، وتحته ما كسبته اليوم (بتوقيت غرينتش، من جدول مكاسبي) وشريطاً صغيراً يقارن المورد بأكبر مورد عندك. بطاقة نقاط الحركة (AP) تعرض الحالية / القصوى ونسبة الامتلاء، ويقرؤها البوت من الملف الشخصي للحاكم (عند «تحديث اسم المستخدم والملف» في المساعد، أو تلقائياً كل فترة). يصير الشريط أحمر تحت 20%. البوت لا يستعمل الجواهر لشراء نقاط حركة أبداً." },
   guide: { name: "الدليل", text: "دليل استعمال اللوحة خطوة بخطوة: اضغط أي عنوان في «في هذه الصفحة» للانتقال إليه مباشرة. الأرقام 1–7 في مخطط «لوحتك» تطابق الشرح تحته، و«معنى الحالة» يشرح كل حالة تظهر في رأس الخانة." },
   mail: { name: "مولّد رسائل التحالف", text: "أداة مجانية لكتابة بريد تحالف منسّق في Rise of Kingdoms. حدد نصاً واضغط عريض / مائل / الحجم / لون / تدرج فتوضع علامات اللعبة حوله (إذا لم تحدد شيئاً توضع العلامات عند المؤشر). العدّاد يحسب العلامات أيضاً لأن حد اللعبة 2,000 حرف يشملها. المسودة وقوالبك تُحفظ على هذا الجهاز فقط. «نسخ الكود» ينسخ النص بالعلامات لتلصقه في بريد التحالف." },
+  uxq: { name: "في المدينة", text: "بطاقات الطوابير النشطة في مدينتك كما قرأها البوت من «نظرة عامة على الطوابير»: تدريب المشاة والفرسان والرماة والحصار (مع المستوى المختار في إعدادات الطوابير)، إنتاج المواد، والعلاج. العدّاد ينقص كل ثانية، والشريط يقارن الوقت المتبقي بأطول وقت رآه البوت لنفس الطابور (اللعبة لا تعرض المدة الكاملة). يقرأ البوت الطوابير كل 10 دقائق تقريباً وبعد تبديل الشخصية." },
   ref: { name: "الإحالات", text: "رابط الإحالة فيه اسم حسابك في اللوحة. انسخه وأرسله لأصدقائك؛ عند تسجيلهم من الرابط يُسجَّل أنهم جاؤوا عن طريقك. المكافآت يحددها المشرف." },
   menu: { name: "القائمة", text: "القائمة الرئيسية: الدليل، الدعم، الإحالات، حسابي، ثم «أدوات مجانية» (تفتح بالضغط) وروابط المجتمع (ديسكورد، واتساب، تيليجرام، يوتيوب) — الروابط تُقرأ من إعدادات kingbot-syn فيتغيّر الرابط بدون تحديث الصفحة. تسجيل الخروج في الأسفل." },
   gains: { name: "مكاسبي", text: "يسجل البوت كل يوم (بتوقيت غرينتش) ما تكسبه من طعام وخشب وحجر وذهب وجواهر لآخر 30 يوماً. يقرأ شريط الموارد بعد كل جولة ويحسب الزيادات فقط (الجمع من الخريطة، جمع فقاعات المدينة، المكافآت)، أما الصرف على التدريب والبناء فلا يُخصم. الجواهر تُحسب من الزيادة في رصيد الجواهر خلال اليوم. اختر المورد لعرض الرسم البياني، والجدول يعرض كل الموارد مع عدد البرابرة والحصون. الأرقام في الجدول مختصرة (3.3M = 3,300,000 و 130K = 130,000) — مرّر المؤشر أو اضغط على الرقم لرؤيته كاملاً، وعمود اليوم ثابت عند التمرير على الجوال." },
@@ -3340,6 +3351,36 @@ function fmtAmount(v) {
   return Number(v).toLocaleString("en-US");
 }
 const QKIND = { train: "تدريب", mat: "مواد", heal: "علاج", res: "بحث", build: "بناء" };
+/* UX-02: "In the City" cards from the bot's Queue Overview reading (city.qm): infantry, cavalry, archers, siege,
+   materials and healing - icon, type • tier, live countdown and a progress bar. The game does not show the full
+   duration, so the bar uses the longest time left seen for that queue (kept on this device). */
+const UXQ = [["infantry", "🛡️", "المشاة", "inf_tier"], ["cavalry", "🐎", "الفرسان", "cav_tier"], ["archer", "🏹", "الرماة", "arch_tier"], ["siege", "🪨", "الحصار", "siege_tier"]];
+function uxqMax(k, left) { let m = {}; try { m = JSON.parse(localStorage.getItem("kb_uxq_max") || "{}"); } catch (_) {}
+  const key = k + ":" + Math.round((Date.now() / 1000 + left) / 600);      // same job = same end time (±10 min)
+  if (!m[key] || left > m[key]) { m[key] = left; const ks = Object.keys(m); if (ks.length > 40) delete m[ks[0]]; try { localStorage.setItem("kb_uxq_max", JSON.stringify(m)); } catch (_) {} }
+  return m[key]; }
+function uxCityCards(box, c) {
+  const qm = c.qm, at = +qm.at, tr = (typeof settings === "object" && settings && (settings.tasks || []).find(t => t.routine === "queue_manager")) || {};
+  const card = (k, ico, name, st, left, extra) => {
+    const d = document.createElement("div"); d.className = "qcard uxq " + k + (st === "busy" ? " busy" : st === "done" ? " done" : " idle");
+    d.innerHTML = '<div class="uxq-h"><span class="uxq-i"></span><b></b></div><div class="uxq-t"></div><div class="qbar"><i></i></div>';
+    d.querySelector(".uxq-i").textContent = ico; d.querySelector("b").textContent = name;
+    const t = d.querySelector(".uxq-t"), bar = d.querySelector(".qbar i");
+    if (st === "busy" && left != null) { const tot = uxqMax(k, left); t.dataset.end = String((at + left) * 1000); t.dataset.tot = String(tot); bar.style.width = Math.round(100 * (1 - left / Math.max(tot, 1))) + "%"; }
+    else { t.textContent = st === "done" ? "مكتمل ✓" : st === "idle" ? "خامل" : (extra || "—"); bar.style.width = st === "done" ? "100%" : "0"; }
+    if (extra && st === "busy") { const e = document.createElement("small"); e.textContent = extra; d.appendChild(e); }
+    box.appendChild(d); };
+  UXQ.forEach(([u, ico, n, tk]) => { const r = (qm.train || []).find(x => x.unit === u); const tier = tr[tk] ? " • T" + tr[tk] : "";
+    card(u, ico, n + tier, r ? r.state : "idle", r ? r.left : null); });
+  const mt = qm.materials || {}; card("mat", "⚒️", "المواد", mt.state || "idle", mt.left, mt.max ? "قابل للإنتاج " + (mt.producible || 0) + "/" + mt.max : "");
+  const he = qm.heal || {}; card("heal", "➕", "العلاج", he.state || "idle", he.left, he.capacity ? "جرحى " + (+he.wounded || 0).toLocaleString("en-US") + "/" + (+he.capacity).toLocaleString("en-US") : "");
+  uxqTick();
+}
+function uxqTick() { const f = s => { s = Math.max(0, Math.round(s)); const h = Math.floor(s / 3600), m = Math.floor(s % 3600 / 60), x = s % 60; return (h ? h + ":" : "") + String(m).padStart(2, "0") + ":" + String(x).padStart(2, "0"); };
+  document.querySelectorAll(".uxq-t[data-end]").forEach(el => { const left = (+el.dataset.end - Date.now()) / 1000, tot = +el.dataset.tot || 1, bar = el.parentElement.querySelector(".qbar i");
+    if (left <= 0) { el.textContent = "مكتمل ✓"; el.removeAttribute("data-end"); if (bar) bar.style.width = "100%"; el.parentElement.classList.add("done"); return; }
+    el.textContent = "⏱ " + f(left); if (bar) bar.style.width = Math.max(0, Math.min(100, Math.round(100 * (1 - left / tot)))) + "%"; }); }
+setInterval(() => { try { uxqTick(); } catch (_) {} }, 1000);
 function renderCity(c) {
   const q = $("city-q"), m = $("city-m");
   if (!q || !m) return;
@@ -3422,6 +3463,9 @@ function renderRes(r, city) {
       const sh = c.shield || {}, on = sh.state === "on" && sh.until && new Date(sh.until.replace(" ", "T") + "Z") > new Date();
       b.textContent = on ? " 🛡️ مفعّل حتى " + sh.until.slice(11) + " UTC" : sh.state === "missing" ? " ⚠️ لا يوجد درع في الحقيبة" : " 🛡️ بدون درع";
       b.style.color = on ? "#6be39a" : sh.state === "missing" ? "#ff8f80" : ""; }
+    const ub = $("uxq-box"); if (ub) { ub.innerHTML = "";   // UX-02
+      if (c.qm && c.qm.at) { uxCityCards(ub, c); $("uxq-at").textContent = "آخر قراءة " + new Date(c.qm.at * 1000).toLocaleTimeString("ar", { hour: "2-digit", minute: "2-digit" }); }
+      else { ub.innerHTML = '<div class="hint">لم يقرأ البوت «نظرة عامة على الطوابير» بعد</div>'; $("uxq-at").textContent = "—"; } }
     const lr = document.querySelector('label[for="en-join_rally"]');   // TASK-03: rallies joined today
     if (lr) { let b = lr.querySelector(".gem-today"); if (!b) { b = document.createElement("b"); b.className = "gem-today"; lr.insertBefore(b, lr.firstChild.nextSibling); }
       const d = new Date().toISOString().slice(0, 10), h = Array.isArray(c.history) ? c.history : [], t = h.length && h[h.length - 1].day === d ? h[h.length - 1] : {};
