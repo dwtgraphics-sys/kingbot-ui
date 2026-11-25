@@ -915,6 +915,11 @@ main, .view, .panel, #top, .kbar { min-width: 0; max-width: 100%; box-sizing: bo
 .ast-in{display:flex;gap:6px;padding:10px 12px;border-top:1px solid #ffffff14}
 .ast-in input{flex:1;min-width:0;padding:9px 12px;border-radius:12px;border:1px solid #ffffff22;background:rgba(0,0,0,.35);color:inherit;font:inherit}
 .ast-in button{padding:0 14px;border-radius:12px;border:0;background:var(--accent,#f28c28);color:#2a1600;font-weight:800;cursor:pointer}
+/* AI-02: chat input bar + accuracy disclaimer */
+.ast-in .ast-send{min-height:40px;padding:0 16px;display:inline-flex;align-items:center;gap:6px;font-size:14px;box-shadow:0 3px 12px #f28c2855}.ast-in .ast-send span{display:inline-block;transform:scaleX(-1)}
+.ast-in .ast-send:disabled{opacity:.5;cursor:default;box-shadow:none}.ast-in input{min-height:40px}
+.ast-m{font-size:13.5px;line-height:1.55;overflow-wrap:anywhere}.ast-m.me{border-end-start-radius:4px}.ast-m.bot{border-end-end-radius:4px}
+.ast-disc{margin:0;padding:0 12px 9px;font-size:10.5px;line-height:1.4;opacity:.6;text-align:center}
 /* ---------- roadmap v18 GUIDE: guide page ---------- */
 #v-guide,.gd{min-width:0;max-width:100%}.gd{overflow:hidden}.gd-steps li>div,.gd-points li,.gd-card{min-width:0;overflow-wrap:anywhere}
 .gd .gd-toc{border:1px solid #ffffff1a;border-radius:14px;background:#ffffff08;padding:8px 12px;margin-bottom:14px;position:sticky;top:76px;z-index:5;backdrop-filter:blur(10px)}
@@ -2877,6 +2882,8 @@ function mcFill() { const m = mcGet(), mx = document.getElementById("mc-max"); i
 document.addEventListener("change", e => { if (e.target.id === "mc-max") { const v = Math.max(0, Math.min(5, Math.round(+e.target.value || 0))); e.target.value = v || ""; mcGet().max_concurrent_marches = v; }
   if (e.target.id === "mc-to") { const v = Math.max(5, Math.min(120, Math.round(+e.target.value || 15))); e.target.value = v; mcGet().search_timeout_seconds = v; } });
 setTimeout(() => { try { mcFill(); } catch (_) {} }, 0);
+// AI-02: the send button is only active when there is something to send (Enter sends through the form)
+document.addEventListener("input", e => { if (e.target && e.target.id === "ast-text") { const b = document.querySelector("#ast-form .ast-send"); if (b) b.disabled = !e.target.value.trim(); } });
 // TASK-07: commander_presets {task: {primary, secondary}} in the bot settings
 const CPZ_TASKS = [["gathering_food", "🌾 جمع الطعام"], ["gathering_wood", "🪵 جمع الخشب"], ["gathering_stone", "🪨 جمع الحجر"], ["gathering_gold", "🪙 جمع الذهب"],
   ["barbarians", "⚔️ البرابرة"], ["rallies", "🏰 الحشود"], ["guardians", "🛡️ الحراس"]];
@@ -4552,7 +4559,8 @@ document.getElementById("cond-ic").innerHTML = gsvg("conduct", 46);
   <div class="ast-q" id="ast-q"></div>
   <div class="ast-chips" id="ast-chips" aria-label="أسئلة سريعة"></div>
   <div class="ast-log" id="ast-log"><div class="ast-m bot">أهلاً! اضغط أمراً أو اكتب طلبك، وأنا أرسله للبوت وأتابعه حتى ينتهي.</div></div>
-  <form class="ast-in" id="ast-form"><input id="ast-text" autocomplete="off" placeholder="اكتب طلبك… مثال: حدّث القادة والموارد"><button type="submit">إرسال</button></form>
+  <form class="ast-in" id="ast-form"><input id="ast-text" autocomplete="off" enterkeyhint="send" aria-label="اكتب رسالتك" placeholder="اكتب رسالتك… (Enter للإرسال)"><button type="submit" class="ast-send" aria-label="إرسال"><span aria-hidden="true">➤</span> إرسال</button></form>
+  <p class="ast-disc" id="ast-disc">❗ إجابات المساعد مولَّدة آلياً وقد لا تكون دقيقة 100%. تأكد من المعلومات المهمة في «الدليل» أو اسأل «الدعم».</p>
 </section>
 
 
