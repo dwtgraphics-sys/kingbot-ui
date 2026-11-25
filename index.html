@@ -957,6 +957,7 @@ main, .view, .panel, #top, .kbar { min-width: 0; max-width: 100%; box-sizing: bo
 .oratios{display:flex;flex-wrap:wrap;gap:8px}.oratios label{display:inline-flex;align-items:center;gap:4px;padding:4px 8px;border-radius:10px;background:#ffffff0a;font-size:12.5px}.oratios input{width:52px}.oratios small{opacity:.65;font-size:11px;margin-inline-start:4px}
 .mc-row{display:flex;flex-wrap:wrap;gap:10px}.mc-row label{display:flex;align-items:center;gap:6px;font-size:13px}.mc-row input{width:64px}
 .cpz-grid{display:grid;gap:8px}.cpz-row{display:grid;grid-template-columns:minmax(90px,1fr) 1fr 1fr;gap:6px;align-items:center;min-width:0}.cpz-row>b{font-size:13px}.cpz-row small{display:block;opacity:.6;font-size:10.5px}.cpz-row .cmdbtn{min-width:0;max-width:100%}@media(max-width:520px){.cpz-row{grid-template-columns:1fr 1fr}.cpz-row>b{grid-column:1/-1}}
+.ssx-now{margin:4px 0 10px;padding:10px 12px;border-radius:12px;background:#ffffff0a;border:1px solid #ffffff14}.ssx-top{display:flex;gap:8px;align-items:center;flex-wrap:wrap;font-size:13px}.ssx-top b{padding:2px 10px;border-radius:999px;background:#ffffff14}.ssx-top b.act{background:#2ecc7133;color:#9ff0bf}.ssx-top b.brk{background:#f39c1233;color:#ffd08a}.ssx-top b.done{background:#e74c3c33;color:#ffb3a8}.ssx-bar{height:8px;margin-top:8px;border-radius:99px;background:#ffffff14;overflow:hidden}.ssx-bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,#2ecc71,#f28c28);transition:width .4s}
 .mc-pr{display:flex;gap:8px;align-items:flex-start;margin-top:8px;font-size:13px}.mc-pr ol{margin:0;padding-inline-start:18px;display:grid;gap:4px}.mc-pr li button{margin-inline-start:4px;padding:0 6px;border-radius:6px;border:1px solid #ffffff22;background:#ffffff0a;color:inherit;cursor:pointer}
 .ref-box{display:flex;gap:8px;margin:10px 0}.ref-box input{flex:1;min-width:0;padding:10px 12px;border-radius:12px;border:1px solid #ffffff22;background:#0005;color:inherit;font:inherit}
 .tool-soon{margin-top:12px;padding:18px;border-radius:14px;border:1px dashed #ffffff33;text-align:center;opacity:.8}
@@ -1693,6 +1694,18 @@ window.addEventListener("error", function(e) {
 
     <!-- SCHEDULER -->
     <div class="view" id="v-sched">
+      <section class="panel ssx" aria-labelledby="ssx-h">   <!-- TASK-08 -->
+        <div class="panel-head"><h2 id="ssx-h">🧠 جلسات عمل واستراحات (مثل الإنسان) <button type="button" class="info-btn" data-info="smartsched" aria-label="شرح">❗</button></h2>
+          <label class="row" for="ssx-on"><span>مفعّل</span><span class="switch"><input type="checkbox" id="ssx-on"><span></span></span></label></div>
+        <div class="ssx-now" id="ssx-now"><div class="ssx-top"><b id="ssx-st">—</b><span id="ssx-txt">لم تصل حالة من البوت بعد</span></div><div class="ssx-bar"><i id="ssx-fill"></i></div></div>
+        <div class="mc-row ssx-in">
+          <label>حد الساعات اليومي <input type="number" id="ssx-lim" min="1" max="24" placeholder="14"></label>
+          <label>مدة الجلسة (دقيقة) <input type="number" id="ssx-work" min="10" max="600" placeholder="90"></label>
+          <label>مدة الاستراحة (دقيقة) <input type="number" id="ssx-brk" min="1" max="240" placeholder="20"></label>
+          <label>عشوائية ± % <input type="number" id="ssx-jit" min="0" max="50" placeholder="15"></label>
+        </div>
+        <p class="gd-p">تُحفظ مع «حفظ وإرسال».</p>
+      </section>
       <section class="panel" aria-labelledby="sc-h">
         <div class="panel-head">
           <h2 id="sc-h">الجدولة الذكية</h2>
@@ -2411,6 +2424,7 @@ const PAGE_INFO = {
   mail: { name: "مولّد رسائل التحالف", text: "أداة مجانية لكتابة بريد تحالف منسّق في Rise of Kingdoms. حدد نصاً واضغط عريض / مائل / الحجم / لون / تدرج فتوضع علامات اللعبة حوله (إذا لم تحدد شيئاً توضع العلامات عند المؤشر). العدّاد يحسب العلامات أيضاً لأن حد اللعبة 2,000 حرف يشملها. المسودة وقوالبك تُحفظ على هذا الجهاز فقط. «نسخ الكود» ينسخ النص بالعلامات لتلصقه في بريد التحالف." },
   uxq: { name: "في المدينة", text: "بطاقات الطوابير النشطة في مدينتك كما قرأها البوت من «نظرة عامة على الطوابير»: تدريب المشاة والفرسان والرماة والحصار (مع المستوى المختار في إعدادات الطوابير)، إنتاج المواد، والعلاج. العدّاد ينقص كل ثانية، والشريط يقارن الوقت المتبقي بأطول وقت رآه البوت لنفس الطابور (اللعبة لا تعرض المدة الكاملة). يقرأ البوت الطوابير كل 10 دقائق تقريباً وبعد تبديل الشخصية." },
   cpresets: { name: "قادة كل مهمة", text: "اختر قائداً أساسياً وثانوياً لكل مهمة (جمع الطعام/الخشب/الحجر/الذهب، البرابرة، الحشود، الحراس). عند تجهيز المسيرة يبدّل البوت القادة في نافذة الجيش الجديد إلى من اخترته (يبحث عن الاسم في قائمة القادة). إذا لم تختر قائداً تبقى التشكيلة المحفوظة في اللعبة كما هي. إذا كان القائد في مسيرة أخرى يكمل البوت بالتشكيلة المحفوظة. القادة الظاهرون أولاً هم الذين قرأهم البوت من حسابك." },
+  smartsched: { name: "جلسات عمل واستراحات", text: "يقسّم البوت وقت عمله اليومي إلى جلسات (مثلاً 90 دقيقة) تليها استراحات (مثلاً 20 دقيقة) مثل اللاعب الحقيقي، ويتوقف لبقية اليوم عند بلوغ «حد الساعات اليومي» (يُحسب وقت تنفيذ المهام فقط، ويبدأ العد من جديد 00:00 بتوقيت غرينتش). «العشوائية ±%» تغيّر أطوال الجلسات والاستراحات وفترات الانتظار قليلاً، وتُحرّك كل نقرة ±5 بكسل حتى لا تتكرر بنفس المكان. يعمل داخل ساعات «الجدولة الذكية» إن كانت مفعّلة. الشريط يعرض الساعات المستخدمة اليوم والحالة: يعمل / استراحة / انتهى حد اليوم." },
   march: { name: "أولوية المسيرات والمهلة", text: "«أقصى عدد جيوش في نفس الوقت»: البوت لا يرسل جيش جمع جديداً إذا كان هذا العدد في الخارج (فارغ أو 0 = حسب خانات اللعبة). «مهلة البحث»: إذا علِق البحث في الخريطة أطول من هذه الثواني (الافتراضي 15) يلغيه ويرجع للمدينة بدل أن يتجمد. «الترتيب»: أي نوع مسيرات يُنفَّذ أولاً في كل جولة — الحشود، الجمع، البرابرة — بالأسهم ▲▼." },
   ref: { name: "الإحالات", text: "رابط الإحالة فيه اسم حسابك في اللوحة. انسخه وأرسله لأصدقائك؛ عند تسجيلهم من الرابط يُسجَّل أنهم جاؤوا عن طريقك. المكافآت يحددها المشرف." },
   menu: { name: "القائمة", text: "القائمة الرئيسية: الدليل، الدعم، الإحالات، حسابي، ثم «أدوات مجانية» (تفتح بالضغط) وروابط المجتمع (ديسكورد، واتساب، تيليجرام، يوتيوب) — الروابط تُقرأ من إعدادات kingbot-syn فيتغيّر الرابط بدون تحديث الصفحة. تسجيل الخروج في الأسفل." },
@@ -2905,6 +2919,25 @@ document.addEventListener("change", e => { if (e.target.id === "mc-max") { const
 setTimeout(() => { try { mcFill(); } catch (_) {} }, 0);
 // AI-02: the send button is only active when there is something to send (Enter sends through the form)
 document.addEventListener("input", e => { if (e.target && e.target.id === "ast-text") { const b = document.querySelector("#ast-form .ast-send"); if (b) b.disabled = !e.target.value.trim(); } });
+// TASK-08: smart_schedule {enabled, daily_active_hours_limit, work_session_minutes, break_duration_minutes, jitter_percent}
+const SSX = { "ssx-lim": ["daily_active_hours_limit", 1, 24, 14], "ssx-work": ["work_session_minutes", 10, 600, 90], "ssx-brk": ["break_duration_minutes", 1, 240, 20], "ssx-jit": ["jitter_percent", 0, 50, 15] };
+function ssxGet() { if (typeof settings !== "object" || !settings) return {}; const c = settings.smart_schedule = (settings.smart_schedule && typeof settings.smart_schedule === "object") ? settings.smart_schedule : {};
+  Object.values(SSX).forEach(([k, , , d]) => { if (c[k] == null) c[k] = d; }); if (c.enabled == null) c.enabled = false; return c; }
+function ssxFill() { const on = document.getElementById("ssx-on"); if (!on) return; const c = ssxGet(); on.checked = !!c.enabled;
+  Object.entries(SSX).forEach(([id, [k]]) => { const e = document.getElementById(id); if (e) e.value = c[k]; }); ssxShow(); }
+function ssxShow() { const st = document.getElementById("ssx-st"); if (!st) return; const c = ssxGet(), x = (typeof lastStatus === "object" && lastStatus && lastStatus.city && lastStatus.city.smart_schedule) || null;
+  const lim = +(x && x.limit_h) || +c.daily_active_hours_limit || 14, used = x ? +x.active_h || 0 : 0;
+  document.getElementById("ssx-fill").style.width = Math.min(100, used / lim * 100) + "%";
+  if (!c.enabled) { st.className = ""; st.textContent = "متوقف"; document.getElementById("ssx-txt").textContent = "فعّله واضغط «حفظ وإرسال»."; return; }
+  if (!x || !x.enabled) { st.className = ""; st.textContent = "—"; document.getElementById("ssx-txt").textContent = "بانتظار البوت (يحتاج الإصدار 214 أو أحدث)."; return; }
+  const brk = x.state === "break", done = x.state === "done";
+  st.className = brk ? "brk" : done ? "done" : "act"; st.textContent = brk ? "☕ استراحة" : done ? "🌙 انتهى حد اليوم" : "⚡ يعمل";
+  let t = used.toFixed(1) + " / " + lim + " ساعة اليوم · متبقٍ " + Math.max(0, lim - used).toFixed(1) + " ساعة";
+  if (brk && x.break_until) { const m = Math.max(0, Math.round((x.break_until * 1000 - Date.now()) / 60000)); t += " · يعود بعد ~" + m + " دقيقة"; }
+  document.getElementById("ssx-txt").textContent = t; }
+document.addEventListener("change", e => { const id = e.target && e.target.id; if (id === "ssx-on") { ssxGet().enabled = e.target.checked; ssxShow(); }
+  if (SSX[id]) { const [k, lo, hi, d] = SSX[id]; const v = Math.max(lo, Math.min(hi, Math.round(+e.target.value || d))); e.target.value = v; ssxGet()[k] = v; ssxShow(); } });
+setTimeout(() => { try { ssxFill(); } catch (_) {} }, 0); setInterval(() => { try { ssxShow(); } catch (_) {} }, 30000);
 // TASK-07: commander_presets {task: {primary, secondary}} in the bot settings
 const CPZ_TASKS = [["gathering_food", "🌾 جمع الطعام"], ["gathering_wood", "🪵 جمع الخشب"], ["gathering_stone", "🪨 جمع الحجر"], ["gathering_gold", "🪙 جمع الذهب"],
   ["barbarians", "⚔️ البرابرة"], ["rallies", "🏰 الحشود"], ["guardians", "🛡️ الحراس"]];
@@ -3665,7 +3698,7 @@ async function refreshStatus(btn) {
     try { checkCharChange(s); checkWatched(s); astTick(s); } catch (_) {}
     try { if (window.liveUpdate) liveUpdate(s); } catch (_) {}
     try { if (window.qmUpdate) qmUpdate(s); } catch (_) {}
-    try { renderStats(s.city); renderChars(s.city); lastStatus = s; renderAccount(); renderPages(); renderMarches(s.city); rotNow = (s.city || {}).rotation || null; renderRotNow(); } catch (_) {}
+    try { renderStats(s.city); renderChars(s.city); lastStatus = s; renderAccount(); renderPages(); renderMarches(s.city); try { ssxShow(); } catch (_) {} rotNow = (s.city || {}).rotation || null; renderRotNow(); } catch (_) {}
     logLines = s.log || []; renderLog();
     recorded = s.recorded || []; renderActs();
     setPill($("conn"), "s-good", "متصل · " + fmtTime(s.updated)); setMsg("m-status", "");
@@ -3679,9 +3712,10 @@ async function loadSettings() {
     if (f) {
       const d = await kbParse(await download(f.id), curServer().control);
       if (d._locked) { setMsg("m-send", "🔐 الإعدادات مشفّرة: أدخل عبارة المرور لعرضها وتعديلها.", "err"); renderAll(); return; }
-      settings = { running: d.running !== false, loop_minutes: d.loop_minutes || 60, tasks: Array.isArray(d.tasks) ? d.tasks : settings.tasks, schedule: d.schedule || settings.schedule, daily_pause: d.daily_pause || settings.daily_pause, freeze_until: d.freeze_until || null, presets: (d.presets && typeof d.presets === "object") ? d.presets : (settings.presets || {}), char_rotation: d.char_rotation || settings.char_rotation || { enabled: false, slots: [] }, stream: (d.stream && typeof d.stream === "object") ? d.stream : (settings.stream || { enabled: true }), march_control: (d.march_control && typeof d.march_control === "object") ? d.march_control : (settings.march_control || {}), commander_presets: (d.commander_presets && typeof d.commander_presets === "object") ? d.commander_presets : (settings.commander_presets || {}) };
+      settings = { running: d.running !== false, loop_minutes: d.loop_minutes || 60, tasks: Array.isArray(d.tasks) ? d.tasks : settings.tasks, schedule: d.schedule || settings.schedule, daily_pause: d.daily_pause || settings.daily_pause, freeze_until: d.freeze_until || null, presets: (d.presets && typeof d.presets === "object") ? d.presets : (settings.presets || {}), char_rotation: d.char_rotation || settings.char_rotation || { enabled: false, slots: [] }, stream: (d.stream && typeof d.stream === "object") ? d.stream : (settings.stream || { enabled: true }), march_control: (d.march_control && typeof d.march_control === "object") ? d.march_control : (settings.march_control || {}), commander_presets: (d.commander_presets && typeof d.commander_presets === "object") ? d.commander_presets : (settings.commander_presets || {}), smart_schedule: (d.smart_schedule && typeof d.smart_schedule === "object") ? d.smart_schedule : (settings.smart_schedule || undefined) };
       try { mcFill(); } catch (_) {}
       try { cpzFill(); } catch (_) {}
+      try { ssxFill(); } catch (_) {}
       lastShotRequest = d.shot_request || null;
     }
   } catch (e) { setMsg("m-send", errText(e), "err"); }
