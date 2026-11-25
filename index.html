@@ -919,6 +919,7 @@ main, .view, .panel, #top, .kbar { min-width: 0; max-width: 100%; box-sizing: bo
 .ast-in .ast-send{min-height:40px;padding:0 16px;display:inline-flex;align-items:center;gap:6px;font-size:14px;box-shadow:0 3px 12px #f28c2855}.ast-in .ast-send span{display:inline-block;transform:scaleX(-1)}
 .ast-in .ast-send:disabled{opacity:.5;cursor:default;box-shadow:none}.ast-in input{min-height:40px}
 .ast-m{font-size:13.5px;line-height:1.55;overflow-wrap:anywhere}.ast-m.me{border-end-start-radius:4px}.ast-m.bot{border-end-end-radius:4px}
+.ast-srv{padding:8px 12px 10px;border-top:1px solid #ffffff14;font-size:12px}.ast-srv>b{display:flex;align-items:center;gap:6px;margin-bottom:6px;opacity:.85}.ast-srv>div{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}.ast-srv button[type=button]:not(.info-btn){padding:8px 6px;border-radius:10px;border:1px solid #ffffff22;background:#ffffff0a;color:inherit;font:inherit;font-size:12px;cursor:pointer;min-width:0}.ast-srv button.busy{opacity:.7;cursor:wait}.ast-srv button.ok{border-color:#2ecc71}#ast-pause.res{border-color:#2ecc7188;background:#2ecc711f}
 .ast-disc{margin:0;padding:0 12px 9px;font-size:10.5px;line-height:1.4;opacity:.6;text-align:center}
 /* ---------- roadmap v18 GUIDE: guide page ---------- */
 #v-guide,.gd{min-width:0;max-width:100%}.gd{overflow:hidden}.gd-steps li>div,.gd-points li,.gd-card{min-width:0;overflow-wrap:anywhere}
@@ -2685,11 +2686,13 @@ const AST_CMDS = [
   { k: "read_commanders", ico: "⚔️", name: "تحديث القادة", words: ["قائد", "قاده", "قادة", "القاده", "commander"] },
   { k: "read_resources", ico: "💰", name: "تحديث الموارد", words: ["موارد", "الموارد", "ذهب", "طعام", "خشب", "حجر", "resource"] },
   { k: "read_marches", ico: "🏹", name: "تحديث المسيرات", words: ["مسير", "جيش", "جيوش", "march"] },
+  { k: "read_queues", ico: "⏱️", name: "مزامنة نظرة الطوابير", words: ["طابور", "طوابير", "الطوابير", "مؤقت", "queue"] },   // MOD-03
   { k: "shot", ico: "📸", name: "صورة من اللعبة الآن", words: ["صورة", "صوره", "شاشة", "شاشه", "screenshot", "screen"] },
 ];
 const AST_ALL = ["read_profile", "read_resources", "read_marches", "read_characters"];
 let astQueue = [], astCur = null, astLog = [];
-function astName(k) { const c = AST_CMDS.find(x => x.k === k); return c ? c.ico + " " + c.name : (k === "switch_character" ? "🔄 تبديل الشخصية" : k); }
+const AST_SRV = { restart_game: "🔁 إعادة تشغيل اللعبة", restart_bot: "♻️ إعادة تشغيل البوت" };   // MOD-03
+function astName(k) { const c = AST_CMDS.find(x => x.k === k); return c ? c.ico + " " + c.name : AST_SRV[k] || (k === "switch_character" ? "🔄 تبديل الشخصية" : k); }
 function astSay(text, who, st) { astLog.push({ text, who: who || "bot", st: st || "" }); if (astLog.length > 40) astLog.shift(); astDraw(); return astLog.length - 1; }
 function astDraw() {
   const box = $("ast-log"); box.innerHTML = "";
@@ -2702,7 +2705,7 @@ function astDraw() {
 /* MOD-02: live state on the quick buttons - Sending… → Waiting for server… (spinner, locked) → ✅ Updated just now;
    the last successful time per command is kept on this device. A command already queued is not queued twice. */
 function astBtn(k, st) {
-  const b = document.querySelector('#ast-q button[data-k="' + k + '"]'); if (!b) return;
+  const b = document.querySelector('#ast-q button[data-k="' + k + '"], #ast-srv button[data-k="' + k + '"]'); if (!b) return;
   const lb = b.querySelector(".lb"); if (!b.dataset.lbl) b.dataset.lbl = lb ? lb.textContent : b.textContent;
   b.classList.remove("busy", "ok"); b.disabled = false;
   const set = t => { if (lb) lb.textContent = t; else b.textContent = t; };
@@ -2937,6 +2940,19 @@ document.addEventListener("change", e => { if (e.target.id === "mc-max") { const
 setTimeout(() => { try { mcFill(); } catch (_) {} }, 0);
 // AI-02: the send button is only active when there is something to send (Enter sends through the form)
 document.addEventListener("input", e => { if (e.target && e.target.id === "ast-text") { const b = document.querySelector("#ast-form .ast-send"); if (b) b.disabled = !e.target.value.trim(); } });
+// MOD-03: quick server controls in the assistant (pause/resume = settings.running; restarts = one-off actions)
+function astSrvPaint() { const b = document.getElementById("ast-pause"); if (!b || typeof settings !== "object" || !settings) return;
+  const on = settings.running !== false; b.textContent = on ? "⏸ إيقاف البوت" : "▶ تشغيل البوت"; b.classList.toggle("res", !on); }
+document.addEventListener("click", async e => { const t = e.target && e.target.closest && e.target.closest("#ast-srv button"); if (!t) return;
+  if (t.dataset.x === "srv-info") { astSay("❗ «إيقاف/تشغيل البوت» مثل START/STOP: يتوقف بعد الخطوة الحالية ولا يغيّر تاريخ الانتهاء. «إعادة تشغيل اللعبة» يغلق اللعبة على السيرفر ويفتحها من جديد (1–3 دقائق) — مفيد إذا علقت. «إعادة تشغيل البوت» يعيد تشغيل برنامج البوت نفسه (نصف دقيقة تقريباً). كلها تصل خلال دقيقة، ويُطلب تأكيد قبل إعادة التشغيل."); return; }
+  if (t.id === "ast-pause") { const next = settings.running === false; const r = $("running"); if (r) r.checked = next; settings.running = next;
+    t.disabled = true; const i = astSay(next ? "▶ تشغيل البوت" : "⏸ إيقاف البوت", "me", "⏳ جارٍ الإرسال");
+    const ok = await sendSettings({ running: next }, "m-send", null); t.disabled = false;
+    if (!ok) { settings.running = !next; if (r) r.checked = !next; } if (astLog[i]) astLog[i].st = ok ? "✅ أُرسل — يصل خلال دقيقة" : "❌ فشل الإرسال"; astDraw(); astSrvPaint(); return; }
+  const k = t.dataset.k; if (!AST_SRV[k]) return;
+  if (!confirm(k === "restart_game" ? "إعادة تشغيل اللعبة على السيرفر الآن؟ سيتوقف البوت 1–3 دقائق." : "إعادة تشغيل البوت على السيرفر الآن؟")) return;
+  astAdd([{ do: k }]); });
+setInterval(() => { try { astSrvPaint(); } catch (_) {} }, 5000);
 // TASK-08: smart_schedule {enabled, daily_active_hours_limit, work_session_minutes, break_duration_minutes, jitter_percent}
 const SSX = { "ssx-lim": ["daily_active_hours_limit", 1, 24, 14], "ssx-work": ["work_session_minutes", 10, 600, 90], "ssx-brk": ["break_duration_minutes", 1, 240, 20], "ssx-jit": ["jitter_percent", 0, 50, 15] };
 function ssxGet() { if (typeof settings !== "object" || !settings) return {}; const c = settings.smart_schedule = (settings.smart_schedule && typeof settings.smart_schedule === "object") ? settings.smart_schedule : {};
@@ -4634,6 +4650,8 @@ document.getElementById("cond-ic").innerHTML = gsvg("conduct", 46);
   <div class="ast-log" id="ast-log"><div class="ast-m bot">أهلاً! اضغط أمراً أو اكتب طلبك، وأنا أرسله للبوت وأتابعه حتى ينتهي.</div></div>
   <form class="ast-in" id="ast-form"><input id="ast-text" autocomplete="off" enterkeyhint="send" aria-label="اكتب رسالتك" placeholder="اكتب رسالتك… (Enter للإرسال)"><button type="submit" class="ast-send" aria-label="إرسال"><span aria-hidden="true">➤</span> إرسال</button></form>
   <p class="ast-disc" id="ast-disc">❗ إجابات المساعد مولَّدة آلياً وقد لا تكون دقيقة 100%. تأكد من المعلومات المهمة في «الدليل» أو اسأل «الدعم».</p>
+  <div class="ast-srv" id="ast-srv" aria-label="تحكم سريع بالسيرفر"><b>🖥️ تحكم سريع بالسيرفر <button type="button" class="info-btn" data-x="srv-info" aria-label="شرح">❗</button></b>
+    <div><button type="button" id="ast-pause">⏸ إيقاف البوت</button><button type="button" data-k="restart_game"><span class="lb">🔁 إعادة تشغيل اللعبة</span></button><button type="button" data-k="restart_bot"><span class="lb">♻️ إعادة تشغيل البوت</span></button></div></div>
 </section>
 
 
