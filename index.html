@@ -938,6 +938,7 @@ main, .view, .panel, #top, .kbar { min-width: 0; max-width: 100%; box-sizing: bo
 .kbar-comm{display:flex;flex-wrap:wrap;gap:6px;padding:4px 8px}.kbar-comm:empty{display:none}
 .kbar-comm a{display:inline-flex;align-items:center;gap:5px;padding:6px 10px;border-radius:999px;border:1px solid #ffffff22;background:#ffffff0a;color:inherit;text-decoration:none;font-size:12px}
 .kbar-comm a:hover{background:#ffffff1a}
+.oratios{display:flex;flex-wrap:wrap;gap:8px}.oratios label{display:inline-flex;align-items:center;gap:4px;padding:4px 8px;border-radius:10px;background:#ffffff0a;font-size:12.5px}.oratios input{width:52px}.oratios small{opacity:.65;font-size:11px;margin-inline-start:4px}
 .ref-box{display:flex;gap:8px;margin:10px 0}.ref-box input{flex:1;min-width:0;padding:10px 12px;border-radius:12px;border:1px solid #ffffff22;background:#0005;color:inherit;font:inherit}
 .tool-soon{margin-top:12px;padding:18px;border-radius:14px;border:1px dashed #ffffff33;text-align:center;opacity:.8}
 /* MOD-01: assistant on phones - full width sheet, compact 3-column buttons, no long scrolling */
@@ -2328,7 +2329,10 @@ const OPTS = {
                 { k: "quiet_hours", type: "range", label: "الساعات الهادئة (UTC، من – إلى)", def: [22, 6], min: 0, max: 23 },
                 { k: "commander_preset", type: "num", label: "رقم خطة القادة (0 = الافتراضي)", def: 0, min: 0, max: 7 }],
   gather: [{ k: "kinds", type: "kinds", label: "أنواع الموارد", def: ["food", "wood", "stone", "gold"] },
-           { k: "reserve", type: "num", label: "ترك مسيرات فارغة (لحشد البرابرة أو الهجوم)", def: 0, min: 0, max: 4 }],
+           { k: "reserve", type: "num", label: "ترك مسيرات فارغة (لحشد البرابرة أو الهجوم)", def: 0, min: 0, max: 4 },
+           // TASK-02: balanced gathering (saved with the gather task options in control.json)
+           { k: "balanced_mode", type: "check", label: "الجمع المتوازن (يرسل للمورد الأقل من نسبته المطلوبة)", def: false },
+           { k: "target_ratios", type: "ratios", label: "النسب المطلوبة من مخزون المدينة", def: { food: 25, wood: 25, stone: 25, gold: 25 } }],
   join_rally: [{ k: "max_troops", type: "num", label: "لا ينضم إذا كان في الحشد هذا العدد أو أكثر", def: 600000, min: 10000, max: 5000000 },
                { k: "max_armies", type: "num", label: "أقصى عدد جيوش في المرة", def: 2, min: 1, max: 5 }],
   rally_fort: [{ k: "level", type: "num", label: "مستوى الحصن", def: 10, min: 1, max: 10 },
@@ -2361,7 +2365,7 @@ const OPTS = {
 const STEPPER = { gather_gems: { label: "عدد ارسال القوات", max: 5 } };
 const INFO = {
   gather_gems: "يبحث البوت عن مناجم الجواهر حول المدينة ويرسل إليها العدد الذي تختاره من الجيوش (من 1 إلى 5). يحسب الجواهر المجموعة في اليوم (بتوقيت غرينتش): من الجيوش المرسلة (المنجم مستوى 1 = 10، مستوى 2 = 20 لكل إرسال) ومن زيادة رصيد الجواهر، ويأخذ الأكبر. عندما يصل المجموع إلى «الحد اليومي» (1200 جوهرة افتراضياً) يتوقف عن إرسال الجيوش للجواهر حتى اليوم الجديد 00:00 غرينتش (04:00 بتوقيت عُمان)، وتذهب الجيوش الفارغة لجمع الموارد العادية. اكتب 0 لإلغاء الحد.\n\n💎 الجمع الذكي: «مستوى المناجم» يحصر الجمع في مناجم المستوى 1–2 (أقل منافسة وأقل خطراً)، «نطاق البحث» يحدد كم يتحرك البوت حول المدينة، «تجنّب الخطوط الحمراء» يتخطى أي منجم قربه مسيرات هجوم أو معركة، و«الساعات الهادئة فقط» يجعل الجمع في ساعات UTC التي تختارها. البوت يأخذ استراحات عشوائية قصيرة بين الإرسالات، ويظهر عدد جواهر اليوم بجانب اسم المهمة. «خطة القادة» ستُستعمل مع ميزة خطط القادة للمهام؛ حتى ذلك الحين يُرسل الجيش الافتراضي.",
-  gather: "يرسل البوت كل الجيوش الفارغة تلقائياً لجمع الموارد التي تختارها حتى يصل إلى 5/5. لا يغيّر وجهة أي جيش موجود في الخارج.",
+  gather: "يرسل البوت كل الجيوش الفارغة تلقائياً لجمع الموارد التي تختارها حتى يصل إلى 5/5. لا يغيّر وجهة أي جيش موجود في الخارج.\n\n⚖️ الجمع المتوازن: عند تفعيله يقارن البوت مخزون المدينة (آخر قراءة لشريط الموارد) بالنسب التي تكتبها، ويرسل كل جيش للمورد الأبعد تحت نسبته بدل التناوب. بجانب كل نسبة يظهر «الآن» = نسبة المورد الحالية من المخزون. الأنواع غير المختارة في «أنواع الموارد» لا تُرسل لها جيوش.",
   collect_city: "يجمع فقاعات الموارد من المزارع والمناشر والمحاجر ومناجم الذهب داخل المدينة كل فترة عشوائية بين الرقمين.",
   train: "إذا تم تفعيله يدرّب البوت تلقائياً في كل مبنى عسكري فارغ (الثكنات والرماية والإسطبل والحصار) بالمستوى الذي تختاره. لا يضغط INSTANT أبداً. إذا طلبت اللعبة موارد ناقصة: مع علامة ✅ يستخدم الموارد من الحقيبة، وبدونها يلغي التدريب.",
   research: "عند فراغ الأكاديمية يبدأ البوت بحثاً جديداً في القسم الذي تختاره (الاقتصاد أو الحرب أو بالتناوب). مع علامة المسرعات يستخدم مسرعات البحث فقط (لا يستخدم المسرعات العامة ولا المجوهرات). مع علامة الحقيبة يستخدم الموارد من الحقيبة لسداد النقص.",
@@ -2414,6 +2418,13 @@ function buildOpts(routine, t) {
       Object.entries(KIND_NAMES).forEach(([k, n]) => { const l = document.createElement("label"); const c = document.createElement("input"); c.type = "checkbox"; c.checked = t[o.k].includes(k);
         c.addEventListener("change", () => { t[o.k] = Object.keys(KIND_NAMES).filter(x => x === k ? c.checked : t[o.k].includes(x)); if (!t[o.k].length) { t[o.k] = [k]; c.checked = true; } });
         l.append(c, document.createTextNode(" " + n)); w.appendChild(l); }); f.appendChild(w); }
+    if (o.type === "ratios") { f.classList.add("wide"); const w = document.createElement("span"); w.className = "oratios";   // TASK-02
+      if (!t[o.k] || typeof t[o.k] !== "object" || Array.isArray(t[o.k])) t[o.k] = Object.assign({}, o.def);
+      const res = (lastStatus || {}).resources || {}, KS = ["food", "wood", "stone", "gold"], tot = KS.reduce((a, k) => a + (+res[k] || 0), 0);
+      KS.forEach(k => { const l = document.createElement("label"); const i = document.createElement("input"); i.type = "number"; i.min = 0; i.max = 100; i.value = +t[o.k][k] || 0;
+        i.addEventListener("change", () => { let v = Math.max(0, Math.min(100, Math.round(+i.value || 0))); i.value = v; t[o.k][k] = v; });
+        const cur = document.createElement("small"); cur.textContent = tot ? "الآن " + Math.round(100 * (+res[k] || 0) / tot) + "%" : "الآن —";
+        l.append(document.createTextNode((KIND_NAMES[k] || k) + " "), i, document.createTextNode("%"), cur); w.appendChild(l); }); f.appendChild(w); }
     if (o.type === "slider") { f.classList.add("wide"); const w = document.createElement("span"); w.className = "oslider"; const r = document.createElement("input"); r.type = "range"; r.min = o.min; r.max = o.max; r.step = o.step || 1; r.value = t[o.k];
       const out = document.createElement("output"); const paint = () => { out.textContent = Number(r.value).toLocaleString("en-US"); r.style.setProperty("--p", ((r.value - o.min) / (o.max - o.min) * 100) + "%"); }; paint();
       r.addEventListener("input", () => { t[o.k] = Number(r.value); paint(); }); w.append(r, out); f.appendChild(w); }
