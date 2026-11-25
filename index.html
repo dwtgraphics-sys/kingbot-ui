@@ -239,6 +239,10 @@ body.nofx .bg canvas, body.nofx .fog, body.nofx .bg-glow { display: none; }
 .gn-table { width: 100%; border-collapse: collapse; font-size: 13px; font-variant-numeric: tabular-nums; }
 .gn-table th, .gn-table td { padding: 6px 8px; border-bottom: 1px solid rgba(255,255,255,.08); text-align: start; white-space: nowrap; }
 .gn-table th { opacity: .75; font-weight: 600; }
+/* EARN-01: every column stays visible (RTL too): compact numbers, sticky day column, tighter cells on phones */
+.gn-table td[data-full] { cursor: pointer; }
+.gn-table th:first-child, .gn-table td:first-child { position: sticky; inset-inline-start: 0; background: rgba(16,20,32,.96); z-index: 1; }
+@media (max-width: 560px) { .gn-table { font-size: 12px; } .gn-table th, .gn-table td { padding: 6px 5px; } .gn-dl { display: none; } }
 
 .ch-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 10px; }
 .ch-card { display: grid; grid-template-columns: 56px 1fr; gap: 10px; align-items: center; padding: 10px; border-radius: 12px; background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.08); }
@@ -1962,6 +1966,11 @@ const GN_NAMES = { food: "طعام", wood: "خشب", stone: "حجر", gold: "ذ�
 let gnHist = [], gnRes = "food", ntAll = [], ntKind = "", ntSeen = 0;
 try { ntSeen = +(localStorage.getItem("kb_nt_seen") || 0); } catch (_) {}
 const fmtN = n => { n = +n || 0; return n >= 1e9 ? (n / 1e9).toFixed(2) + "B" : n >= 1e6 ? (n / 1e6).toFixed(1) + "M" : n >= 1e3 ? (n / 1e3).toFixed(1) + "K" : String(Math.round(n)); };
+// EARN-01: compact numbers for the daily table: 3,300,000 -> 3.3M, 130,000 -> 130K (full value on hover / tap)
+const gnShort = n => { n = +n || 0; const a = Math.abs(n), f = (v, u) => (v >= 100 ? Math.round(v) : +v.toFixed(1)) + u;
+  return a >= 1e9 ? f(n / 1e9, "B") : a >= 1e6 ? f(n / 1e6, "M") : a >= 1e3 ? f(n / 1e3, "K") : String(Math.round(n)); };
+document.addEventListener("click", e => { const td = e.target.closest && e.target.closest("#gn-table td[data-full]"); if (!td) return;
+  const sh = td.dataset.short || td.textContent; if (td.dataset.short) { td.textContent = td.dataset.short; delete td.dataset.short; } else { td.dataset.short = sh; td.textContent = td.dataset.full; } });
 function renderGains() {
   const tot = document.getElementById("gn-tot"), ch = document.getElementById("gn-chart"), tb = document.getElementById("gn-table");
   if (!tot) return;
@@ -1978,7 +1987,7 @@ function renderGains() {
   svg += '<text x="2" y="12">' + fmtN(max) + '</text></svg>';
   ch.innerHTML = svg;
   tb.innerHTML = "<tr><th>اليوم</th>" + Object.values(GN_NAMES).map(n => "<th>" + n + "</th>").join("") + "<th>برابرة</th><th>حصون</th></tr>" +
-    h.slice().reverse().map(d => "<tr><td>" + d.day + "</td>" + Object.keys(GN_NAMES).map(k => "<td>" + (+d[k] || 0).toLocaleString() + "</td>").join("") +
+    h.slice().reverse().map(d => "<tr><td><span class=\"gn-dl\">" + d.day.slice(0, 5) + "</span>" + d.day.slice(5) + "</td>" + Object.keys(GN_NAMES).map(k => '<td title="' + (+d[k] || 0).toLocaleString("en-US") + '" data-full="' + (+d[k] || 0).toLocaleString("en-US") + '">' + gnShort(d[k]) + "</td>").join("") +
       "<td>" + (+d.barb || 0) + "</td><td>" + ((+d.rally || 0) + (+d.rally_join || 0)) + "</td></tr>").join("");
 }
 document.querySelectorAll("#gn-res button").forEach(b => b.addEventListener("click", () => {
@@ -2036,7 +2045,7 @@ function pushBrowser(list) {
   if (list.length) { ntLastPushed = list[list.length - 1].t; try { localStorage.setItem("kb_nt_pushed", ntLastPushed); } catch (_) {} }
 }
 const PAGE_INFO = {
-  gains: { name: "مكاسبي", text: "يسجل البوت كل يوم (بتوقيت غرينتش) ما تكسبه من طعام وخشب وحجر وذهب وجواهر لآخر 30 يوماً. يقرأ شريط الموارد بعد كل جولة ويحسب الزيادات فقط (الجمع من الخريطة، جمع فقاعات المدينة، المكافآت)، أما الصرف على التدريب والبناء فلا يُخصم. الجواهر تُحسب من الزيادة في رصيد الجواهر خلال اليوم. اختر المورد لعرض الرسم البياني، والجدول يعرض كل الموارد مع عدد البرابرة والحصون." },
+  gains: { name: "مكاسبي", text: "يسجل البوت كل يوم (بتوقيت غرينتش) ما تكسبه من طعام وخشب وحجر وذهب وجواهر لآخر 30 يوماً. يقرأ شريط الموارد بعد كل جولة ويحسب الزيادات فقط (الجمع من الخريطة، جمع فقاعات المدينة، المكافآت)، أما الصرف على التدريب والبناء فلا يُخصم. الجواهر تُحسب من الزيادة في رصيد الجواهر خلال اليوم. اختر المورد لعرض الرسم البياني، والجدول يعرض كل الموارد مع عدد البرابرة والحصون. الأرقام في الجدول مختصرة (3.3M = 3,300,000 و 130K = 130,000) — مرّر المؤشر أو اضغط على الرقم لرؤيته كاملاً، وعمود اليوم ثابت عند التمرير على الجوال." },
   notes: { name: "الإشعارات", text: "تصل هنا إشعارات البوت مباشرة: هجوم على المدينة أو على جيوشك، رسائل البريد الخاصة، وملخص نهاية اليوم عند 00:00 بتوقيت غرينتش (مجموع الموارد والجواهر وعدد البرابرة والحصون). تصل نفس الإشعارات إلى بوت تيليجرام. تحتها سجل الأحداث الكامل. ما دامت اللوحة مفتوحة يظهر كل إشعار جديد كرسالة منبثقة، ومع «تنبيه بصوت واهتزاز» يصدر صوتاً عند الهجوم. تنبيهات المتصفح خارج اللوحة لا يسمح بها موقع claude.ai، لذلك تصل الإشعارات فوراً إلى تيليجرام @CrownKingsBot." }
 };
 document.querySelectorAll('.info-btn[data-info]').forEach(b => b.addEventListener("click", () => showInfo({ name: PAGE_INFO[b.dataset.info].name, hint: PAGE_INFO[b.dataset.info].text })));
