@@ -962,6 +962,11 @@ main, .view, .panel, #top, .kbar { min-width: 0; max-width: 100%; box-sizing: bo
 .ssx-now{margin:4px 0 10px;padding:10px 12px;border-radius:12px;background:#ffffff0a;border:1px solid #ffffff14}.ssx-top{display:flex;gap:8px;align-items:center;flex-wrap:wrap;font-size:13px}.ssx-top b{padding:2px 10px;border-radius:999px;background:#ffffff14}.ssx-top b.act{background:#2ecc7133;color:#9ff0bf}.ssx-top b.brk{background:#f39c1233;color:#ffd08a}.ssx-top b.done{background:#e74c3c33;color:#ffb3a8}.ssx-bar{height:8px;margin-top:8px;border-radius:99px;background:#ffffff14;overflow:hidden}.ssx-bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,#2ecc71,#f28c28);transition:width .4s}
 .mc-pr{display:flex;gap:8px;align-items:flex-start;margin-top:8px;font-size:13px}.mc-pr ol{margin:0;padding-inline-start:18px;display:grid;gap:4px}.mc-pr li button{margin-inline-start:4px;padding:0 6px;border-radius:6px;border:1px solid #ffffff22;background:#ffffff0a;color:inherit;cursor:pointer}
 .ref-box{display:flex;gap:8px;margin:10px 0}.ref-box input{flex:1;min-width:0;padding:10px 12px;border-radius:12px;border:1px solid #ffffff22;background:#0005;color:inherit;font:inherit}
+/* TOOLS-03: speedup calculator */
+.spd-tot{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px;margin:10px 0}.spd-tot div{padding:9px 11px;border-radius:12px;background:#ffffff0a;border:1px solid #ffffff14;min-width:0}.spd-tot div.all{grid-column:1/-1;background:rgba(242,140,40,.14);border-color:#f28c2866}.spd-tot small{display:block;font-size:11px;opacity:.7}.spd-tot b{font-size:14px}
+.spd-cats{display:grid;gap:10px}.spd-cat{border-radius:14px;border:1px solid #ffffff14;background:#ffffff06;overflow:hidden}.spd-cat>button{width:100%;display:flex;justify-content:space-between;align-items:center;gap:8px;padding:10px 12px;border:0;background:none;color:inherit;font:inherit;font-weight:700;cursor:pointer}.spd-cat>button em{font-style:normal;font-weight:400;opacity:.75;font-size:12px}
+.spd-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(84px,1fr));gap:6px;padding:0 10px 10px}.spd-cat.closed .spd-grid{display:none}.spd-grid label{display:flex;flex-direction:column;gap:3px;padding:6px;border-radius:10px;background:#0003;font-size:11.5px;text-align:center}.spd-grid input{width:100%;min-width:0;padding:5px;border-radius:8px;border:1px solid #ffffff22;background:#0005;color:inherit;font:inherit;text-align:center}
+.spd-act{margin-top:10px;display:flex;justify-content:flex-end}
 .tool-soon{margin-top:12px;padding:18px;border-radius:14px;border:1px dashed #ffffff33;text-align:center;opacity:.8}
 /* TOOLS-02..02D: alliance mail generator */
 .ml-top{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between}.ml-bc{font-size:12px;opacity:.75}.ml-bc a{color:inherit}
@@ -1903,7 +1908,12 @@ window.addEventListener("error", function(e) {
     </div>
     <div class="view tool-view" id="v-tool-speed">
       <section class="panel"><div class="panel-head"><h2>⏱️ حاسبة التسريعات</h2><span class="slug">أداة مجانية</span></div>
-        <p class="gd-p">احسب مجموع تسريعاتك (عامة، تدريب، بناء، بحث، علاج) بالأيام والساعات.</p><div class="tool-soon">🛠️ قيد البناء — تظهر هنا قريباً.</div></section>
+        <p class="gd-p">احسب مجموع تسريعاتك (عامة، تدريب، بناء، بحث، علاج) بالأيام والساعات. <button type="button" class="info-btn" data-info="speedcalc" aria-label="شرح">❗</button></p>
+        <!-- TOOLS-03: speedup calculator -->
+        <div class="spd-tot" id="spd-tot"></div>
+        <div class="spd-cats" id="spd-cats"></div>
+        <div class="spd-act"><button type="button" class="btn" id="spd-clear">🗑️ مسح الكل</button></div>
+      </section>
     </div>
     <div class="view tool-view" id="v-tool-equip">
       <section class="panel"><div class="panel-head"><h2>🛡️ المعدات والتصنيع</h2><span class="slug">أداة مجانية</span></div>
@@ -2446,6 +2456,7 @@ const PAGE_INFO = {
   cpresets: { name: "قادة كل مهمة", text: "اختر قائداً أساسياً وثانوياً لكل مهمة (جمع الطعام/الخشب/الحجر/الذهب، البرابرة، الحشود، الحراس). عند تجهيز المسيرة يبدّل البوت القادة في نافذة الجيش الجديد إلى من اخترته (يبحث عن الاسم في قائمة القادة). إذا لم تختر قائداً تبقى التشكيلة المحفوظة في اللعبة كما هي. إذا كان القائد في مسيرة أخرى يكمل البوت بالتشكيلة المحفوظة. القادة الظاهرون أولاً هم الذين قرأهم البوت من حسابك." },
   smartsched: { name: "جلسات عمل واستراحات", text: "يقسّم البوت وقت عمله اليومي إلى جلسات (مثلاً 90 دقيقة) تليها استراحات (مثلاً 20 دقيقة) مثل اللاعب الحقيقي، ويتوقف لبقية اليوم عند بلوغ «حد الساعات اليومي» (يُحسب وقت تنفيذ المهام فقط، ويبدأ العد من جديد 00:00 بتوقيت غرينتش). «العشوائية ±%» تغيّر أطوال الجلسات والاستراحات وفترات الانتظار قليلاً، وتُحرّك كل نقرة ±5 بكسل حتى لا تتكرر بنفس المكان. يعمل داخل ساعات «الجدولة الذكية» إن كانت مفعّلة. الشريط يعرض الساعات المستخدمة اليوم والحالة: يعمل / استراحة / انتهى حد اليوم." },
   mrcards: { name: "الجيوش المرسلة", text: "العدّاد يعرض عدد الجيوش خارج المدينة من الحد الأقصى (مثل 2/5). كل بطاقة: صورة القائد الأساسي والثانوي واسمهما (تُقرأ من نافذة الجيش في اللعبة، وإن لم تظهر تُؤخذ من «قادة كل مهمة»)، الإحداثيات ونوع المهمة [جمع / البرابرة / حشد]، عدد الجنود، الحالة (يجمع، ذاهب للهجوم، في حشد، عائد…) وشريط الصحة عندما تظهر النسبة. تتحدث مع «تحديث المسيرات» في المساعد أو تلقائياً." },
+  speedcalc: { name: "حاسبة التسريعات", text: "اكتب عدد كل فئة تسريع في حقيبتك (1د، 5د … 7 أيام) تحت كل نوع. المجموع يظهر فوراً بالأيام والساعات والدقائق لكل نوع، ومع «العامة» (لأن التسريع العام يُستعمل للتدريب والبناء والبحث والعلاج). الأرقام تُحفظ في هذا المتصفح فقط؛ «مسح الكل» يصفّرها." },
   march: { name: "أولوية المسيرات والمهلة", text: "«أقصى عدد جيوش في نفس الوقت»: البوت لا يرسل جيش جمع جديداً إذا كان هذا العدد في الخارج (فارغ أو 0 = حسب خانات اللعبة). «مهلة البحث»: إذا علِق البحث في الخريطة أطول من هذه الثواني (الافتراضي 15) يلغيه ويرجع للمدينة بدل أن يتجمد. «الترتيب»: أي نوع مسيرات يُنفَّذ أولاً في كل جولة — الحشود، الجمع، البرابرة — بالأسهم ▲▼." },
   ref: { name: "الإحالات", text: "رابط الإحالة فيه اسم حسابك في اللوحة. انسخه وأرسله لأصدقائك؛ عند تسجيلهم من الرابط يُسجَّل أنهم جاؤوا عن طريقك. المكافآت يحددها المشرف." },
   menu: { name: "القائمة", text: "القائمة الرئيسية: الدليل، الدعم، الإحالات، حسابي، ثم «أدوات مجانية» (تفتح بالضغط) وروابط المجتمع (ديسكورد، واتساب، تيليجرام، يوتيوب) — الروابط تُقرأ من إعدادات kingbot-syn فيتغيّر الرابط بدون تحديث الصفحة. تسجيل الخروج في الأسفل." },
@@ -2955,6 +2966,35 @@ document.addEventListener("click", async e => { const t = e.target && e.target.c
   if (!confirm(k === "restart_game" ? "إعادة تشغيل اللعبة على السيرفر الآن؟ سيتوقف البوت 1–3 دقائق." : "إعادة تشغيل البوت على السيرفر الآن؟")) return;
   astAdd([{ do: k }]); });
 setInterval(() => { try { astSrvPaint(); } catch (_) {} }, 5000);
+// TOOLS-03: speedup calculator (minutes per item; values kept in this browser)
+(function spdCalc() {
+  const D = [1, 5, 10, 15, 30, 60, 180, 480, 900, 1440, 4320, 10080], DU = [1, 3, 5, 10, 15, 30, 60, 180, 480, 900, 1440, 4320, 10080];
+  const CATS = [["universal", "⏱️ عامة", DU], ["training", "⚔️ تدريب", D], ["building", "🔨 بناء", D], ["research", "🔬 بحث", D], ["healing", "➕ علاج", D]];
+  const lbl = m => m >= 1440 ? (m / 1440) + " يوم" : m >= 60 ? (m / 60) + " س" : m + " د";
+  const fmt = m => { m = Math.round(m); const d = Math.floor(m / 1440), h = Math.floor(m % 1440 / 60), mm = m % 60; return (d ? d + " يوم " : "") + (d || h ? h + " س " : "") + mm + " د"; };
+  let bag = {}; try { bag = JSON.parse(localStorage.getItem("kb_speedups") || "{}") || {}; } catch (_) {}
+  const save = () => { try { localStorage.setItem("kb_speedups", JSON.stringify(bag)); } catch (_) {} };
+  const sum = k => (CATS.find(c => c[0] === k)[2]).reduce((t, m) => t + m * (+((bag[k] || {})[m]) || 0), 0);
+  window.spdTotals = () => { const o = {}; CATS.forEach(([k]) => o[k] = sum(k)); return o; };
+  function totals() { const box = document.getElementById("spd-tot"); if (!box) return; const t = window.spdTotals(), all = Object.values(t).reduce((a, b) => a + b, 0);
+    box.innerHTML = ""; const add = (cls, a, b) => { const d = document.createElement("div"); if (cls) d.className = cls; const s1 = document.createElement("small"); s1.textContent = a; const s2 = document.createElement("b"); s2.textContent = b; d.append(s1, s2); box.appendChild(d); };
+    add("all", "كل التسريعات", fmt(all) + " (" + (all / 1440).toFixed(1) + " يوم)");
+    CATS.forEach(([k, n]) => { add("", n, fmt(t[k])); if (k !== "universal") add("", "العامة + " + n.replace(/^\S+\s/, ""), fmt(t[k] + t.universal)); });
+    CATS.forEach(([k]) => { const e = document.querySelector('.spd-cat[data-k="' + k + '"] > button em'); if (e) e.textContent = fmt(t[k]); }); }
+  function build() { const box = document.getElementById("spd-cats"); if (!box || box.dataset.ready) return; box.dataset.ready = "1";
+    CATS.forEach(([k, n, list], ci) => { const c = document.createElement("div"); c.className = "spd-cat" + (ci ? " closed" : ""); c.dataset.k = k;
+      const h = document.createElement("button"); h.type = "button"; h.setAttribute("aria-expanded", ci ? "false" : "true"); h.innerHTML = "<span></span><em></em>"; h.firstChild.textContent = (ci ? "＋ " : "－ ") + n;
+      h.addEventListener("click", () => { const cl = c.classList.toggle("closed"); h.setAttribute("aria-expanded", String(!cl)); h.firstChild.textContent = (cl ? "＋ " : "－ ") + n; });
+      const g = document.createElement("div"); g.className = "spd-grid";
+      list.forEach(m => { const l = document.createElement("label"); const sp = document.createElement("span"); sp.textContent = lbl(m); const i = document.createElement("input");
+        i.type = "number"; i.min = "0"; i.inputMode = "numeric"; i.placeholder = "0"; i.value = (bag[k] || {})[m] || ""; i.setAttribute("aria-label", n + " " + lbl(m));
+        i.addEventListener("input", () => { const v = Math.max(0, Math.floor(+i.value || 0)); bag[k] = bag[k] || {}; if (v) bag[k][m] = v; else delete bag[k][m]; save(); totals(); });
+        l.append(sp, i); g.appendChild(l); });
+      c.append(h, g); box.appendChild(c); });
+    document.getElementById("spd-clear").addEventListener("click", () => { if (!confirm("مسح كل الأرقام؟")) return; bag = {}; save(); box.querySelectorAll("input").forEach(i => i.value = ""); totals(); });
+    totals(); }
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", build); else build();
+})();
 // TASK-08: smart_schedule {enabled, daily_active_hours_limit, work_session_minutes, break_duration_minutes, jitter_percent}
 const SSX = { "ssx-lim": ["daily_active_hours_limit", 1, 24, 14], "ssx-work": ["work_session_minutes", 10, 600, 90], "ssx-brk": ["break_duration_minutes", 1, 240, 20], "ssx-jit": ["jitter_percent", 0, 50, 15] };
 function ssxGet() { if (typeof settings !== "object" || !settings) return {}; const c = settings.smart_schedule = (settings.smart_schedule && typeof settings.smart_schedule === "object") ? settings.smart_schedule : {};
