@@ -882,6 +882,34 @@ main, .view, .panel, #top, .kbar { min-width: 0; max-width: 100%; box-sizing: bo
 .ast-in{display:flex;gap:6px;padding:10px 12px;border-top:1px solid #ffffff14}
 .ast-in input{flex:1;min-width:0;padding:9px 12px;border-radius:12px;border:1px solid #ffffff22;background:rgba(0,0,0,.35);color:inherit;font:inherit}
 .ast-in button{padding:0 14px;border-radius:12px;border:0;background:var(--accent,#f28c28);color:#2a1600;font-weight:800;cursor:pointer}
+/* ---------- v197: live queue monitor ---------- */
+.qm-card{border:1px solid rgba(226,176,74,.4);background:linear-gradient(180deg,rgba(32,25,12,.92),rgba(12,10,6,.95))}
+.qm-head{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:10px}
+.qm-head h2{margin:0;font-size:18px;color:#ffd46a}.qm-head .sp,.qm-foot .sp{flex:1}
+.qm-at{font-size:12px;opacity:.7}
+.qm-btn,.qm-save{height:34px;padding:0 12px;border-radius:10px;border:1px solid rgba(226,176,74,.45);background:#1d170c;color:#ffd46a;font-weight:700;cursor:pointer}
+.qm-save{background:linear-gradient(180deg,#f3c45a,#c98d22);color:#1b1205;border:0}
+.qm-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:10px}
+.qm-sec{border:1px solid #ffffff1c;border-radius:14px;padding:10px 12px;background:#ffffff07}
+.qm-sec.off{opacity:.62}
+.qm-sh{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.qm-sh b{flex:1;color:#f3dca0;font-size:14px}
+.qm-sw{position:relative;width:40px;height:22px;flex:none}
+.qm-sw input{opacity:0;width:0;height:0}
+.qm-sw i{position:absolute;inset:0;border-radius:99px;background:#555;cursor:pointer;transition:.2s}
+.qm-sw i:before{content:"";position:absolute;width:16px;height:16px;left:3px;top:3px;border-radius:50%;background:#fff;transition:.2s}
+.qm-sw input:checked+i{background:#3ecf6e}.qm-sw input:checked+i:before{transform:translateX(18px)}
+.qm-row{display:flex;align-items:center;gap:8px;padding:4px 0;font-size:13px;border-top:1px dashed #ffffff12}
+.qm-row:first-of-type{border-top:0}
+.qm-row .n{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.qm-t{font-variant-numeric:tabular-nums;font-weight:800;direction:ltr;min-width:76px;text-align:center;padding:2px 8px;border-radius:8px;background:#2a4a7a;color:#dfeaff}
+.qm-t.idle{background:#5a3b10;color:#ffd08a}.qm-t.done{background:#1f6b3a;color:#c9ffd9}.qm-t.unk{background:#333;color:#aaa}
+.qm-opts{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;font-size:12px}
+.qm-opts select,.qm-opts input[type=number]{height:28px;border-radius:8px;border:1px solid #ffffff2a;background:#0008;color:#eee;padding:0 6px}
+.qm-opts input[type=number]{width:60px}
+.qm-opts label{display:inline-flex;align-items:center;gap:4px}
+.qm-foot{display:flex;align-items:center;gap:10px;margin-top:10px;flex-wrap:wrap}
+.qm-master{font-weight:700;color:#f3dca0}
 /* ---------- v196: passphrase dialog ---------- */
 .kb-dlg{position:fixed;inset:0;z-index:9500;display:grid;place-items:center;background:#000a;padding:16px}
 .kb-dlg-in{width:min(460px,96vw);padding:18px;border-radius:16px;border:1px solid rgba(226,176,74,.5);background:linear-gradient(180deg,#1f190d,#0e0b06);color:#eee}
@@ -1171,6 +1199,13 @@ window.addEventListener("error", function(e) {
 
     <!-- HOME -->
     <div class="view" id="v-home">
+      <section class="panel qm-card" id="qm-card" aria-label="مراقب الطوابير">
+        <div class="qm-head"><h2>⏱ مراقب الطوابير والمؤقتات الحيّة</h2><span class="qm-at" id="qm-at">—</span><span class="sp"></span>
+          <button type="button" class="qm-btn" id="qm-info" title="ما هذا؟">❗</button><button type="button" class="qm-btn" id="qm-read" title="اطلب قراءة الطوابير الآن">↻ قراءة الآن</button></div>
+        <div class="qm-grid" id="qm-grid"></div>
+        <div class="qm-foot"><label class="qm-master"><input type="checkbox" id="qm-on"> تشغيل مدير الطوابير</label><span class="sp"></span><button type="button" class="qm-save" id="qm-save">💾 حفظ وإرسال للبوت</button></div>
+        <div class="msg" id="m-qm"></div>
+      </section>
       <section class="panel lv-card" id="lv-home" aria-label="البث المباشر">
         <div class="lv-head"><h2>📺 البث المباشر</h2><span class="lv-badge" data-lv="badge"><i></i><span>متوقف</span></span><span class="sp"></span><button type="button" data-lv="open">فتح بحجم كبير</button></div>
         <div class="lv-slot" id="lv-slot-home"></div>
@@ -2048,18 +2083,12 @@ const GROUPS = [
     { routine: "gather", icon: "wheat", name: "جمع الموارد", hint: "يرسل كل الجيوش الفارغة تلقائياً حتى 5/5 ولا يغيّر وجهة جيش في الخارج" } ] },
   { name: "المدينة", items: [
     { routine: "collect_city", icon: "castle", name: "جمع موارد المدينة", hint: "المزارع والمناشر والمحاجر" },
-    { routine: "train", icon: "shield", name: "تدريب القوات", hint: "يدرّب تلقائياً في كل مبنى فارغ · لا يضغط INSTANT أبداً" },
-    { routine: "research", icon: "flask", name: "البحث", hint: "يبدأ بحثاً جديداً في الأكاديمية عند فراغها حسب القسم الذي تختاره" },
-    { routine: "heal", icon: "heart", name: "علاج الجرحى", hint: "يعالج الجرحى في المستشفى تلقائياً" },
-    { routine: "build_upgrade", icon: "hammer", name: "ترقية المباني", hint: "عند فراغ البنّاء: التطوير الذكي أو تطوير كل المدينة" },
+    { routine: "queue_manager", on: true, icon: "list", name: "مدير الطوابير (Queue Overview)", hint: "مهمة واحدة بدل: التدريب، العلاج، البناء، البحث، تبرعات التحالف، المواد، الكشافة · الإعدادات والمؤقتات في «مراقب الطوابير» بالصفحة الرئيسية" },
     { routine: "tavern", on: true, icon: "beer", name: "صناديق الحانة المجانية", hint: "الفضي (10/10 يومياً) والذهبي وصندوق المعدات · المجانية فقط، لا يستخدم المفاتيح ولا المجوهرات" },
-    { routine: "tavern_legendary", on: true, icon: "beer", name: "صندوق الحانة الأسطوري", hint: "مرة واحدة بداية كل يوم وفقط إذا كان مجانياً" },
-    { routine: "materials", icon: "coins", name: "إنتاج المواد", hint: "الحدّاد · عظام، حجر، جلد، صنوبر" },
-    { routine: "scout", icon: "eye", name: "استكشاف الضباب", hint: "الكشّافة" } ] },
+    { routine: "tavern_legendary", on: true, icon: "beer", name: "صندوق الحانة الأسطوري", hint: "مرة واحدة بداية كل يوم وفقط إذا كان مجانياً"  } ] },
   { name: "التحالف", items: [
     { routine: "alliance_help", icon: "hands", name: "مساعدة التحالف", hint: "يضغط فقاعة المساعدة تلقائياً كلما ظهرت" },
-    { routine: "alliance_gifts", icon: "gift", name: "منصة التحالف", hint: "يتفقد صناديق التحالف وموارد الأراضي كل 2–3 ساعات" },
-    { routine: "alliance_tech", on: true, icon: "book", name: "التبرع لتقنيات التحالف", hint: "يتبرع كل ساعتين بالموارد فقط · لا يتبرع إذا لم تكفِ الموارد · لا يستخدم المجوهرات أبداً" } ] },
+    { routine: "alliance_gifts", icon: "gift", name: "منصة التحالف", hint: "يتفقد صناديق التحالف وموارد الأراضي كل 2–3 ساعات"  } ] },
   { name: "القتال", items: [
     { routine: "rally_fort", on: true, icon: "flag", name: "حشد على حصن البرابرة", hint: "عتاد تشين شي هوانغ · رماة فقط · يتكرر بعد رجوعه حتى نفاد نقاط الحرب (بدون الاحتياطية)" },
     { routine: "attack_barbarians", icon: "sword", name: "مهاجمة البرابرة", hint: "تشكيلة تشين · يتتبع البرابرة ويضربهم واحداً تلو الآخر حتى نفاد نقاط الحرب" },
@@ -2143,6 +2172,7 @@ const INFO = {
   tavern_legendary: "يتفقد الصندوق الأسطوري مرة واحدة بداية كل يوم (بعد 00:00 بتوقيت غرينتش) ويفتحه فقط إذا كان مجانياً.",
   alliance_help: "يضغط فقاعة مساعدة التحالف تلقائياً كلما ظهرت (يتفقدها كل دقيقة تقريباً أثناء الانتظار وفي كل جولة).",
   alliance_gifts: "يتفقد صناديق/هدايا التحالف وموارد أراضي التحالف ويستلمها كل ساعتين إلى 3 ساعات.",
+  queue_manager: "مهمة واحدة تعتمد على قائمة «Queue Overview» في اللعبة بدل المهام القديمة المنفصلة (التدريب، العلاج، البناء، البحث، تبرعات التحالف، المواد، الكشافة). يقرأ البوت كل الطوابير ومؤقتاتها ثم ينفّذ المفعّل فقط. التفعيل لكل قسم ومستوى القوات وحد التبرع ونوع المواد في بطاقة «مراقب الطوابير» بالصفحة الرئيسية، والمؤقتات تعدّ تنازلياً هناك بالثواني.",
   alliance_tech: "يتفقد تبرعات تقنيات التحالف كل ساعتين ويتبرع بالموارد في التقنية الموصى بها. إذا لم تكفِ الموارد لا يتبرع. لا يضغط زر التبرع بالمجوهرات أبداً.",
   rally_fort: "يحشد على حصن البرابرة بالمستوى الذي تختاره بعتاد تشين شي هوانغ، ويتكرر بعد رجوعه حتى تنفد نقاط الحرب (بدون النقاط الاحتياطية).",
   attack_barbarians: "يهاجم البرابرة بتشكيلة تشين، ويبحث من أعلى مستوى إلى الأدنى. مع التتبع يبقى الجيش في الخريطة ويبحث عن البربري التالي القريب ويضربه، واحداً تلو الآخر حتى تنفد نقاط الحرب. إذا فعّلت استخدام نقاط الحرب الاحتياطية يستخدم عناصر نقاط الحرب من الحقيبة فقط (لا يستخدم المجوهرات أبداً) ويكمل.",
@@ -2968,6 +2998,7 @@ async function refreshStatus(btn) {
     try { renderConduct(s.city); } catch (_) {}
     try { checkCharChange(s); checkWatched(s); astTick(s); } catch (_) {}
     try { if (window.liveUpdate) liveUpdate(s); } catch (_) {}
+    try { if (window.qmUpdate) qmUpdate(s); } catch (_) {}
     try { renderStats(s.city); renderChars(s.city); lastStatus = s; renderAccount(); renderPages(); renderMarches(s.city); rotNow = (s.city || {}).rotation || null; renderRotNow(); } catch (_) {}
     logLines = s.log || []; renderLog();
     recorded = s.recorded || []; renderActs();
@@ -4136,6 +4167,128 @@ document.getElementById("cond-ic").innerHTML = gsvg("conduct", 46);
   });
   window.addEventListener("kb-servers", () => { draw(); fetchAll(); });
   label();
+})();
+</script>
+<script>
+/* ---------- v197: Queue Overview manager - one task + live countdown card ---------- */
+(function kbQueues() {
+  const $q = id => document.getElementById(id);
+  const esc = t => String(t == null ? "" : t).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+  const UNIT_AR = { infantry: "المشاة", archer: "الرماة", cavalry: "الفرسان", siege: "الحصار" };
+  const TIER_K = { infantry: "inf_tier", archer: "arch_tier", cavalry: "cav_tier", siege: "siege_tier" };
+  const MATS = [["bone", "عظام"], ["ore", "حجر"], ["leather", "جلد"], ["ebony", "صنوبر"]];
+  const SEC = [
+    ["train", "⚔️ تدريب القوات"], ["heal", "➕ علاج الجرحى"], ["build", "🔨 طوابير البناء"], ["research", "⚗️ الأبحاث"],
+    ["donate", "🛡 تبرعات التحالف"], ["materials", "💎 إنتاج المواد"], ["scout", "🔭 الكشافة"]];
+  let qm = null, tickT = null;
+  // ---- the one task (migrated from the old separate tasks) ----
+  const OLD = { train: "train", heal: "heal", build: "build_upgrade", research: "research", donate: "alliance_tech", materials: "materials", scout: "scout" };
+  function qmTask() {
+    let t = settings.tasks.find(x => x.routine === "queue_manager");
+    if (t && t.train === undefined) { settings.tasks = settings.tasks.filter(x => x !== t); const on = t.enabled; t = null; qmTask().enabled = on !== false; return qmTask(); }
+    if (!t) {
+      const old = r => settings.tasks.find(x => x.routine === r);
+      const on = (r, d) => { const x = old(r); return x ? x.enabled !== false : d; };
+      const tr = old("train") || {}, he = old("heal") || {}, bu = old("build_upgrade") || {}, re = old("research") || {}, ma = old("materials") || {};
+      t = { routine: "queue_manager", enabled: true, train: on("train", true), heal: on("heal", true), build: on("build_upgrade", false),
+        research: on("research", true), donate: on("alliance_tech", true), materials: on("materials", false), scout: on("scout", false), donate_min: 10,
+        inf_tier: tr.inf_tier || "4", arch_tier: tr.arch_tier || "4", cav_tier: tr.cav_tier || "4", siege_tier: tr.siege_tier || "4",
+        fast: !!tr.fast, use_bag: !!tr.use_bag, heal_speedups: !!he.speedups, build_mode: bu.mode || "smart", build_speedups: !!bu.speedups,
+        focus: re.focus || "balanced", research_speedups: !!re.speedups, mat_kinds: ma.kinds || ["leather", "ore", "ebony", "bone"] };
+      settings.tasks = settings.tasks.filter(x => !Object.values(OLD).concat(["train_troops", "read_queues"]).includes(x.routine));
+      settings.tasks.push(t);
+    }
+    return t;
+  }
+  window.kbQmTask = qmTask;
+  // ---- live data ----
+  const fmt = s => { s = Math.max(0, Math.round(s)); const d = Math.floor(s / 86400), h = Math.floor(s % 86400 / 3600), m = Math.floor(s % 3600 / 60), x = s % 60;
+    return (d ? d + "d " : "") + String(h).padStart(2, "0") + ":" + String(m).padStart(2, "0") + ":" + String(x).padStart(2, "0"); };
+  function chip(state, left, el) {
+    if (state === "busy" && left != null) { el.dataset.end = String(qm.at * 1000 + left * 1000); el.className = "qm-t"; return ""; }
+    el.removeAttribute("data-end");
+    if (state === "idle") { el.className = "qm-t idle"; return "خامل"; }
+    if (state === "done" || state === "ready") { el.className = "qm-t done"; return state === "ready" ? "جاهز للتبرع" : "مكتمل ✓"; }
+    if (state === "busy") { el.className = "qm-t"; return "يعمل"; }
+    el.className = "qm-t unk"; return "—";
+  }
+  function row(name, state, left) {
+    const r = document.createElement("div"); r.className = "qm-row";
+    const n = document.createElement("span"); n.className = "n"; n.textContent = name;
+    const t = document.createElement("span"); t.textContent = chip(state, left, t);
+    r.append(n, t); return r;
+  }
+  function opts(key, t) {
+    const o = document.createElement("div"); o.className = "qm-opts";
+    const sel = (k, choices, label) => { const l = document.createElement("label"); l.append(label + " ");
+      const s = document.createElement("select"); choices.forEach(([v, n]) => s.add(new Option(n, v, false, String(t[k]) === String(v))));
+      s.onchange = () => { t[k] = s.value; }; l.append(s); return l; };
+    const chk = (k, label) => { const l = document.createElement("label"); const c = document.createElement("input"); c.type = "checkbox"; c.checked = !!t[k];
+      c.onchange = () => { t[k] = c.checked; }; l.append(c, " " + label); return l; };
+    const TI = [["1", "T1"], ["2", "T2"], ["3", "T3"], ["4", "T4"], ["5", "T5"]];
+    if (key === "train") { Object.entries(UNIT_AR).forEach(([u, n]) => o.append(sel(TIER_K[u], TI, n))); o.append(chk("fast", "مسرعات"), chk("use_bag", "موارد الحقيبة")); }
+    if (key === "heal") o.append(chk("heal_speedups", "مسرعات العلاج"));
+    if (key === "build") { o.append(sel("build_mode", [["smart", "ذكي (قاعة المدينة)"], ["all", "كل المدينة"]], "النوع")); o.append(chk("build_speedups", "مسرعات")); }
+    if (key === "research") { o.append(sel("focus", [["economy", "الاقتصاد"], ["military", "الحرب"], ["balanced", "بالتناوب"]], "القسم")); o.append(chk("research_speedups", "مسرعات")); }
+    if (key === "donate") { const l = document.createElement("label"); const n = document.createElement("input"); n.type = "number"; n.min = 1; n.max = 20; n.value = t.donate_min || 10;
+      n.onchange = () => { t.donate_min = Math.max(1, Math.min(20, Math.round(+n.value || 10))); n.value = t.donate_min; }; l.append("يتبرع عند ", n, " /20 محاولة أو أكثر"); o.append(l); }
+    if (key === "materials") { if (!Array.isArray(t.mat_kinds)) t.mat_kinds = ["leather", "ore", "ebony", "bone"];
+      MATS.forEach(([k, n]) => { const l = document.createElement("label"); const c = document.createElement("input"); c.type = "checkbox"; c.checked = t.mat_kinds.includes(k);
+        c.onchange = () => { t.mat_kinds = MATS.map(x => x[0]).filter(x => x === k ? c.checked : t.mat_kinds.includes(x)); if (!t.mat_kinds.length) { t.mat_kinds = [k]; c.checked = true; } };
+        l.append(c, " " + n); o.append(l); }); }
+    return o;
+  }
+  function draw() {
+    const g = $q("qm-grid"); if (!g || typeof settings !== "object") return;
+    const t = qmTask(); $q("qm-on").checked = t.enabled !== false;
+    g.innerHTML = "";
+    SEC.forEach(([key, title]) => {
+      const box = document.createElement("div"); box.className = "qm-sec" + (t[key] ? "" : " off");
+      const sh = document.createElement("div"); sh.className = "qm-sh";
+      const b = document.createElement("b"); b.textContent = title;
+      const sw = document.createElement("label"); sw.className = "qm-sw"; sw.title = "تفعيل/إيقاف";
+      const ci = document.createElement("input"); ci.type = "checkbox"; ci.checked = !!t[key]; ci.onchange = () => { t[key] = ci.checked; box.classList.toggle("off", !ci.checked); };
+      sw.append(ci, document.createElement("i")); sh.append(b, sw); box.append(sh);
+      const d = qm || {};
+      if (key === "train") (d.train || []).forEach(r => box.append(row((UNIT_AR[r.unit] || "") + (r.unit ? " · " : "") + r.name, r.state, r.left)));
+      if (key === "heal" && d.heal) { box.append(row("الجرحى " + (d.heal.wounded != null ? d.heal.wounded.toLocaleString("en-US") + " / " + (d.heal.capacity || 0).toLocaleString("en-US") : "—"), d.heal.state, d.heal.left)); }
+      if (key === "build") (d.build || []).forEach(r => box.append(row(r.name.replace("Building Queue", "البنّاء"), r.state, r.left)));
+      if (key === "research") (d.research || []).forEach(r => box.append(row(r.name === "Tech Research" ? "الأكاديمية" : r.name, r.state, r.left)));
+      if (key === "donate" && d.donate) { box.append(row("المحاولات " + (d.donate.chances != null ? d.donate.chances + "/" + d.donate.max : "—"), d.donate.state === "ready" ? "ready" : (d.donate.next_in != null ? "busy" : d.donate.state), d.donate.next_in));
+        if (d.donate.next_in != null) box.lastChild.querySelector(".n").textContent += " · المحاولة التالية"; }
+      if (key === "materials" && d.materials) box.append(row("الخانات المتاحة " + (d.materials.producible != null ? d.materials.producible + "/" + d.materials.max : "—"), d.materials.state, d.materials.left));
+      if (key === "scout") (d.scout || []).forEach(r => box.append(row(r.name.replace("Scout", "الكشاف"), r.state, r.left)));
+      if (box.querySelectorAll(".qm-row").length === 0) { const e = document.createElement("div"); e.className = "qm-row"; e.innerHTML = '<span class="n" style="opacity:.6">لم يُقرأ بعد</span>'; box.append(e); }
+      box.append(opts(key, t));
+      g.append(box);
+    });
+    tick();
+  }
+  function tick() {
+    const now = Date.now();
+    document.querySelectorAll("#qm-grid .qm-t[data-end]").forEach(el => {
+      const left = (+el.dataset.end - now) / 1000;
+      if (left <= 0) { el.textContent = "انتهى ✓"; el.className = "qm-t done"; el.removeAttribute("data-end"); }
+      else el.textContent = fmt(left);
+    });
+  }
+  let drawnFor = null;
+  window.qmUpdate = function (s) {
+    const c = (s && s.city) || {};
+    if (c.qm && (!qm || c.qm.at !== qm.at)) { qm = c.qm; drawnFor = null; }
+    if (drawnFor !== settings) { drawnFor = settings; draw(); }
+    $q("qm-at").textContent = qm ? "آخر قراءة " + new Date(qm.at * 1000).toLocaleTimeString("ar-OM", { hour: "2-digit", minute: "2-digit" }) : "لم يقرأ البوت الطوابير بعد";
+  };
+  function init() {
+    if (!$q("qm-card")) return;
+    $q("qm-on").onchange = () => { qmTask().enabled = $q("qm-on").checked; };
+    $q("qm-save").onclick = () => sendSettings({}, "m-qm", $q("qm-save"));
+    $q("qm-read").onclick = () => sendSettings({ action_request: { id: stamp(), do: "read_queues" } }, "m-qm", $q("qm-read"));
+    $q("qm-info").onclick = () => setMsg("m-qm", "❗ مدير الطوابير مهمة واحدة بدل المهام القديمة (التدريب، العلاج، البناء، البحث، تبرعات التحالف، المواد، الكشافة). البوت يفتح قائمة «Queue Overview» في اللعبة، يفتح الأقسام المطوية ويمرّر حتى آخرها، يقرأ حالة كل طابور ومؤقته، ثم ينفّذ فقط المفعّل هنا: يدرّب الوحدة الخاملة بالمستوى المختار، يعالج إذا وُجد جرحى والمستشفى خامل، يستخدم البنّاء والأكاديمية عند فراغهما، يتبرع إذا بلغت المحاولات الحد الذي تختاره، يملأ خانات المواد، ويرسل الكشافة المتوقفين. المؤقتات تعدّ تنازلياً هنا بالثواني من آخر قراءة. بالموارد فقط، لا مجوهرات ولا INSTANT أبداً.", "ok");
+    window.addEventListener("kb-settings", draw);
+    draw(); clearInterval(tickT); tickT = setInterval(tick, 1000);
+  }
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init); else init();
 })();
 </script>
 </body></html>
