@@ -2738,11 +2738,11 @@ async function loadSettings() {
     const f = await newestFile(CONTROL_FOLDER);
     if (f) {
       const d = JSON.parse(b64ToText(await download(f.id)));
-      let settings = { running: d.running !== false, loop_minutes: d.loop_minutes || 60, tasks: Array.isArray(d.tasks) ? d.tasks : settings.tasks, schedule: d.schedule || settings.schedule, daily_pause: d.daily_pause || settings.daily_pause, freeze_until: d.freeze_until || null, presets: (d.presets && typeof d.presets === "object") ? d.presets : (settings.presets || {}), char_rotation: d.char_rotation || settings.char_rotation || { enabled: false, slots: [] } };
+      settings = { running: d.running !== false, loop_minutes: d.loop_minutes || 60, tasks: Array.isArray(d.tasks) ? d.tasks : settings.tasks, schedule: d.schedule || settings.schedule, daily_pause: d.daily_pause || settings.daily_pause, freeze_until: d.freeze_until || null, presets: (d.presets && typeof d.presets === "object") ? d.presets : (settings.presets || {}), char_rotation: d.char_rotation || settings.char_rotation || { enabled: false, slots: [] } };
       lastShotRequest = d.shot_request || null;
     }
   } catch (e) { setMsg("m-send", errText(e), "err"); }
-  renderAll(); try { Object.defineProperty(window, 'settings', { get: () => settings, set: v => { settings = v; }, configurable: true }); } catch (_) {}
+  renderAll();
 }
 
 function stamp() { return new Date().toISOString().replace(/\D/g, "").slice(0, 17); }
@@ -3014,8 +3014,7 @@ $("b-shot").addEventListener("click", requestShot);
 
 renderAll();
 (async () => {
-  try { mcp = window.claude && window.claude.use ? await window.claude.use("mcp") : null; } catch (_) { mcp = null; }
-  if (!mcp) { setPill($("conn"), "s-bad", "لا يوجد اتصال بـ GitHub (kingbot-syn)"); setMsg("m-status", "افتح هذه الصفحة من claude.ai ووافق على استخدام GitHub (kingbot-syn).", "err"); return; }
+  if (!getGhToken()) { setPill($("conn"), "s-bad", "اضغط هنا لإدخال رمز GitHub"); setMsg("m-status", "أدخل رمز GitHub Token بالضغط على شارة الاتصال في الأعلى.", "err"); return; }
   await loadSettings(); await refreshStatus(); showLastShot();
   setInterval(() => { if (!document.hidden) refreshStatus(); }, 60000);
 })();
