@@ -941,6 +941,34 @@ main, .view, .panel, #top, .kbar { min-width: 0; max-width: 100%; box-sizing: bo
 .oratios{display:flex;flex-wrap:wrap;gap:8px}.oratios label{display:inline-flex;align-items:center;gap:4px;padding:4px 8px;border-radius:10px;background:#ffffff0a;font-size:12.5px}.oratios input{width:52px}.oratios small{opacity:.65;font-size:11px;margin-inline-start:4px}
 .ref-box{display:flex;gap:8px;margin:10px 0}.ref-box input{flex:1;min-width:0;padding:10px 12px;border-radius:12px;border:1px solid #ffffff22;background:#0005;color:inherit;font:inherit}
 .tool-soon{margin-top:12px;padding:18px;border-radius:14px;border:1px dashed #ffffff33;text-align:center;opacity:.8}
+/* TOOLS-02..02D: alliance mail generator */
+.ml-top{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between}.ml-bc{font-size:12px;opacity:.75}.ml-bc a{color:inherit}
+.ml-social{display:flex;gap:5px;flex-wrap:wrap}.ml-social a{padding:4px 9px;border-radius:999px;border:1px solid #ffffff22;background:#ffffff0a;color:inherit;text-decoration:none;font-size:11.5px}
+.ml-badge{display:inline-block;margin-top:10px;padding:2px 10px;border-radius:999px;background:#2ecc7126;color:#6be39a;font-size:12px;font-weight:700}
+.ml-title{margin:6px 0 4px;font-size:22px}
+.ml-tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;padding:4px;border-radius:14px;background:#0005;margin:14px 0 10px}
+.ml-tabs button{padding:9px 6px;border-radius:10px;border:0;background:none;color:inherit;font:inherit;font-size:13px;cursor:pointer}.ml-tabs button.on{background:linear-gradient(180deg,#f3c45a,#c98d22);color:#1b1205;font-weight:800}
+.ml-tabs b{display:inline-block;min-width:20px;padding:0 5px;border-radius:999px;background:#0004;font-size:11px}
+.ml-tb{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.ml-tb button{display:flex;flex-direction:column;align-items:center;gap:2px;padding:9px 4px;border-radius:12px;border:1px solid #ffffff1c;background:#ffffff0a;color:inherit;font:inherit;font-size:17px;cursor:pointer}
+.ml-tb button:hover{border-color:#f28c28;background:#f28c281a}.ml-tb small{font-size:10.5px;opacity:.7}
+.ml-gico{display:block;width:26px;height:12px;border-radius:4px;background:linear-gradient(90deg,#ffcc00,#ff3b3b,#9b6bff)}
+.ml-opts{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:8px 0;font-size:12.5px}.ml-opts select,.ml-opts input[type=color]{background:#0005;color:inherit;border:1px solid #ffffff22;border-radius:8px}
+.ml-opts input[type=color]{width:30px;height:24px;padding:0}.ml-sw{display:flex;gap:4px;flex-wrap:wrap}
+.ml-sw button{width:22px;height:22px;border-radius:50%;border:2px solid #0008;cursor:pointer}.ml-sw button.on{outline:2px solid #fff}
+.ml-text{width:100%;box-sizing:border-box;min-height:150px;padding:12px;border-radius:14px;border:1px solid #ffffff22;background:#0a0d16;color:#e8e8e8;font:13px/1.6 var(--mono,monospace);resize:vertical;unicode-bidi:plaintext;text-align:start}
+.ml-hint{display:flex;gap:8px;justify-content:space-between;align-items:flex-start;font-size:12px;opacity:.85;margin:6px 0 12px}
+.ml-count{flex:none;font-family:var(--mono,monospace);direction:ltr;padding:1px 8px;border-radius:999px;background:#ffffff12}.ml-count.over{background:#e74c3c;color:#fff}
+.ml-pvh{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:6px}.ml-pvh .sp{flex:1}.ml-pvm button{background:none;border:1px solid #ffffff22;border-radius:8px;padding:2px 6px;cursor:pointer;opacity:.6}.ml-pvm button.on{opacity:1;border-color:#f28c28}
+.ml-prev{min-height:120px;padding:16px;border-radius:14px;background:linear-gradient(180deg,#efe0bd,#d9c08d);color:#3a2a12;font-size:15px;line-height:1.6;box-shadow:inset 0 0 30px #8a6a3055;overflow-wrap:anywhere;unicode-bidi:plaintext}
+.ml-prev.ph{max-width:340px;margin-inline:auto;font-size:13px}.ml-note{font-size:11.5px;opacity:.6;margin:6px 0 0}
+.ml-list{display:grid;gap:8px}.ml-item{display:grid;grid-template-columns:1fr auto auto;gap:8px;align-items:center;padding:10px;border-radius:12px;background:#ffffff08;border:1px solid #ffffff12}
+.ml-item b{grid-column:1/-1}.ml-ipv{max-height:70px;overflow:hidden;font-size:12px;padding:8px;border-radius:10px;background:#efe0bd;color:#3a2a12}
+.ml-faq details{border:1px solid #ffffff14;border-radius:12px;padding:8px 12px;margin-bottom:6px;background:#ffffff06}.ml-faq summary{cursor:pointer;font-weight:600;font-size:13.5px}.ml-faq p{font-size:13px;opacity:.85;margin:6px 0 0}
+.ml-promo{margin:14px 0;padding:14px;border-radius:16px;background:linear-gradient(135deg,#f28c2830,#9b6bff26);border:1px solid #f28c2866}.ml-promo p{margin:4px 0;font-size:13px;opacity:.85}.ml-promo a{color:#ffd46a;font-weight:700}
+.ml-more{display:grid;gap:6px}.ml-more a{padding:9px 12px;border-radius:12px;background:#ffffff08;color:inherit;text-decoration:none;font-size:13px}.ml-more a:hover{background:#ffffff14}
+.ml-foot{text-align:center;font-size:11.5px;opacity:.5;margin-top:14px}
+@media (max-width:560px){.ml-hint{flex-direction:column}.ml-item{grid-template-columns:1fr auto}.ml-item .ml-ipv{grid-column:1/-1}}
 /* MOD-01: assistant on phones - full width sheet, compact 3-column buttons, no long scrolling */
 @media (max-width:560px){.ast{left:6px;right:6px;bottom:6px;width:auto;max-height:calc(100dvh - 70px);border-radius:16px}
 .ast-q{grid-template-columns:repeat(3,1fr);gap:5px;padding:8px}.ast-q button{flex-direction:column;justify-content:center;text-align:center;gap:2px;padding:6px 4px;font-size:11px;line-height:1.25}
@@ -1773,6 +1801,60 @@ window.addEventListener("error", function(e) {
       <section class="panel"><div class="panel-head"><h2>💠 تقنية الكريستال</h2><span class="slug">أداة مجانية</span></div>
         <p class="gd-p">حاسبة تكلفة ووقت أبحاث الكريستال الموسمية.</p><div class="tool-soon">🛠️ قيد البناء — تظهر هنا قريباً.</div></section>
     </div>
+    <!-- TOOLS-02 / 02B / 02C / 02D: Alliance mail generator -->
+    <div class="view tool-view" id="v-tool-mail">
+      <section class="panel ml">
+        <div class="ml-top"><nav class="ml-bc"><a href="#" data-go="v-home">الرئيسية</a> / <span>مولّد رسائل التحالف — Rise of Kingdoms</span></nav><div class="ml-social" id="ml-social"></div></div>
+        <span class="ml-badge">أداة مجانية</span>
+        <h2 class="ml-title">✉️ مولّد رسائل التحالف <button type="button" class="info-btn" data-info="mail" aria-label="شرح">❗</button></h2>
+        <p class="gd-p">اكتب رسالتك، حدّد جزءاً من النص وطبّق عليه عريض أو مائل أو حجم أو لون أو تدرج، ثم انسخ الكود والصقه في بريد التحالف داخل اللعبة.</p>
+        <div class="ml-tabs" role="tablist"><button type="button" class="on" data-t="ed">محرر الرسالة</button><button type="button" data-t="tp">قوالب <b id="ml-tpn">10</b></button><button type="button" data-t="my">قوالبي</button></div>
+        <div class="ml-pane" data-p="ed">
+          <div class="ml-tb">
+            <button type="button" data-a="b" title="عريض"><b>B</b><small>عريض</small></button>
+            <button type="button" data-a="i" title="مائل"><i>I</i><small>مائل</small></button>
+            <button type="button" data-a="bi" title="عريض مائل"><b><i>I</i></b><small>عريض مائل</small></button>
+            <button type="button" data-a="size" title="الحجم"><span>Tt</span><small>الحجم</small></button>
+            <button type="button" data-a="color" title="لون"><span>🎨</span><small>لون</small></button>
+            <button type="button" data-a="grad" title="تدرج"><span class="ml-gico"></span><small>تدرج</small></button>
+            <button type="button" data-a="undo" title="تراجع"><span>↶</span><small>تراجع</small></button>
+            <button type="button" data-a="clear" title="مسح"><span>🗑️</span><small>مسح</small></button>
+          </div>
+          <div class="ml-opts">
+            <label>الحجم <select id="ml-size"><option>20</option><option>24</option><option selected>28</option><option>32</option><option>36</option><option>40</option></select></label>
+            <span class="ml-sw" id="ml-sw"></span>
+            <label>تدرج <input type="color" id="ml-g1" value="#ffcc00"> → <input type="color" id="ml-g2" value="#ff3b3b"></label>
+          </div>
+          <textarea id="ml-text" class="ml-text" dir="auto" rows="8" placeholder="اكتب رسالة التحالف هنا…" spellcheck="false"></textarea>
+          <div class="ml-hint">💡 إذا حددت نصاً يُطبَّق التنسيق حوله؛ وإذا لم تحدد شيئاً توضع علامات التنسيق عند المؤشر. <span class="ml-count" id="ml-count">0 / 2,000</span></div>
+          <div class="ml-pvh"><b>المعاينة</b><span class="ml-pvm"><button type="button" data-m="pc" class="on" title="عرض الكمبيوتر">🖥️</button><button type="button" data-m="ph" title="عرض الجوال">📱</button></span><span class="sp"></span><button type="button" class="btn" id="ml-save">💾 حفظ</button><button type="button" class="btn primary" id="ml-copy">📋 نسخ الكود</button></div>
+          <div class="ml-prev" id="ml-prev"></div>
+          <p class="ml-note">قد يختلف الخط والأحجام قليلاً داخل اللعبة.</p>
+        </div>
+        <div class="ml-pane" data-p="tp" hidden><div class="ml-list" id="ml-tpl"></div></div>
+        <div class="ml-pane" data-p="my" hidden><div class="ml-list" id="ml-my"></div></div>
+
+        <h3 class="gd-sec">طريقة الاستعمال</h3>
+        <ol class="gd-steps">
+          <li><i>1</i><div><b>اكتب أو ابدأ من قالب</b><p>اكتب نصك في المحرر، أو اختر قالباً جاهزاً من «قوالب».</p></div></li>
+          <li><i>2</i><div><b>حدد ونسّق</b><p>حدد النص وطبّق عريض، مائل، حجم، لون أو تدرج — وراقب المعاينة.</p></div></li>
+          <li><i>3</i><div><b>انسخ والصق</b><p>اضغط <span class="gd-pill">نسخ الكود</span>، افتح بريد التحالف في اللعبة والصق.</p></div></li>
+        </ol>
+        <h3 class="gd-sec">الأسئلة</h3>
+        <div class="ml-faq">
+          <details><summary>كيف أكتب نصاً ملوّناً في بريد Rise of Kingdoms؟</summary><p>اللعبة تقرأ علامات مثل &lt;color=#ff0000&gt;نص&lt;/color&gt;. هذه الأداة تضعها لك تلقائياً — فقط حدد النص واختر اللون.</p></details>
+          <details><summary>ما التنسيقات التي تعمل في البريد؟</summary><p>العريض &lt;b&gt;، المائل &lt;i&gt;، الحجم &lt;size=N&gt;، واللون &lt;color=#RRGGBB&gt;. التدرج هو لون مختلف لكل حرف.</p></details>
+          <details><summary>لماذا تنتهي الأحرف بسرعة؟</summary><p>الحد 2,000 حرف ويشمل علامات التنسيق نفسها. التدرج يستهلك الكثير لأن كل حرف يأخذ علامة لون خاصة به — استعمله للعناوين القصيرة.</p></details>
+          <details><summary>من يستطيع إرسال بريد التحالف؟</summary><p>القائد (R5) والضباط (R4) حسب صلاحيات التحالف في اللعبة.</p></details>
+          <details><summary>هل الأداة مجانية؟</summary><p>نعم، مجانية بالكامل ولا تحتاج اشتراكاً. المسودة تُحفظ على جهازك فقط.</p></details>
+        </div>
+        <div class="ml-promo"><b>👑 قيادة تحالف تأخذ وقتاً</b><p>دع البوت يتولى الجمع والمساعدة والتبرعات بينما تركّز على القيادة.</p><a href="#" data-go="v-guide">شاهد كيف يعمل ←</a></div>
+        <h3 class="gd-sec">أدوات مجانية أخرى</h3>
+        <div class="ml-more"><a href="#" data-go="v-tool-speed">حاسبة التسريعات ←</a><a href="#" data-go="v-tool-equip">المعدات والتصنيع ←</a><a href="#" data-go="v-tool-cmd">دليل القادة ←</a><a href="#" data-go="v-tool-events">تقويم الأحداث ←</a><a href="#" data-go="v-tool-crystal">تقنية الكريستال ←</a></div>
+        <p class="ml-foot">KingBot · أدوات مجانية لـ Rise of Kingdoms</p>
+      </section>
+    </div>
+
     <!-- ABOUT -->
     <div class="view" id="v-about">
       <section class="panel ab">
@@ -2223,6 +2305,7 @@ function pushBrowser(list) {
 const PAGE_INFO = {
   ap_card: { name: "نقاط الحركة وبطاقات الموارد", text: "كل بطاقة مورد تعرض الرصيد الحالي، وتحته ما كسبته اليوم (بتوقيت غرينتش، من جدول مكاسبي) وشريطاً صغيراً يقارن المورد بأكبر مورد عندك. بطاقة نقاط الحركة (AP) تعرض الحالية / القصوى ونسبة الامتلاء، ويقرؤها البوت من الملف الشخصي للحاكم (عند «تحديث اسم المستخدم والملف» في المساعد، أو تلقائياً كل فترة). يصير الشريط أحمر تحت 20%. البوت لا يستعمل الجواهر لشراء نقاط حركة أبداً." },
   guide: { name: "الدليل", text: "دليل استعمال اللوحة خطوة بخطوة: اضغط أي عنوان في «في هذه الصفحة» للانتقال إليه مباشرة. الأرقام 1–7 في مخطط «لوحتك» تطابق الشرح تحته، و«معنى الحالة» يشرح كل حالة تظهر في رأس الخانة." },
+  mail: { name: "مولّد رسائل التحالف", text: "أداة مجانية لكتابة بريد تحالف منسّق في Rise of Kingdoms. حدد نصاً واضغط عريض / مائل / الحجم / لون / تدرج فتوضع علامات اللعبة حوله (إذا لم تحدد شيئاً توضع العلامات عند المؤشر). العدّاد يحسب العلامات أيضاً لأن حد اللعبة 2,000 حرف يشملها. المسودة وقوالبك تُحفظ على هذا الجهاز فقط. «نسخ الكود» ينسخ النص بالعلامات لتلصقه في بريد التحالف." },
   ref: { name: "الإحالات", text: "رابط الإحالة فيه اسم حسابك في اللوحة. انسخه وأرسله لأصدقائك؛ عند تسجيلهم من الرابط يُسجَّل أنهم جاؤوا عن طريقك. المكافآت يحددها المشرف." },
   menu: { name: "القائمة", text: "القائمة الرئيسية: الدليل، الدعم، الإحالات، حسابي، ثم «أدوات مجانية» (تفتح بالضغط) وروابط المجتمع (ديسكورد، واتساب، تيليجرام، يوتيوب) — الروابط تُقرأ من إعدادات kingbot-syn فيتغيّر الرابط بدون تحديث الصفحة. تسجيل الخروج في الأسفل." },
   gains: { name: "مكاسبي", text: "يسجل البوت كل يوم (بتوقيت غرينتش) ما تكسبه من طعام وخشب وحجر وذهب وجواهر لآخر 30 يوماً. يقرأ شريط الموارد بعد كل جولة ويحسب الزيادات فقط (الجمع من الخريطة، جمع فقاعات المدينة، المكافآت)، أما الصرف على التدريب والبناء فلا يُخصم. الجواهر تُحسب من الزيادة في رصيد الجواهر خلال اليوم. اختر المورد لعرض الرسم البياني، والجدول يعرض كل الموارد مع عدد البرابرة والحصون. الأرقام في الجدول مختصرة (3.3M = 3,300,000 و 130K = 130,000) — مرّر المؤشر أو اضغط على الرقم لرؤيته كاملاً، وعمود اليوم ثابت عند التمرير على الجوال." },
@@ -2595,6 +2678,78 @@ document.addEventListener("click", e => { const a = e.target.closest && e.target
   document.addEventListener("click", e => { if (e.target.closest && e.target.closest('[data-go="v-ref"]')) setTimeout(refFill, 50);
     if (e.target.id === "ref-copy") { refFill(); const i = document.getElementById("ref-link"); try { navigator.clipboard.writeText(i.value); } catch (_) { i.select(); document.execCommand("copy"); } e.target.textContent = "✅ نُسخ"; setTimeout(() => e.target.textContent = "نسخ الرابط", 1500); } });
   try { const r = new URLSearchParams(location.search).get("ref"); if (r) localStorage.setItem("kb_ref", r.slice(0, 40)); } catch (_) {}
+})();
+// TOOLS-02..02D: alliance mail generator (RoK mail markup: <b> <i> <size=N> <color=#RRGGBB>)
+(function () {
+  const $m = id => document.getElementById(id), LIM = 2000;
+  const ta = $m("ml-text"); if (!ta) return;
+  const SW = ["#ffffff", "#ffd400", "#ff9f1a", "#ff3b3b", "#ff4fd8", "#9b6bff", "#3aa7ff", "#2ee6c5", "#4cd964", "#a0a0a0"];
+  let color = SW[1], hist = [];
+  const TPL = [
+    ["رسالة ترحيب", "<size=32><color=#ffd400><b>أهلاً بك في التحالف!</b></color></size>\n\nنحن سعداء بانضمامك 🎉\n• ساعد الأعضاء دائماً (زر المساعدة)\n• تبرّع لتقنية التحالف يومياً\n• شارك في الحشود والأحداث\n\n<color=#3aa7ff>اسأل أي ضابط R4 عن أي شيء.</color>"],
+    ["قواعد KvK", "<size=32><color=#ff3b3b><b>قواعد KvK</b></color></size>\n\n1) لا تهاجم بدون أمر القائد\n2) فعّل الدرع عند تسجيل الخروج\n3) احفظ الجنود للحشود الكبيرة\n4) تابع قناة التحالف باستمرار"],
+    ["أحداث الأسبوع", "<size=30><color=#ffd400><b>أحداث هذا الأسبوع</b></color></size>\n\n<b>الإثنين:</b> صيد البرابرة\n<b>الأربعاء:</b> حصون البرابرة\n<b>الجمعة:</b> حرب الأطلال\n<b>السبت:</b> تجميع الموارد"],
+    ["تذكير بالدرع", "<size=32><color=#ff9f1a><b>⚠️ تذكير بالدرع</b></color></size>\n\nهناك نشاط معادٍ قريب.\nفعّل الدرع قبل النوم أو الخروج من اللعبة!"],
+    ["الحشود اليوم", "<color=#4cd964><b>حشود حصون البرابرة اليوم</b></color>\nالساعة 18:00 UTC — انضموا بجيش واحد على الأقل 🏰"],
+    ["تبرعات التقنية", "<b>📚 تقنية التحالف</b>\nتبرّع يومياً بالموارد للتقنية المعلَّمة بالإعجاب. لا تستعمل الجواهر."],
+    ["مواعيد الأطلال", "<size=30><color=#9b6bff><b>الأطلال القديمة</b></color></size>\nالتجمع قبل 10 دقائق عند علم التحالف."],
+    ["تجنيد أعضاء", "<size=32><color=#2ee6c5><b>نبحث عن أعضاء نشطين!</b></color></size>\nتحالف نشط، مساعدات سريعة، وأحداث يومية. القوة +10M."],
+    ["قوانين الأراضي", "<b>قوانين الأراضي</b>\n• لا تجمع في أراضي تحالف آخر\n• احترم الحدود والأعلام"],
+    ["شكر للأعضاء", "<size=30><color=#ffd400><b>شكراً لكم! 🏆</b></color></size>\nحققنا المركز الأول في الحدث بفضلكم جميعاً."]
+  ];
+  $m("ml-tpn").textContent = TPL.length;
+  const esc = t => t.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  function render(src) {   // markup -> safe HTML for the preview
+    let h = esc(src);
+    h = h.replace(/&lt;b&gt;/g, "<b>").replace(/&lt;\/b&gt;/g, "</b>").replace(/&lt;i&gt;/g, "<i>").replace(/&lt;\/i&gt;/g, "</i>")
+      .replace(/&lt;color=(#[0-9a-fA-F]{6})&gt;/g, '<span style="color:$1">').replace(/&lt;\/color&gt;/g, "</span>")
+      .replace(/&lt;size=(\d{1,2})&gt;/g, (_, n) => '<span style="font-size:' + Math.max(10, Math.min(60, +n)) * 0.55 + 'px">').replace(/&lt;\/size&gt;/g, "</span>");
+    return h.replace(/\n/g, "<br>");
+  }
+  const save = () => { try { localStorage.setItem("kb_mail_draft", ta.value); } catch (_) {} };
+  function upd() { const n = ta.value.length; const c = $m("ml-count"); c.textContent = n.toLocaleString("en-US") + " / 2,000"; c.classList.toggle("over", n > LIM);
+    const tmp = document.createElement("div"); tmp.innerHTML = render(ta.value); $m("ml-prev").innerHTML = tmp.innerHTML; save(); }
+  function push() { hist.push(ta.value); if (hist.length > 50) hist.shift(); }
+  function wrap(a, b) { push(); const s = ta.selectionStart, e = ta.selectionEnd, v = ta.value;
+    ta.value = v.slice(0, s) + a + v.slice(s, e) + b + v.slice(e); ta.focus(); ta.selectionStart = s + a.length; ta.selectionEnd = e + a.length; upd(); }
+  function grad() { const s = ta.selectionStart, e = ta.selectionEnd; if (s === e) { wrap("<color=" + $m("ml-g1").value + ">", "</color>"); return; }
+    push(); const v = ta.value, part = [...v.slice(s, e)], h2r = h => [1, 3, 5].map(i => parseInt(h.slice(i, i + 2), 16)), a = h2r($m("ml-g1").value), b = h2r($m("ml-g2").value);
+    const vis = part.filter(ch => ch.trim()).length; let k = 0;
+    const out = part.map(ch => { if (!ch.trim()) return ch; const t = vis > 1 ? k++ / (vis - 1) : 0; const c = a.map((x, i) => Math.round(x + (b[i] - x) * t).toString(16).padStart(2, "0")).join(""); return "<color=#" + c + ">" + ch + "</color>"; }).join("");
+    ta.value = v.slice(0, s) + out + v.slice(e); ta.focus(); ta.selectionStart = s; ta.selectionEnd = s + out.length; upd(); }
+  document.querySelectorAll(".ml-tb button").forEach(bt => bt.addEventListener("click", () => {
+    const a = bt.dataset.a;
+    if (a === "b") wrap("<b>", "</b>"); else if (a === "i") wrap("<i>", "</i>"); else if (a === "bi") wrap("<b><i>", "</i></b>");
+    else if (a === "size") wrap("<size=" + $m("ml-size").value + ">", "</size>"); else if (a === "color") wrap("<color=" + color + ">", "</color>");
+    else if (a === "grad") grad(); else if (a === "undo") { if (hist.length) { ta.value = hist.pop(); upd(); } }
+    else if (a === "clear") { if (ta.value && confirm("مسح كل النص؟")) { push(); ta.value = ""; upd(); } }
+  }));
+  const sw = $m("ml-sw"); SW.forEach(c => { const b = document.createElement("button"); b.type = "button"; b.style.background = c; b.title = c; if (c === color) b.className = "on";
+    b.addEventListener("click", () => { color = c; sw.querySelectorAll("button").forEach(x => x.classList.toggle("on", x === b)); }); sw.appendChild(b); });
+  ta.addEventListener("input", upd);
+  try { ta.value = localStorage.getItem("kb_mail_draft") || ""; } catch (_) {}
+  const myGet = () => { try { return JSON.parse(localStorage.getItem("kb_mail_my") || "[]"); } catch (_) { return []; } };
+  function lists() {
+    const mk = (box, arr, mine) => { box.innerHTML = ""; if (!arr.length) { box.innerHTML = '<p class="gd-p">لا توجد قوالب محفوظة بعد — اضغط «حفظ» في المحرر.</p>'; return; }
+      arr.forEach(([n, t], i) => { const d = document.createElement("div"); d.className = "ml-item"; const pv = document.createElement("div"); pv.className = "ml-ipv"; pv.innerHTML = render(t);
+        const h = document.createElement("b"); h.textContent = n; const u = document.createElement("button"); u.type = "button"; u.className = "btn"; u.textContent = "استعمال";
+        u.addEventListener("click", () => { push(); ta.value = t; upd(); tab("ed"); }); d.append(h, pv, u);
+        if (mine) { const x = document.createElement("button"); x.type = "button"; x.className = "btn"; x.textContent = "حذف"; x.addEventListener("click", () => { const a = myGet(); a.splice(i, 1); try { localStorage.setItem("kb_mail_my", JSON.stringify(a)); } catch (_) {} lists(); }); d.appendChild(x); }
+        box.appendChild(d); }); };
+    mk($m("ml-tpl"), TPL, false); mk($m("ml-my"), myGet(), true);
+  }
+  function tab(t) { document.querySelectorAll(".ml-tabs button").forEach(b => b.classList.toggle("on", b.dataset.t === t)); document.querySelectorAll(".ml-pane").forEach(p => p.hidden = p.dataset.p !== t); }
+  document.querySelectorAll(".ml-tabs button").forEach(b => b.addEventListener("click", () => tab(b.dataset.t)));
+  $m("ml-save").addEventListener("click", () => { if (!ta.value.trim()) return; const n = prompt("اسم القالب:", "قالبي " + (myGet().length + 1)); if (!n) return;
+    const a = myGet(); a.unshift([n.slice(0, 40), ta.value]); try { localStorage.setItem("kb_mail_my", JSON.stringify(a.slice(0, 30))); } catch (_) {} lists(); });
+  $m("ml-copy").addEventListener("click", e => { const b = e.currentTarget; const done = () => { b.textContent = "✅ نُسخ"; setTimeout(() => b.textContent = "📋 نسخ الكود", 1500); };
+    try { navigator.clipboard.writeText(ta.value).then(done, () => { ta.select(); document.execCommand("copy"); done(); }); } catch (_) { ta.select(); document.execCommand("copy"); done(); } });
+  document.querySelectorAll(".ml-pvm button").forEach(b => b.addEventListener("click", () => { document.querySelectorAll(".ml-pvm button").forEach(x => x.classList.toggle("on", x === b)); $m("ml-prev").classList.toggle("ph", b.dataset.m === "ph"); }));
+  const soc = $m("ml-social"), cm = document.getElementById("kbar-comm");   // same community links as the menu
+  const syncSoc = () => { if (!cm || !soc) return; soc.innerHTML = ""; cm.querySelectorAll("a").forEach(a => { if (/whatsapp group/i.test(a.textContent)) return; const c = a.cloneNode(true); soc.appendChild(c); }); };
+  syncSoc(); if (cm) new MutationObserver(syncSoc).observe(cm, { childList: true });
+  document.querySelectorAll("#v-tool-mail a[data-go]").forEach(a => a.addEventListener("click", e => e.preventDefault()));
+  lists(); upd();
 })();
 if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", astInit); else setTimeout(astInit, 0);
 /* ---------- v192: approved commander list = pictures in kingbot-ui/commanders (GitHub) ---------- */
