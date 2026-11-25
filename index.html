@@ -926,6 +926,7 @@ main, .view, .panel, #top, .kbar { min-width: 0; max-width: 100%; box-sizing: bo
 .gd-pill{display:inline-block;padding:0 8px;border-radius:999px;background:#5aa9ff22;border:1px solid #5aa9ff55;font-size:12px;}
 .gd-call{margin:10px 0;padding:10px 12px;border-radius:12px;font-size:13px;line-height:1.6}.gd-call.info{background:#5aa9ff14;border:1px solid #5aa9ff44}.gd-call.warn{background:#f2b33a1c;border:1px solid #f2b33a77;color:#ffd98a}
 .gd-n{display:inline-grid;place-items:center;width:20px;height:20px;border-radius:50%;background:#e74c3c;color:#fff;font-size:11px;font-weight:800;flex:none;margin-inline-end:4px}
+.gd-mock.gd-signin{grid-template-columns:1fr}
 .gd-mock{display:grid;grid-template-columns:110px 1fr;gap:8px;padding:10px;border-radius:14px;border:1px dashed #ffffff33;background:#0006;font-size:11.5px;margin-bottom:10px}
 .gm-side,.gm-box,.gm-head{border-radius:10px;background:#ffffff0c;border:1px solid #ffffff14;padding:7px;display:flex;flex-wrap:wrap;gap:4px;align-items:center}
 .gm-side{flex-direction:column;align-items:stretch}.gm-side u{display:block;height:14px;border-radius:6px;background:#ffffff14}
@@ -1765,6 +1766,19 @@ window.addEventListener("error", function(e) {
           <li><span class="gd-st err">خطأ</span>تفاصيل الخطأ تحت المعاينة؛ غالباً يتعافى وحده.</li>
         </ul>
         <div class="gd-call warn">⚠️ إذا استمرت حالة «الجهاز لا يستجيب» أو «البوت غير متصل» أكثر من بضع دقائق، افتح تذكرة في <span class="gd-pill">الدعم</span>.</div>
+
+        <h4 class="gd-sub" id="gd-signin">🔑 تسجيل الدخول إلى اللعبة</h4>
+        <p class="gd-p">أثناء تسجيل الدخول يتوقف البوت مؤقتاً ثم يعود تلقائياً بعده. بعد الدخول: فعّل الأنشطة، اضغط <span class="gd-pill">حفظ</span> ثم <span class="gd-pill">START</span>.</p>
+        <div class="gd-mock gd-signin" aria-label="نافذة تسجيل الدخول">
+          <div class="gm-box"><span class="gd-n">1</span><em>✉️ برمز</em><em>🔒 بكلمة مرور</em></div>
+          <div class="gm-box"><span class="gd-n">2</span>📧 بريد حساب اللعبة · 🔒 كلمة المرور (إن اخترتها) · <em class="go">ابدأ الدخول</em></div>
+          <div class="gm-box"><span class="gd-n">3</span>🔢 رمز التحقق من بريدك · <em class="go">تأكيد</em></div>
+        </div>
+        <ol class="gd-points">
+          <li><span class="gd-n">1</span><b>اختر الطريقة:</b> <span class="gd-pill">برمز</span> = رمز لمرة واحدة يصل لبريدك ولا تُحفظ أي كلمة مرور، أو <span class="gd-pill">بكلمة مرور</span> = تُكتب مرة واحدة وتُحذف فوراً بعد الاستعمال.</li>
+          <li><span class="gd-n">2</span><b>أدخل البيانات:</b> بريد حساب اللعبة (وكلمة المرور إن اخترتها) ثم ابدأ الدخول.</li>
+          <li><span class="gd-n">3</span><b>رمز التحقق:</b> اكتب الرمز الذي وصلك على البريد في النافذة.</li>
+        </ol>
 
         <h3 class="gd-sec" id="gd-sched">🕒 الجدولة الذكية</h3>
         <p class="gd-p">تحدد ساعات عمل البوت بتوقيت غرينتش (UTC) مع إزاحة عشوائية بسيطة. خارج الساعات ينتظر ولا يلمس اللعبة.</p>
