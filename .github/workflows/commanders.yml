@@ -1,0 +1,20 @@
+name: commanders list
+on:
+  push:
+    branches: [main]
+    paths: ["commanders/**", "!commanders/list.json", ".github/scripts/build_commanders.py"]
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency: { group: commanders, cancel-in-progress: false }
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: python3 .github/scripts/build_commanders.py
+      - run: |
+          git config user.name "kingbot-commanders"
+          git config user.email "actions@users.noreply.github.com"
+          git add commanders/list.json
+          git diff --cached --quiet || (git commit -m "commanders: update list.json" && git push)

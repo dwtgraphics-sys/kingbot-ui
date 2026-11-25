@@ -857,12 +857,13 @@ main, .view, .panel, #top, .kbar { min-width: 0; max-width: 100%; box-sizing: bo
 .xm-card h4{margin:0;font-size:13px;color:var(--accent,#f28c28)}
 
 /* v142: assistant */
+.ast-fab[hidden]{display:none!important}
 .ast-fab{position:fixed;left:16px;bottom:96px;z-index:900;width:54px;height:54px;border-radius:50%;border:1px solid #ffffff2a;background:radial-gradient(circle at 30% 30%,#ffb54a,#d9711b);box-shadow:0 8px 24px #0008,0 0 0 4px #f28c2826;font-size:26px;cursor:pointer;display:grid;place-items:center;transition:transform .15s}
 .ast-fab:hover{transform:scale(1.07)}
 .ast-fab .dot{position:absolute;top:2px;right:2px;width:12px;height:12px;border-radius:50%;background:#46d36b;box-shadow:0 0 0 2px #1a1208;display:none}
 .ast-fab.busy .dot{display:block;animation:astp 1s infinite}
 @keyframes astp{50%{opacity:.3}}
-.ast{position:fixed;left:12px;bottom:160px;z-index:901;width:min(380px,calc(100vw - 24px));max-height:min(620px,calc(100vh - 190px));display:none;flex-direction:column;border-radius:18px;border:1px solid var(--edge,#ffffff22);background:rgba(16,20,32,.96);backdrop-filter:blur(14px);box-shadow:0 18px 50px #000a;overflow:hidden}
+.ast{position:fixed;left:12px;bottom:24px;z-index:901;width:min(380px,calc(100vw - 24px));max-height:min(620px,calc(100vh - 190px));display:none;flex-direction:column;border-radius:18px;border:1px solid var(--edge,#ffffff22);background:rgba(16,20,32,.96);backdrop-filter:blur(14px);box-shadow:0 18px 50px #000a;overflow:hidden}
 .ast.open{display:flex;animation:astin .18s ease-out}
 @keyframes astin{from{opacity:0;transform:translateY(10px)}}
 .ast-h{display:flex;align-items:center;gap:8px;padding:12px 14px;border-bottom:1px solid #ffffff14}
@@ -881,6 +882,37 @@ main, .view, .panel, #top, .kbar { min-width: 0; max-width: 100%; box-sizing: bo
 .ast-in{display:flex;gap:6px;padding:10px 12px;border-top:1px solid #ffffff14}
 .ast-in input{flex:1;min-width:0;padding:9px 12px;border-radius:12px;border:1px solid #ffffff22;background:rgba(0,0,0,.35);color:inherit;font:inherit}
 .ast-in button{padding:0 14px;border-radius:12px;border:0;background:var(--accent,#f28c28);color:#2a1600;font-weight:800;cursor:pointer}
+/* ---------- v192: live stream ---------- */
+.kbar-live{display:inline-flex;align-items:center;gap:6px;height:36px;padding:0 12px;border-radius:12px;border:1px solid rgba(226,176,74,.55);background:linear-gradient(180deg,#2a2112,#16120a);color:#ffd46a;font-weight:800;font-size:13px;letter-spacing:.5px;cursor:pointer}
+.kbar-live i{width:9px;height:9px;border-radius:50%;background:#6b6b6b}
+.kbar-live.on i{background:#ff3b3b;box-shadow:0 0 0 0 #ff3b3b88;animation:lvp 1.4s infinite}
+@keyframes lvp{0%{box-shadow:0 0 0 0 #ff3b3b88}70%{box-shadow:0 0 0 8px #ff3b3b00}100%{box-shadow:0 0 0 0 #ff3b3b00}}
+.lv-card{border:1px solid rgba(226,176,74,.4);background:linear-gradient(180deg,rgba(32,25,12,.92),rgba(12,10,6,.95))}
+.lv-head{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:10px}
+.lv-head h2{margin:0;font-size:18px;color:#ffd46a}
+.lv-badge{display:inline-flex;align-items:center;gap:6px;padding:3px 10px;border-radius:999px;font-size:12px;font-weight:800;background:#3a3a3a;color:#ddd}
+.lv-badge.on{background:#c81e1e;color:#fff}
+.lv-badge i{width:8px;height:8px;border-radius:50%;background:currentColor}
+.lv-badge.on i{animation:lvb 1s infinite}
+@keyframes lvb{50%{opacity:.25}}
+.lv-head .sp{flex:1}
+.lv-head button{height:34px;padding:0 12px;border-radius:10px;border:1px solid rgba(226,176,74,.45);background:#1d170c;color:#ffd46a;font-weight:700;cursor:pointer}
+.lv-head button.stop{border-color:#ff6b6b66;color:#ff9a9a}
+.lv-head button:disabled{opacity:.5}
+.lv-wrap{position:relative;width:100%;aspect-ratio:946/710;max-height:72vh;border-radius:14px;overflow:hidden;background:#000;border:1px solid rgba(226,176,74,.3)}
+.lv-wrap iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.lv-off{position:absolute;inset:0;display:grid;place-items:center;text-align:center;padding:20px;color:#c9b88a;background:radial-gradient(circle at 50% 40%,#2a2010,#000)}
+.lv-off[hidden]{display:none}
+.lv-wrap:not(.on) .lv-bar .lv-badge{display:none}
+#lv-slot-home .lv-wrap{max-height:46vh}
+.lv-off b{display:block;font-size:40px;margin-bottom:6px}
+.lv-bar{position:absolute;left:0;right:0;bottom:0;display:flex;align-items:center;gap:10px;padding:8px 12px;background:linear-gradient(0deg,rgba(0,0,0,.85),rgba(0,0,0,0));color:#fff;font-size:13px;pointer-events:none}
+.lv-bar .t{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.lv-bar .t b{color:#ffd46a}
+.lv-fs{position:absolute;top:8px;left:8px;width:36px;height:36px;border-radius:10px;border:1px solid #ffffff33;background:rgba(0,0,0,.55);color:#fff;font-size:18px;cursor:pointer;z-index:2}
+.lv-wrap:fullscreen{max-height:none;border-radius:0;aspect-ratio:auto}
+.lv-note{margin:8px 2px 0;font-size:12px;opacity:.7}
+.lv-mini{cursor:pointer}
 </style>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&amp;display=swap">
 </head>
@@ -1067,6 +1099,7 @@ window.addEventListener("error", function(e) {
     <svg class="rf" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 12a8 8 0 1 1-2.3-5.7M20 4v5h-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
   </button>
   <div class="kbar-tools">
+    <button type="button" class="kbar-live" id="kbar-live" aria-label="البث المباشر" title="البث المباشر"><i></i>LIVE</button>
     <button type="button" class="kbar-bell" id="kbar-bell" aria-label="الإشعارات"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 17V11a6 6 0 0 1 12 0v6l1.5 2h-15z M10 21a2 2 0 0 0 4 0" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"></path></svg><b id="kbar-badge" hidden="">0</b></button>
     <div class="kbar-dd">
       <button type="button" class="kbar-box" id="kbar-lang" aria-haspopup="true" aria-expanded="false"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.7"></circle><path d="M3 12h18M12 3c3 3.2 3 14.8 0 18M12 3c-3 3.2-3 14.8 0 18" fill="none" stroke="currentColor" stroke-width="1.5"></path></svg><span id="kbar-lc">AR</span><svg class="chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 10l5 5 5-5" fill="none" stroke="currentColor" stroke-width="1.8"></path></svg></button>
@@ -1078,6 +1111,8 @@ window.addEventListener("error", function(e) {
         <button type="button" data-go="v-account" class="kbar-acc"><span data-i="user"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"></circle><path d="M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7"></path></svg></span><span>الحساب<small id="kbar-user">CrownLord</small></span></button>
         <hr>
         <button type="button" data-go="v-home"><span data-i="home"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l9-7 9 7"></path><path d="M5 10v10h14V10"></path></svg></span>الرئيسية</button>
+        <button type="button" data-go="v-live"><span><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="6" width="13" height="12" rx="2"></rect><path d="m16 10 5-3v10l-5-3"></path></svg></span>البث المباشر</button>
+        <button type="button" data-go="assistant"><span><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="8" width="14" height="11" rx="3"></rect><path d="M12 4v4M9 13h.01M15 13h.01M9 16h6"></path></svg></span>المساعد</button>
         <button type="button" data-go="v-about"><span data-i="info"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 11v6M12 7.5h.01"></path></svg></span>نبذة عن البوت</button>
         <button type="button" data-go="v-subs"><span data-i="coins"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="9" r="6"></circle><path d="M15.5 9.5A6 6 0 1 1 9.5 15.5"></path></svg></span>الاشتراكات</button>
         <button type="button" data-go="v-contact"><span data-i="mail"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"></rect><path d="m3 7 9 6 9-6"></path></svg></span>التواصل والشكاوي</button>
@@ -1102,6 +1137,10 @@ window.addEventListener("error", function(e) {
 
     <!-- HOME -->
     <div class="view" id="v-home">
+      <section class="panel lv-card" id="lv-home" aria-label="البث المباشر">
+        <div class="lv-head"><h2>📺 البث المباشر</h2><span class="lv-badge" data-lv="badge"><i></i><span>متوقف</span></span><span class="sp"></span><button type="button" data-lv="open">فتح بحجم كبير</button></div>
+        <div class="lv-slot" id="lv-slot-home"></div>
+      </section>
       <section class="panel acc" aria-label="حساب البوت">
         <div class="acc-top">
           <div class="acc-badge"><img id="ac-av" alt="" src="data:image/jpeg;base64,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"><span id="ac-av0" hidden="">👑</span></div>
@@ -1228,6 +1267,15 @@ window.addEventListener("error", function(e) {
     </div>
 
     <!-- ACTIVITIES -->
+    <div class="view" id="v-live">
+      <section class="panel lv-card" aria-label="البث المباشر (Live)">
+        <div class="lv-head"><h2>📺 البث المباشر (Live)</h2><span class="lv-badge" data-lv="badge"><i></i><span>متوقف</span></span><span class="sp"></span>
+          <button type="button" id="lv-toggle">⏹ إيقاف البث</button><button type="button" id="lv-ext" title="فتح في نافذة جديدة">↗</button><button type="button" id="lv-info" title="ما هذا؟">❗</button></div>
+        <div class="lv-slot" id="lv-slot-view"></div>
+        <p class="lv-note" id="lv-note"></p>
+        <div class="msg" id="m-live"></div>
+      </section>
+    </div>
     <div class="view show" id="v-acts">
       <div style="display:flex;justify-content:flex-end;margin-bottom:8px"><button class="btn" type="button" onclick="showView('v-sched')">🕒 الجدولة</button></div>
       <section class="panel" aria-labelledby="pr-h">
@@ -2184,6 +2232,7 @@ function astTick(s) {
   if (String(c.action_done) === String(astCur.id)) {
     astCur.steps.forEach(b => astLog[b.msg].st = "✅ تم");
     astSay("انتهيت ✅ البيانات محدّثة في اللوحة.");
+    if (!$("ast").classList.contains("open")) try { setMsg("m-acc", "✅ المساعد: البيانات محدّثة.", "ok"); } catch (_) {}
     astCur = null; astNext();
   } else if (Date.now() - astCur.at > 20 * 60000) {
     astCur.steps.forEach(b => { if (!/✅/.test(astLog[b.msg].st)) astLog[b.msg].st = "⌛ تأخر — البوت مشغول أو غير متصل"; });
@@ -2204,6 +2253,19 @@ function astInit() {
   ed.addEventListener("click", () => { $("ast-text").value = "رابط البث: " + live.href; $("ast-text").focus(); astSay("ألصق رابط المشاهدة الجديد بعد «رابط البث:» ثم اضغط إرسال."); });
   q.appendChild(ed);
   $("ast-fab").addEventListener("click", () => { $("ast").classList.toggle("open"); astDraw(); });
+  window.astOpen = () => { $("ast").classList.add("open"); astDraw(); };
+  // v192: the assistant works in the background - every 3 hours (while the dashboard is open) it asks the bot
+  // to refresh profile, resources, marches and characters, silently. Commanders are read by the bot itself
+  // after every character switch.
+  const autoRun = () => { try {
+    if (document.hidden || astCur || astQueue.length || !getGhToken()) return;
+    const last = Number(localStorage.getItem("kb_ast_auto") || 0);
+    if (Date.now() - last < 3 * 3600e3) return;
+    const s = lastStatus || {}; if (!/working|waiting/.test(s.state || "")) return;
+    localStorage.setItem("kb_ast_auto", String(Date.now()));
+    astSay("🔄 تحديث تلقائي في الخلفية (كل 3 ساعات)."); astAdd(AST_ALL.map(k => ({ do: k })));
+  } catch (_) {} };
+  setTimeout(autoRun, 45000); setInterval(autoRun, 10 * 60000);
   $("ast-x").addEventListener("click", () => $("ast").classList.remove("open"));
   $("ast-info").addEventListener("click", () => astSay("زر «📺 فتح البث المباشر» يفتح بث شاشة اللعبة (OBS + VDO.Ninja) في نافذة جديدة.\nأنا أرسل أوامرك للبوت الرئيسي: تحديث الاسم والملف، الشخصيات، القادة، الموارد، المسيرات، أو صورة من اللعبة. يمكنك أيضاً كتابة طلبك بكلامك، مثل: «حدّث القادة والموارد» أو «بدّل إلى ArchLord».\nالأوامر تتقدّم الطابور: ينفذها البوت بين أي مهمتين، ولا ينتظر نهاية الجولة. البوت الرئيسي وحده يضغط داخل اللعبة."));
   $("ast-form").addEventListener("submit", e => { e.preventDefault(); const t = $("ast-text").value.trim(); if (!t) return; $("ast-text").value = "";
@@ -2214,6 +2276,29 @@ function astInit() {
   astDraw();
 }
 if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", astInit); else setTimeout(astInit, 0);
+/* ---------- v192: approved commander list = pictures in kingbot-ui/commanders (GitHub) ---------- */
+const cmdKey = n => String(n || "").toLowerCase().normalize("NFKD").replace(/[^a-z0-9]/g, "");
+let GH_CMD = {};
+function allCommanders() {
+  // GitHub pictures give the approved spelling; the built-in names fill the list until every picture is uploaded
+  const m = new Map(COMMANDERS.map(n => [cmdKey(n), n]));
+  Object.values(GH_CMD).forEach(x => m.set(cmdKey(x.name), x.name));
+  return [...m.values()].sort((a, b) => a.localeCompare(b));
+}
+async function loadGhCommanders() {
+  const RAW = "https://raw.githubusercontent.com/dwtgraphics-sys/kingbot-ui/main/";
+  const put = arr => { const m = {}; (arr || []).forEach(x => { if (x && x.name && x.img) m[cmdKey(x.name)] = { name: x.name, url: x.img, raw: RAW + x.img.split("/").map(encodeURIComponent).join("/") }; }); GH_CMD = m; };
+  try { const c = JSON.parse(localStorage.getItem("kb_ghcmd") || "null"); if (c && Date.now() - c.at < 3600e3) { put(c.list); return; } if (c) put(c.list); } catch (_) {}
+  let list = null;
+  try {
+    const r = await fetch("https://api.github.com/repos/dwtgraphics-sys/kingbot-ui/contents/commanders?ref=main", { headers: { Accept: "application/vnd.github+json" } });
+    if (r.ok) list = (await r.json()).filter(f => f.type === "file" && /\.(png|jpe?g|webp)$/i.test(f.name) && f.size < 2e6)
+      .map(f => ({ name: f.name.replace(/\.[^.]+$/, "").replace(/_+/g, " ").replace(/\s+/g, " ").trim(), img: "commanders/" + f.name }));
+  } catch (_) {}
+  if (!list) try { const r = await fetch(RAW + "commanders/list.json?t=" + Date.now()); if (r.ok) list = (await r.json()).commanders || []; } catch (_) {}
+  if (list) { put(list); try { localStorage.setItem("kb_ghcmd", JSON.stringify({ at: Date.now(), list })); } catch (_) {} }
+}
+loadGhCommanders();
 /* ---------- v138: commander picker with portraits + extra marches ---------- */
 function myCommanders() {
   const c = (lastStatus || {}).city || {};
@@ -2223,7 +2308,7 @@ function myCommanders() {
 function cmdLevel(name) {
   const c = (lastStatus || {}).city || {};
   const list = Array.isArray(c.commanders) && c.commanders.length ? c.commanders : (kbCache("cmdrs", null) || []);
-  const x = list.find(v => v && v.name === name); return x && +x.level > 0 ? +x.level : 0;
+  const k = cmdKey(name), x = list.find(v => v && cmdKey(v.name) === k); return x && +x.level > 0 ? +x.level : 0;
 }
 function cmdFace(name) {
   const w = document.createElement("span"); w.className = "cmdface"; w.appendChild(cmdAvatar(name));
@@ -2232,6 +2317,9 @@ function cmdFace(name) {
   return w;
 }
 function cmdAvatar(name, size) {
+  const gh = name && GH_CMD[cmdKey(name)];
+  if (gh) { const i = new Image(); i.className = "cmdav"; i.alt = ""; i.loading = "lazy"; i.src = gh.url;
+    i.onerror = () => { if (gh.raw && i.src !== gh.raw) i.src = gh.raw; }; return i; }
   const own = myCommanders(), img = own[name];
   if (img && /^data:image\/jpeg;base64,[A-Za-z0-9+/=]+$/.test(img)) { const i = new Image(); i.className = "cmdav"; i.alt = ""; i.src = img; return i; }
   const d = document.createElement("span"); d.className = "cmdav";
@@ -2250,14 +2338,14 @@ function cmdButton(obj, key, title) {
 }
 function openCmdPicker(title, current, done) {
   const box = document.createElement("div"); box.className = "imodal open";
-  box.innerHTML = '<div class="ibox cpk" role="dialog" aria-modal="true"><h3></h3><div class="cpk-top"><input type="search" placeholder="Search…"><button type="button" class="btn" data-x="none">بدون قائد</button><button type="button" class="btn" data-x="read">📥 قراءة قادتي من اللعبة</button></div><div class="cpk-grid"></div><button type="button" class="btn" data-x="close">إغلاق</button></div>';
+  box.innerHTML = '<div class="ibox cpk" role="dialog" aria-modal="true"><h3></h3><div class="cpk-top"><input type="search" placeholder="Search…"><button type="button" class="btn" data-x="none">بدون قائد</button><button type="button" class="btn" data-x="read">📥 قراءة قادتي من اللعبة</button><button type="button" class="btn" data-x="help" title="مساعدة">❗</button></div><div class="msg" data-x-msg></div><div class="cpk-grid"></div><button type="button" class="btn" data-x="close">إغلاق</button></div>';
   box.querySelector("h3").textContent = title.replace(/\s*\(.*\)$/, "");
   document.body.appendChild(box);
   const grid = box.querySelector(".cpk-grid"), q = box.querySelector("input");
   const close = () => box.remove();
   const draw = () => {
     const own = myCommanders(), f = q.value.trim().toLowerCase();
-    const mine = Object.keys(own).sort((a, b) => (cmdLevel(b) - cmdLevel(a)) || a.localeCompare(b)), rest = COMMANDERS.filter(n => !(n in own));
+    const mine = Object.keys(own).sort((a, b) => (cmdLevel(b) - cmdLevel(a)) || a.localeCompare(b)), ownK = new Set(Object.keys(own).map(cmdKey)), rest = allCommanders().filter(n => !ownK.has(cmdKey(n)));
     grid.innerHTML = "";
     const sec = (txt, arr, owned) => {
       arr = arr.filter(n => !f || n.toLowerCase().includes(f)); if (!arr.length) return;
@@ -2275,6 +2363,7 @@ function openCmdPicker(title, current, done) {
     if (e.target === box) return close();
     const x = e.target.closest("[data-x]"); if (!x) return;
     if (x.dataset.x === "close") close();
+    if (x.dataset.x === "help") { const m = box.querySelector("[data-x-msg]"); m.className = "msg ok"; m.textContent = "❗ قراءة القادة: البوت يفتح نافذة الجيش في اللعبة ويقرأ كل قادتك ومستوى كل قائد، ثم يحفظهم لهذه الشخصية. يحدث ذلك تلقائياً بعد كل تبديل للشخصية، ومرة كل أسبوع، أو فوراً بزر «📥 قراءة قادتي من اللعبة» (دقيقة إلى دقيقتين). الصور تأتي من مجلد commanders في GitHub، والرقم فوق الصورة هو مستوى القائد."; return; }
     if (x.dataset.x === "none") { done(""); close(); }
     if (x.dataset.x === "read") {
       const id = stamp();
@@ -2726,6 +2815,7 @@ async function refreshStatus(btn) {
     renderCity(s.city);
     try { renderConduct(s.city); } catch (_) {}
     try { checkCharChange(s); checkWatched(s); astTick(s); } catch (_) {}
+    try { if (window.liveUpdate) liveUpdate(s); } catch (_) {}
     try { renderStats(s.city); renderChars(s.city); lastStatus = s; renderAccount(); renderPages(); renderMarches(s.city); rotNow = (s.city || {}).rotation || null; renderRotNow(); } catch (_) {}
     logLines = s.log || []; renderLog();
     recorded = s.recorded || []; renderActs();
@@ -2739,7 +2829,7 @@ async function loadSettings() {
     const f = await newestFile(CONTROL_FOLDER);
     if (f) {
       const d = JSON.parse(b64ToText(await download(f.id)));
-      settings = { running: d.running !== false, loop_minutes: d.loop_minutes || 60, tasks: Array.isArray(d.tasks) ? d.tasks : settings.tasks, schedule: d.schedule || settings.schedule, daily_pause: d.daily_pause || settings.daily_pause, freeze_until: d.freeze_until || null, presets: (d.presets && typeof d.presets === "object") ? d.presets : (settings.presets || {}), char_rotation: d.char_rotation || settings.char_rotation || { enabled: false, slots: [] } };
+      settings = { running: d.running !== false, loop_minutes: d.loop_minutes || 60, tasks: Array.isArray(d.tasks) ? d.tasks : settings.tasks, schedule: d.schedule || settings.schedule, daily_pause: d.daily_pause || settings.daily_pause, freeze_until: d.freeze_until || null, presets: (d.presets && typeof d.presets === "object") ? d.presets : (settings.presets || {}), char_rotation: d.char_rotation || settings.char_rotation || { enabled: false, slots: [] }, stream: (d.stream && typeof d.stream === "object") ? d.stream : (settings.stream || { enabled: true }) };
       lastShotRequest = d.shot_request || null;
     }
   } catch (e) { setMsg("m-send", errText(e), "err"); }
@@ -3203,7 +3293,7 @@ document.getElementById("cond-ic").innerHTML = gsvg("conduct", 46);
   const lo = document.getElementById("langs"); if (lo) new MutationObserver(syncLang).observe(lo, { attributes: true, subtree: true, attributeFilter: ["class"] }); syncLang();
 
   // v139: address pill = current page + bot status; tap = refresh status
-  const PG = { "v-home": "الرئيسية", "v-acts": "المهام", "v-sched": "الجدولة", "v-gains": "مكاسبي", "v-log": "سجل الأحداث", "v-account": "الحساب", "v-about": "نبذة", "v-subs": "الاشتراكات", "v-contact": "التواصل" };
+  const PG = { "v-home": "الرئيسية", "v-acts": "المهام", "v-sched": "الجدولة", "v-gains": "مكاسبي", "v-log": "سجل الأحداث", "v-account": "الحساب", "v-about": "نبذة", "v-subs": "الاشتراكات", "v-contact": "التواصل", "v-live": "البث المباشر" };
   const pgEl = document.getElementById("kbar-page"), urlB = document.getElementById("kbar-url"), dot = document.getElementById("kbar-dot");
   const syncPage = () => { const v = document.querySelector(".view.show"); if (pgEl) pgEl.textContent = PG[v && v.id] || "الرئيسية"; };
   document.querySelectorAll(".view").forEach(v => new MutationObserver(syncPage).observe(v, { attributes: true, attributeFilter: ["class"] })); syncPage();
@@ -3214,7 +3304,7 @@ document.getElementById("cond-ic").innerHTML = gsvg("conduct", 46);
   const mb = document.getElementById("kbar-menu"), mp = document.getElementById("kbar-mpop");
   mb.addEventListener("click", e => { e.stopPropagation(); toggle(mb, mp); });
   mp.querySelectorAll("[data-go]").forEach(b => b.addEventListener("click", () => { closeAll(); const v = b.dataset.go;
-    if (v === "settings") document.getElementById("b-settings").click(); else if (v === "logout") { if (window.kbLogout) window.kbLogout(); } else goView(v); }));
+    if (v === "settings") document.getElementById("b-settings").click(); else if (v === "assistant") { if (window.astOpen) window.astOpen(); } else if (v === "logout") { if (window.kbLogout) window.kbLogout(); } else goView(v); }));
 })();
 </script>
 <script>
@@ -3631,7 +3721,7 @@ document.getElementById("cond-ic").innerHTML = gsvg("conduct", 46);
 })();
 </script>
 
-<button type="button" class="ast-fab" id="ast-fab" aria-label="المساعد" title="المساعد">🤖<span class="dot"></span></button>
+<button type="button" class="ast-fab" id="ast-fab" aria-label="المساعد" title="المساعد" hidden>🤖<span class="dot"></span></button>
 <section class="ast" id="ast" aria-label="المساعد">
   <div class="ast-h"><b>🤖 المساعد</b><button type="button" id="ast-info" title="ما هذا؟">❗</button><button type="button" id="ast-x" aria-label="إغلاق">✕</button></div>
   <div class="ast-q" id="ast-q"><button type="button">👤 تحديث اسم المستخدم والملف</button><button type="button">🧑‍🤝‍🧑 تحديث الشخصيات</button><button type="button">⚔️ تحديث القادة</button><button type="button">💰 تحديث الموارد</button><button type="button">🏹 تحديث المسيرات</button><button type="button">📸 صورة من اللعبة الآن</button><button type="button" class="wide">⚡ تحديث الكل (الملف، الموارد، المسيرات، الشخصيات)</button><a class="ast-live" href="https://vdo.ninja/?view=kbb294c813b7&amp;password=ct1q-ZeP&amp;label=Kingbot" target="_blank" rel="noopener">📺 فتح البث المباشر للعبة</a><button type="button" class="wide">⚙️ تغيير رابط البث</button></div>
@@ -3667,6 +3757,8 @@ document.getElementById("cond-ic").innerHTML = gsvg("conduct", 46);
       if (target === "settings") {
         const sb = document.getElementById("b-settings");
         if (sb) sb.click();
+      } else if (target === "assistant") {
+        /* handled by the top-bar script */
       } else if (target === "logout") {
         if (typeof window.kbLogout === "function") window.kbLogout();
       } else {
@@ -3717,4 +3809,76 @@ document.getElementById("cond-ic").innerHTML = gsvg("conduct", 46);
 })();
 </script>
 
+<script>
+/* ---------- v192: live stream (OBS -> VDO.Ninja, run by stream_bot.py on the server) ---------- */
+(function kbLive() {
+  const VIEW_DEF = "https://vdo.ninja/?view=kbb294c813b7&password=ct1q-ZeP&label=Kingbot";
+  const $l = id => document.getElementById(id);
+  const viewUrl = () => { let u = VIEW_DEF; try { u = localStorage.getItem("kb_stream") || VIEW_DEF; } catch (_) {} return u; };
+  const embedUrl = () => viewUrl() + (viewUrl().includes("?") ? "&" : "?") + "noaudio&cleanoutput&autoplay";
+  const wrap = document.createElement("div"); wrap.className = "lv-wrap"; wrap.id = "lv-player";
+  wrap.innerHTML = '<div class="lv-off" id="lv-off"><div><b>📴</b><span id="lv-why">البث متوقف</span></div></div>' +
+    '<button type="button" class="lv-fs" id="lv-fs" title="ملء الشاشة">⛶</button>' +
+    '<div class="lv-bar"><span class="lv-badge on" style="pointer-events:none"><i></i>LIVE</span><span class="t" id="lv-task">—</span><span id="lv-since"></span></div>';
+  let frame = null, active = false, wantOn = true, lastS = null, fastT = null;
+  const TASKS = { gather: "جمع الموارد", train: "تدريب القوات", research: "البحث", heal: "علاج الجرحى", build_upgrade: "البناء والترقية",
+    collect_city: "جمع موارد المدينة", alliance_help: "مساعدة التحالف", join_rally: "الانضمام للحشود", rally_fort: "حشد الحصون",
+    attack_barbarians: "مهاجمة البرابرة", scout: "الاستكشاف", tavern: "الحانة", materials: "إنتاج المواد", daily_objectives: "المهام اليومية",
+    read_mail: "قراءة البريد", events: "الفعاليات", alliance_gifts: "هدايا التحالف", alliance_tech: "تقنية التحالف", gather_gems: "جمع الجواهر" };
+  const taskText = t => { if (!t) return "—"; const m = String(t).match(/^(\w+)\s*(.*)$/); return m && TASKS[m[1]] ? TASKS[m[1]] + (m[2] ? " (" + m[2] + ")" : "") : String(t); };
+  const STATE_AR = { working: "يعمل الآن", waiting: "ينتظر الجولة التالية", paused: "موقوف", stopped: "متوقف", no_screen: "الشاشة مطفأة" };
+  function place() {
+    const v = document.querySelector(".view.show"); const slot = v && v.id === "v-live" ? $l("lv-slot-view") : $l("lv-slot-home");
+    if (slot && wrap.parentNode !== slot) slot.appendChild(wrap);
+    const lv = v && v.id === "v-live";
+    clearInterval(fastT); if (lv && !document.hidden) fastT = setInterval(() => { try { refreshStatus(); } catch (_) {} }, 15000);
+  }
+  function setActive(on, why) {
+    active = on; wrap.classList.toggle("on", on);
+    document.querySelectorAll('[data-lv="badge"]').forEach(b => { b.classList.toggle("on", on); b.lastElementChild.textContent = on ? "مباشر الآن" : "متوقف"; });
+    $l("kbar-live").classList.toggle("on", on);
+    $l("lv-off").hidden = on; $l("lv-why").textContent = why || "البث متوقف";
+    if (on && !frame) { frame = document.createElement("iframe"); frame.allow = "autoplay; fullscreen"; frame.title = "بث اللعبة"; frame.src = embedUrl(); wrap.insertBefore(frame, wrap.firstChild); }
+    if (!on && frame) { frame.remove(); frame = null; }
+  }
+  const WHY = { "the bot is paused": "البوت موقوف من لوحة التحكم، فالبث متوقف.", "the bot is frozen": "البوت مجمّد، فالبث متوقف.",
+    "switched off in the dashboard": "أوقفت البث من هنا. اضغط «تشغيل البث».", "the bot is not running": "البوت لا يعمل على السيرفر الآن.",
+    "no data from the bot yet": "في انتظار أول حالة من البوت…" };
+  window.liveUpdate = function (s) {
+    lastS = s || {};
+    const st = lastS.stream, sd = (typeof settings === "object" && settings) || {};
+    wantOn = !(sd.stream && sd.stream.enabled === false);
+    const age = (Date.now() - new Date(lastS.updated).getTime()) / 60000;
+    let on, why;
+    if (st && typeof st === "object") { on = !!st.active && age < 10; why = WHY[st.reason] || st.reason; if (!on && st.active && age >= 10) why = "لا توجد حالة جديدة من البوت منذ " + Math.round(age) + " دقيقة."; }
+    else { on = wantOn && sd.running !== false && /working|waiting/.test(lastS.state || "") && age < 10; why = on ? "" : "البث يبدأ تلقائياً عندما يعمل البوت."; }
+    if (!wantOn) { on = false; why = WHY["switched off in the dashboard"]; }
+    setActive(on, why);
+    $l("lv-task").innerHTML = ""; const b = document.createElement("b"); b.textContent = (STATE_AR[lastS.state] || "") + (lastS.state === "working" ? " · " : "");
+    $l("lv-task").append(b, document.createTextNode(lastS.state === "working" ? taskText(lastS.task) : ""));
+    $l("lv-since").textContent = st && st.since && on ? "منذ " + new Date(st.since).toLocaleTimeString("ar-OM", { hour: "2-digit", minute: "2-digit" }) : "";
+    const tg = $l("lv-toggle"); tg.textContent = wantOn ? "⏹ إيقاف البث" : "▶ تشغيل البث"; tg.classList.toggle("stop", wantOn);
+    $l("lv-note").textContent = st ? "" : "ملاحظة: البوت على السيرفر لم يرسل حالة البث بعد (يحتاج الإصدار 192 أو أحدث).";
+  };
+  function init() {
+    const home = $l("lv-home"), view = $l("v-live"); if (!home || !view) return;
+    $l("lv-slot-home").appendChild(wrap); setActive(false, "في انتظار حالة البوت…");
+    document.querySelectorAll(".view").forEach(v => new MutationObserver(place).observe(v, { attributes: true, attributeFilter: ["class"] }));
+    document.addEventListener("visibilitychange", place); place();
+    const go = () => { const r = document.querySelector('.rail [data-v="v-live"]'); if (r) r.click(); else if (typeof showView === "function") showView("v-live"); else { document.querySelectorAll(".view").forEach(v => v.classList.toggle("show", v.id === "v-live")); } try { history.replaceState(null, "", "#live"); } catch (_) {} window.scrollTo({ top: 0, behavior: "smooth" }); };
+    $l("kbar-live").addEventListener("click", e => { e.stopPropagation(); go(); });
+    home.querySelector('[data-lv="open"]').addEventListener("click", go);
+    $l("lv-fs").addEventListener("click", () => { try { if (document.fullscreenElement) document.exitFullscreen(); else (wrap.requestFullscreen || wrap.webkitRequestFullscreen).call(wrap); } catch (_) {} });
+    $l("lv-ext").addEventListener("click", () => window.open(viewUrl(), "_blank", "noopener"));
+    $l("lv-info").addEventListener("click", () => setMsg("m-live", "❗ البث المباشر يعرض شاشة اللعبة من السيرفر. يبدأ تلقائياً عندما يعمل البوت، ويتوقف وحده عند الإيقاف أو التجميد. زر «إيقاف البث» يطفئ البث فقط والبوت يكمل عمله. الشريط السفلي يعرض المهمة الحالية، و⛶ لملء الشاشة. البث يمر عبر OBS ثم VDO.Ninja، ولا يستهلك حدود GitHub.", "ok"));
+    $l("lv-toggle").addEventListener("click", async () => {
+      const next = !wantOn; settings.stream = Object.assign({}, settings.stream || {}, { enabled: next });
+      const ok = await sendSettings({ stream: settings.stream }, "m-live", $l("lv-toggle"));
+      if (ok) { wantOn = next; setMsg("m-live", next ? "طلبت تشغيل البث. يبدأ خلال دقيقة تقريباً." : "طلبت إيقاف البث. البوت يكمل عمله.", "ok"); if (lastS) liveUpdate(lastS); }
+    });
+    if (location.hash === "#live") go();
+  }
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init); else init();
+})();
+</script>
 </body></html>
