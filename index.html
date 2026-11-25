@@ -1752,7 +1752,7 @@ window.addEventListener("error", function(e) {
         <div class="panel-head"><h2 id="gd-h">📘 الدليل <button type="button" class="info-btn" data-info="guide" aria-label="شرح">❗</button></h2></div>
         <details class="gd-toc" open><summary>📑 في هذه الصفحة</summary>
           <nav class="gd-jump">
-            <a href="#gd-start">البداية</a><a href="#gd-panel">لوحتك</a><a href="#gd-adv">ميزات متقدمة</a><a href="#gd-live">الشاشة المباشرة</a><a href="#gd-sched">الجدولة الذكية</a><a href="#gd-gains">مكاسبي</a><a href="#gd-log">سجل الأحداث</a><a href="#gd-acc">الحساب والإشعارات</a><a href="#gd-habits">عادات جيدة</a><a href="#gd-support">الدعم</a><a href="#gd-discord">ديسكورد</a><a href="#gd-faq">الأسئلة</a>
+            <a href="#gd-start">البداية</a><a href="#gd-panel">لوحتك</a><a href="#gd-adv">ميزات متقدمة</a><a href="#gd-bset">إعدادات البوت</a><a href="#gd-live">الشاشة المباشرة</a><a href="#gd-sched">الجدولة الذكية</a><a href="#gd-gains">مكاسبي</a><a href="#gd-log">سجل الأحداث</a><a href="#gd-acc">الحساب والإشعارات</a><a href="#gd-habits">عادات جيدة</a><a href="#gd-support">الدعم</a><a href="#gd-discord">ديسكورد</a><a href="#gd-faq">الأسئلة</a>
           </nav>
         </details>
 
@@ -1833,6 +1833,24 @@ window.addEventListener("error", function(e) {
           <li>إذا خرج الحساب من اللعبة لاحقاً (دخول من جهاز آخر مثلاً) يظهر تنبيه وزر <span class="gd-pill">سجّل الدخول إلى حساب اللعبة</span> من جديد.</li>
         </ul>
         <div class="gd-call warn">⌨️ <b>تنبيه لوحة المفاتيح:</b> بعض طرق الإدخال في الجهاز الافتراضي تكتب فقط الحروف الإنجليزية والأرقام والرموز الشائعة. إذا كانت كلمة مرورك تحتوي رموزاً خاصة أو حروفاً غير إنجليزية (عربية، إيموجي، أحرف بعلامات) فاستعمل الدخول <span class="gd-pill">برمز</span> بدلاً من كلمة المرور.</div>
+
+        <!-- GUIDE-10: Bot Settings -->
+        <h3 class="gd-sec" id="gd-bset">⚙️ إعدادات البوت (المهام)</h3>
+        <div class="gd-mock" aria-label="مخطط إعدادات البوت">
+          <div class="gm-box"><span class="gd-n">1</span>💾 الإعدادات المخصصة · <em>حفظ الأنشطة الحالية بهذا الاسم</em> · <em>القوالب</em></div>
+          <div class="gm-box"><span class="gd-n">2</span>🔍 ابحث عن نشاط… · <em>الكل</em><em>المفعّلة</em><em>المفضلة</em><em>المسجّلة</em> · <s>21 من 27 مفعّلة</s></div>
+          <div class="gm-row"><div class="gm-box"><span class="gd-n">3</span>📂 المجموعات · ⭐ · 🔘 مفتاح لكل نشاط</div>
+            <div class="gm-box"><span class="gd-n">4</span>🎛️ خيارات النشاط · 🎖️ القادة · 🔢 التشكيلة</div></div>
+          <div class="gm-box"><span class="gd-n">5</span><em class="go">حفظ وإرسال</em> · ✅ تم الإرسال</div>
+        </div>
+        <ol class="gd-points">
+          <li><span class="gd-n">1</span><b>الإعدادات المخصصة:</b> احفظ مجموعة الأنشطة الحالية باسم (مثل «حشد البربر») وارجع لها بضغطة، أو ابدأ من قالب جاهز. للعودة للوضع الأصلي اختر القالب الافتراضي ثم احفظ.</li>
+          <li><span class="gd-n">2</span><b>البحث والتصفية:</b> اكتب اسم النشاط، واستعمل <span class="gd-pill">الكل</span> / <span class="gd-pill">المفعّلة</span> / <span class="gd-pill">المفضلة</span> / <span class="gd-pill">المسجّلة</span>. العدّاد يعرض «X من Y مفعّلة».</li>
+          <li><span class="gd-n">3</span><b>المجموعات والمفاتيح:</b> الأنشطة مقسّمة لمجموعات (الجمع، القتال، المدينة، التحالف…) وكل نشاط له مفتاح تشغيل ونجمة للمفضلة.</li>
+          <li><span class="gd-n">4</span><b>خيارات النشاط:</b> اضغط النشاط لفتح خياراته (القيم الافتراضية مكتوبة بجانبها). رقم <b>التشكيلة الحمراء</b> يحدد الجيش المحفوظ في اللعبة، واختيار <b>القائد</b> يتم بالصور (فارغ = التشكيلة كما هي). زر <span class="gd-pill">📥 قراءة قادتي من اللعبة</span> يجلب قادتك ومستوياتهم مرة واحدة ثم أسبوعياً. لكل مهمة قادة مختلفون من لوحة <span class="gd-pill">🎖️ قادة كل مهمة</span>. لكل شخصية إعداداتها عبر <span class="gd-pill">تبديل الشخصيات</span>.</li>
+          <li><span class="gd-n">5</span><b>الحفظ:</b> لا يتغير شيء على السيرفر حتى تضغط <span class="gd-pill">حفظ وإرسال</span>؛ تظهر رسالة «تم الإرسال» ويصل للبوت خلال دقيقة. إذا كان البوت غير متصل تنتظر أوامرك حتى يعود. لإلغاء تعديلات لم تُرسل أعد تحميل الصفحة.</li>
+        </ol>
+        <div class="gd-call warn">💸 <b>راجع قبل التفعيل:</b> بعض الأنشطة تستهلك موارد أو مسرّعات أو عناصر (شراء التاجر الغامض، مسرّعات البحث والتدريب، عناصر نقاط الحركة، التبرعات). البوت <b>لا يصرف الجواهر أبداً</b> ويرفض أي نافذة جواهر، لكن اقرأ خيارات كل نشاط ❗ قبل تشغيله.</div>
 
         <!-- GUIDE-09: Live Screen -->
         <h3 class="gd-sec" id="gd-live">📺 الشاشة المباشرة (Live)</h3>
