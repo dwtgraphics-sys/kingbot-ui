@@ -248,6 +248,13 @@ body.nofx .bg canvas, body.nofx .fog, body.nofx .bg-glow { display: none; }
 .nt-list li.nt .t { opacity: .7; font-size: 12px; white-space: nowrap; }
 .nt-today { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
 .nt-today span, .gn-tot span { padding: 6px 10px; border-radius: 8px; background: rgba(255,255,255,.06); font-size: 13px; }
+.gn-chars{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}.gn-chars button{white-space:nowrap}
+.gn-kpi{margin:8px 0}.gn-kpi-h{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:6px}
+.gn-kpi-c,.gn-did-c{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.gn-kpi-c div,.gn-did-c div{padding:10px 12px;border-radius:12px;background:#ffffff0a;border:1px solid #ffffff14;display:flex;flex-direction:column;gap:2px;min-width:0}
+.gn-kpi-c small,.gn-did-c small{opacity:.75;font-size:12px}.gn-kpi-c b,.gn-did-c b{font-size:20px}.gn-kpi-c em,.gn-did-c em{font-style:normal;font-size:11px;opacity:.7}
+.gn-did{margin:12px 0}.gn-did-h{font-size:15px;margin:0 0 8px}.gn-did-h small{opacity:.7;font-weight:400}.gn-did-c span{font-size:20px}
+@media (max-width:640px){.gn-kpi-c,.gn-did-c{grid-template-columns:repeat(2,minmax(0,1fr))}}
 .gn-tot { display: flex; flex-wrap: wrap; gap: 8px; margin: 6px 0 12px; }
 .gn-chart svg { width: 100%; height: 220px; display: block; }
 .gn-chart .bar { fill: #e0a93b; } .gn-chart .bar:hover { fill: #ffd27a; }
@@ -1786,8 +1793,11 @@ window.addEventListener("error", function(e) {
           </div>
           <div class="seg gn-rng" role="group" aria-label="الفترة" id="gn-rng"><button type="button" data-d="1">اليوم</button><button type="button" data-d="7">7 أيام</button><button type="button" class="on" data-d="30">30 يوم</button></div>
         </div>
+        <div class="seg gn-chars" role="group" aria-label="الشخصية" id="gn-chars" hidden></div>
+        <div class="gn-kpi" id="gn-kpi"></div>
         <div class="gn-tot" id="gn-tot"><span>طعام (30 يوم): <b>315.8M</b></span><span>خشب (30 يوم): <b>23.7M</b></span><span>حجر (30 يوم): <b>17.7M</b></span><span>ذهب (30 يوم): <b>12.0M</b></span><span>جواهر (30 يوم): <b>384</b></span></div>
         <div class="gn-met" id="gn-met"></div><div class="gn-chart" id="gn-chart"><svg viewBox="0 0 600 220" role="img" aria-label="مكاسب طعام اليومية"><rect class="bar" x="53.8" y="197.3" width="40.0" height="2.7" rx="2"><title>2026-11-19: 3,000,000</title></rect><text x="73.8" y="214" text-anchor="middle">11-19</text><rect class="bar" x="149.5" y="14.0" width="40.0" height="186.0" rx="2"><title>2026-11-20: 204,700,000</title></rect><text x="169.5" y="214" text-anchor="middle">11-20</text><rect class="bar" x="245.2" y="109.7" width="40.0" height="90.3" rx="2"><title>2026-11-21: 99,400,000</title></rect><text x="265.2" y="214" text-anchor="middle">11-21</text><rect class="bar" x="340.8" y="198.0" width="40.0" height="2.0" rx="2"><title>2026-11-22: 2,200,000</title></rect><text x="360.8" y="214" text-anchor="middle">11-22</text><rect class="bar" x="436.5" y="194.6" width="40.0" height="5.4" rx="2"><title>2026-11-23: 5,900,000</title></rect><text x="456.5" y="214" text-anchor="middle">11-23</text><rect class="bar" x="532.2" y="198.0" width="40.0" height="2.0" rx="2"><title>2026-11-24: 600,000</title></rect><text x="552.2" y="214" text-anchor="middle">11-24</text><text x="2" y="12">204.7M</text></svg></div>
+        <div class="gn-did" id="gn-did"></div>
         <div class="gn-table-wrap"><table class="gn-table" id="gn-table"><tbody><tr><th>اليوم</th><th>طعام</th><th>خشب</th><th>حجر</th><th>ذهب</th><th>جواهر</th><th>برابرة</th><th>حصون</th></tr><tr><td>2026-11-24</td><td>600,000</td><td>700,000</td><td>500,000</td><td>300,000</td><td>0</td><td>0</td><td>0</td></tr><tr><td>2026-11-23</td><td>5,900,000</td><td>4,800,000</td><td>4,500,000</td><td>3,000,000</td><td>0</td><td>0</td><td>0</td></tr><tr><td>2026-11-22</td><td>2,200,000</td><td>2,700,000</td><td>1,800,000</td><td>1,300,000</td><td>265</td><td>0</td><td>0</td></tr><tr><td>2026-11-21</td><td>99,400,000</td><td>1,200,000</td><td>700,000</td><td>700,000</td><td>11</td><td>24</td><td>0</td></tr><tr><td>2026-11-20</td><td>204,700,000</td><td>13,700,000</td><td>8,600,000</td><td>5,800,000</td><td>108</td><td>61</td><td>16</td></tr><tr><td>2026-11-19</td><td>3,000,000</td><td>600,000</td><td>1,600,000</td><td>900,000</td><td>0</td><td>5</td><td>0</td></tr></tbody></table></div>
       </section>
     </div>
@@ -2451,6 +2461,7 @@ if (["home", "acts", "sched", "log", "gains", "about", "subs", "contact"].includ
 const GN_NAMES = { food: "طعام", wood: "خشب", stone: "حجر", gold: "ذهب", gems: "جواهر" };
 const GN_ICO = { food: "🌾", wood: "🪵", stone: "🪨", gold: "🪙", gems: "💎" }, GN_COL = { food: "#e0a93b", wood: "#b07a45", stone: "#9aa3ad", gold: "#f3d35a", gems: "#e2446c" };   // EARN-02
 let gnRange = 30;
+let gnAll = [], gnByChar = {}, gnChar = "", gnKpiDays = 30;   // UX-04
 let gnHist = [], gnRes = "food", ntAll = [], ntKind = "", ntSeen = 0;
 try { ntSeen = +(localStorage.getItem("kb_nt_seen") || 0); } catch (_) {}
 const fmtN = n => { n = +n || 0; return n >= 1e9 ? (n / 1e9).toFixed(2) + "B" : n >= 1e6 ? (n / 1e6).toFixed(1) + "M" : n >= 1e3 ? (n / 1e3).toFixed(1) + "K" : String(Math.round(n)); };
@@ -2459,17 +2470,42 @@ const gnShort = n => { n = +n || 0; const a = Math.abs(n), f = (v, u) => (v >= 1
   return a >= 1e9 ? f(n / 1e9, "B") : a >= 1e6 ? f(n / 1e6, "M") : a >= 1e3 ? f(n / 1e3, "K") : String(Math.round(n)); };
 document.addEventListener("click", e => { const td = e.target.closest && e.target.closest("#gn-table td[data-full]"); if (!td) return;
   const sh = td.dataset.short || td.textContent; if (td.dataset.short) { td.textContent = td.dataset.short; delete td.dataset.short; } else { td.dataset.short = sh; td.textContent = td.dataset.full; } });
+// UX-04: character switcher, 4 summary cards (14 / 30 days) and "What the bot did" (last 30 days + today)
+function gnUx04() {
+  const cw = document.getElementById("gn-chars"), kp = document.getElementById("gn-kpi"), dd = document.getElementById("gn-did");
+  if (!cw || !kp || !dd) return;
+  const names = Object.keys(gnByChar || {});
+  cw.hidden = !names.length;
+  cw.innerHTML = '<button type="button" data-c=""' + (gnChar ? "" : ' class="on"') + '>👥 كل الشخصيات</button>' +
+    names.map(n => '<button type="button" data-c="' + esc(n) + '"' + (gnChar === n ? ' class="on"' : "") + '>👤 ' + esc(n) + '</button>').join("");
+  const val = d => gnRes === "all" ? ["food", "wood", "stone", "gold"].reduce((a, k) => a + (+d[k] || 0), 0) : (+d[gnRes] || 0);
+  const h = gnHist.slice(-gnKpiDays), act = h.filter(d => val(d) > 0), total = h.reduce((a, d) => a + val(d), 0);
+  const best = h.reduce((b, d) => (val(d) > (b ? val(b) : 0) ? d : b), null);
+  const rn = gnRes === "all" ? "📊 الموارد الأربعة" : (GN_ICO[gnRes] || "") + " " + (GN_NAMES[gnRes] || gnRes);
+  kp.innerHTML = '<div class="gn-kpi-h"><b>ملخص ' + rn + '</b><span class="seg" role="group" aria-label="فترة الملخص">' +
+    [14, 30].map(n => '<button type="button" data-k="' + n + '"' + (gnKpiDays === n ? ' class="on"' : "") + '>' + n + ' يوم</button>').join("") +
+    '</span> <button type="button" class="info-btn" data-ux="gnkpi" aria-label="شرح">❗</button></div>' +
+    '<div class="gn-kpi-c"><div><small>الإجمالي</small><b>' + fmtN(total) + '</b></div>' +
+    '<div><small>المتوسط لكل يوم نشط</small><b>' + fmtN(act.length ? Math.round(total / act.length) : 0) + '</b></div>' +
+    '<div><small>أفضل يوم</small><b>' + (best ? fmtN(val(best)) : "—") + '</b><em>' + (best ? esc(best.day || "") : "") + '</em></div>' +
+    '<div><small>الأيام النشطة</small><b>' + act.length + ' / ' + h.length + '</b></div></div>';
+  const last30 = gnHist.slice(-30), today = gnHist[gnHist.length - 1] || {};
+  const sum = k => last30.reduce((a, d) => a + (+d[k] || 0), 0);
+  const DID = [["barb", "⚔️", "برابرة هُزموا"], ["gem_mines", "💎", "مناجم جواهر جُمعت"], ["rally", "🏰", "حشود حصون بدأها"], ["rally_join", "🚩", "حشود انضم إليها"]];
+  dd.innerHTML = '<h3 class="gn-did-h">🤖 ماذا فعل البوت <small>(آخر 30 يوماً + اليوم)</small> <button type="button" class="info-btn" data-ux="gndid" aria-label="شرح">❗</button></h3><div class="gn-did-c">' +
+    DID.map(([k, i, n]) => '<div><span>' + i + '</span><b>' + fmtN(sum(k)) + '</b><small>' + n + '</small><em>اليوم: ' + fmtN(+today[k] || 0) + '</em></div>').join("") + '</div>';
+}
 function renderGains() {
   const tot = document.getElementById("gn-tot"), ch = document.getElementById("gn-chart"), tb = document.getElementById("gn-table");
   if (!tot) return;
   const h = gnHist.slice(-gnRange);
-  if (!h.length) { tot.innerHTML = ""; tb.innerHTML = ""; return; }
+  if (!h.length) { tot.innerHTML = ""; tb.innerHTML = ""; try { gnUx04(); } catch (_) {} return; }
   const rl = gnRange === 1 ? "اليوم" : gnRange + " يوم";
   const lastD = gnHist[gnHist.length - 1] || {}, prevD = gnHist[gnHist.length - 2] || null;   // EARN-03: day-over-day badge
   const ddb = k => { if (!prevD) return ""; const a = +lastD[k] || 0, b = +prevD[k] || 0; if (!b) return ""; const p = Math.round((a - b) / b * 100);
     return ' <em class="gn-dd ' + (p >= 0 ? "up" : "dn") + '" title="اليوم مقارنة بأمس">' + (p >= 0 ? "+" : "") + p + "%</em>"; };
   tot.innerHTML = Object.keys(GN_NAMES).map(k => "<span>" + GN_ICO[k] + " " + GN_NAMES[k] + " (" + rl + "): <b>" + fmtN(h.reduce((a, d) => a + (+d[k] || 0), 0)) + "</b>" + ddb(k) + "</span>").join("");
-  gnMetrics(h);
+  gnMetrics(h); try { gnUx04(); } catch (_) {}
   const W = 600, H = 200, pad = 26;
   if (gnRes === "all") {   // EARN-02: all four resources side by side per day (gems have their own tab - too small to compare)
     const KS = ["food", "wood", "stone", "gold"], mx = Math.max(1, ...h.flatMap(d => KS.map(k => +d[k] || 0))), bw = (W - pad) / h.length, sw = Math.min(bw * .8, 48) / 4;
@@ -2494,6 +2530,11 @@ function renderGains() {
     h.slice().reverse().map(d => "<tr><td><span class=\"gn-dl\">" + d.day.slice(0, 5) + "</span>" + d.day.slice(5) + "</td>" + Object.keys(GN_NAMES).map(k => '<td title="' + (+d[k] || 0).toLocaleString("en-US") + '" data-full="' + (+d[k] || 0).toLocaleString("en-US") + '">' + gnShort(d[k]) + "</td>").join("") +
       "<td>" + (+d.barb || 0) + "</td><td>" + ((+d.rally || 0) + (+d.rally_join || 0)) + "</td></tr>").join("");
 }
+document.addEventListener("click", e => {   // UX-04: character pills, the 14 / 30 days switch and their ❗
+  const t = e.target.closest ? e.target : null; if (!t) return;
+  const c = t.closest("#gn-chars button"); if (c) { gnChar = c.dataset.c || ""; gnHist = (gnChar && Array.isArray(gnByChar[gnChar])) ? gnByChar[gnChar] : gnAll; renderGains(); return; }
+  const k = t.closest("#gn-kpi .seg button"); if (k) { gnKpiDays = +k.dataset.k || 30; gnUx04(); return; }
+  const i = t.closest("[data-ux]"); if (i && PAGE_INFO[i.dataset.ux]) showInfo({ name: PAGE_INFO[i.dataset.ux].name, hint: PAGE_INFO[i.dataset.ux].text }); });
 document.querySelectorAll("#gn-rng button").forEach(b => b.addEventListener("click", () => {   // EARN-02: Today / 7 / 30 days
   gnRange = +b.dataset.d; document.querySelectorAll("#gn-rng button").forEach(x => x.classList.toggle("on", x === b)); renderGains();
 }));
@@ -2566,6 +2607,8 @@ const PAGE_INFO = {
   march: { name: "أولوية المسيرات والمهلة", text: "«أقصى عدد جيوش في نفس الوقت»: البوت لا يرسل جيش جمع جديداً إذا كان هذا العدد في الخارج (فارغ أو 0 = حسب خانات اللعبة). «مهلة البحث»: إذا علِق البحث في الخريطة أطول من هذه الثواني (الافتراضي 15) يلغيه ويرجع للمدينة بدل أن يتجمد. «الترتيب»: أي نوع مسيرات يُنفَّذ أولاً في كل جولة — الحشود، الجمع، البرابرة — بالأسهم ▲▼." },
   ref: { name: "الإحالات", text: "رابط الإحالة فيه اسم حسابك في اللوحة. انسخه وأرسله لأصدقائك؛ عند تسجيلهم من الرابط يُسجَّل أنهم جاؤوا عن طريقك. المكافآت يحددها المشرف." },
   menu: { name: "القائمة", text: "القائمة الرئيسية: الدليل، الدعم، الإحالات، حسابي، ثم «أدوات مجانية» (تفتح بالضغط) وروابط المجتمع (ديسكورد، واتساب، تيليجرام، يوتيوب) — الروابط تُقرأ من إعدادات kingbot-syn فيتغيّر الرابط بدون تحديث الصفحة. تسجيل الخروج في الأسفل." },
+  gnkpi: { name: "ملخص المكاسب", text: "أربع بطاقات للمورد المختار (أو مجموع الموارد الأربعة في «الكل») خلال آخر 14 أو 30 يوماً: الإجمالي، المتوسط لكل يوم نشط (الأيام التي فيها مكسب فقط)، أفضل يوم مع تاريخه، وعدد الأيام النشطة. أزرار الشخصيات فوقها تعرض «كل الشخصيات» معاً أو شخصية واحدة — تظهر الشخصيات بعد أن يبدأ البوت بحفظ المكاسب لكل شخصية (من الإصدار 224)." },
+  gndid: { name: "ماذا فعل البوت", text: "عدّادات آخر 30 يوماً ومعها رقم اليوم: البرابرة الذين هزمهم البوت، الجيوش التي أرسلها لمناجم الجواهر، حشود الحصون التي بدأها، والحشود التي انضم إليها. تتبع الشخصية المختارة في الأعلى. اليوم يبدأ 00:00 UTC." },
   gains: { name: "مكاسبي", text: "الأرقام فوق الأعمدة = مكسب كل يوم مختصراً، والشارة الملونة بجانب كل مورد = تغيّر اليوم مقارنة بأمس. «كفاءة الجمع» = المكسب مقسوماً على ساعات عمل البوت الفعلية، و«الصافي بعد الإرسال» = المكسب ناقص ما أرسله البوت للحلفاء بالنقل. يسجل البوت كل يوم (بتوقيت غرينتش) ما تكسبه من طعام وخشب وحجر وذهب وجواهر لآخر 30 يوماً. يقرأ شريط الموارد بعد كل جولة ويحسب الزيادات فقط (الجمع من الخريطة، جمع فقاعات المدينة، المكافآت)، أما الصرف على التدريب والبناء فلا يُخصم. الجواهر تُحسب من الزيادة في رصيد الجواهر خلال اليوم. اختر المورد لعرض الرسم البياني، والجدول يعرض كل الموارد مع عدد البرابرة والحصون. الأرقام في الجدول مختصرة (3.3M = 3,300,000 و 130K = 130,000) — مرّر المؤشر أو اضغط على الرقم لرؤيته كاملاً، وعمود اليوم ثابت عند التمرير على الجوال. «الكل» يعرض الطعام والخشب والحجر والذهب جنباً إلى جنب لكل يوم (الجواهر لها تبويب خاص لأن أرقامها صغيرة)، وأزرار «اليوم / 7 أيام / 30 يوم» تغيّر الفترة في البطاقات والرسم والجدول معاً." },
   notes: { name: "الإشعارات", text: "تصل هنا إشعارات البوت مباشرة: هجوم على المدينة أو على جيوشك، رسائل البريد الخاصة، وملخص نهاية اليوم عند 00:00 بتوقيت غرينتش (مجموع الموارد والجواهر وعدد البرابرة والحصون). تصل نفس الإشعارات إلى بوت تيليجرام. تحتها سجل الأحداث الكامل. ما دامت اللوحة مفتوحة يظهر كل إشعار جديد كرسالة منبثقة، ومع «تنبيه بصوت واهتزاز» يصدر صوتاً عند الهجوم. تنبيهات المتصفح خارج اللوحة لا يسمح بها موقع claude.ai، لذلك تصل الإشعارات فوراً إلى تيليجرام @CrownKingsBot." }
 };
@@ -2601,7 +2644,9 @@ PAGE_INFO.chars = { name: "تبديل الشخصيات", text: "«قراءة ا�
 
 function renderStats(c) {
   c = c || {};
-  if (Array.isArray(c.history)) gnHist = c.history;
+  if (Array.isArray(c.history)) gnAll = c.history;   // UX-04: all characters + per-character history
+  if (c.history_by_char && typeof c.history_by_char === "object") gnByChar = c.history_by_char;
+  gnHist = (gnChar && Array.isArray(gnByChar[gnChar])) ? gnByChar[gnChar] : gnAll;
   if (Array.isArray(c.notes)) { pushBrowser(c.notes); ntAll = c.notes; }
   renderGains(); renderNotes();
 }
