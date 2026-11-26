@@ -3033,7 +3033,7 @@ const AST_CMDS = [
 ];
 const AST_ALL = ["read_profile", "read_resources", "read_marches", "read_characters"];
 let astQueue = [], astCur = null, astLog = [];
-const AST_SRV = { restart_game: "🔁 إعادة تشغيل اللعبة", restart_bot: "♻️ إعادة تشغيل البوت" };   // MOD-03
+const AST_SRV = { restart_game: "🔁 إعادة تشغيل اللعبة", restart_bot: "♻️ إعادة تشغيل البوت", capture_screen: "📸 التقاط صورة حية", safe_tap: "🛡️ زر آمن" };   // TASK-17   // MOD-03
 function astName(k) { const c = AST_CMDS.find(x => x.k === k); return c ? c.ico + " " + c.name : AST_SRV[k] || (k === "switch_character" ? "🔄 تبديل الشخصية" : k); }
 function astSay(text, who, st) { astLog.push({ text, who: who || "bot", st: st || "" }); if (astLog.length > 40) astLog.shift(); astDraw(); return astLog.length - 1; }
 function astDraw() {
@@ -3096,7 +3096,7 @@ async function astNext() {
   if (!steps.length) return astDraw();
   const id = stamp();
   steps.forEach(b => astLog[b.msg].st = "📨 جارٍ الإرسال…"); astDraw();
-  const ok = await sendSettings({ action_request: { id, do: "multi", steps: steps.map(b => ({ do: b.do, name: b.name, kingdom: b.kingdom })) } }, "m-send", null);
+  const ok = await sendSettings({ action_request: { id, do: "multi", steps: steps.map(b => ({ do: b.do, name: b.name, kingdom: b.kingdom, target: b.target })) } }, "m-send", null);
   if (!ok) { steps.forEach(b => { astLog[b.msg].st = "⚠️ لم يُرسل — حاول مرة أخرى"; astBtn(b.do, ""); }); return astDraw(); }
   astCur = { id, steps, at: Date.now() }; steps.forEach(b => astBtn(b.do, "wait")); if (steps.length > 1) astBtn("_all", "wait");
   steps.forEach(b => astLog[b.msg].st = "🛰️ أُرسل — ينفّذه البوت بين مهمتين"); astDraw();
@@ -5796,6 +5796,7 @@ pre.log .lx{display:inline-block;margin-inline-start:6px;padding:0 6px;border-ra
 .ast-grp{border:1px solid #ffffff1a;border-radius:14px;padding:8px;margin:6px 0;background:#ffffff06}
 .ast-grp>h4{margin:0 0 6px;font-size:13px;display:flex;align-items:center;gap:6px}
 .ast-grp>h4 i{font-style:normal;font-size:10px;opacity:.6;margin-inline-start:auto}
+.ast-live-act{margin-top:6px}.ast-live-act>div{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px}
 .ast-rc{margin:6px 0;padding:6px 8px;border-radius:12px;background:#0004;border:1px dashed #ffffff22;font-size:12px}
 .ast-rc b{display:block;font-size:12px;margin-bottom:4px}
 .ast-rc ol{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:3px}
@@ -5850,6 +5851,7 @@ pre.log .lx{display:inline-block;margin-inline-start:6px;padding:0 6px;border-ra
     cg: ["دليل القادة", "أداة مجانية: ابحث بالاسم، صفِّ حسب التخصص (مشاة، فرسان، رماة، قيادة، حشد، حامية، جمع) والندرة. اضغط القائد لترى ثنائيات مقترحة، ترتيب ترقية المهارات (مثل 5-5-1-1 = المهارة الأولى والثانية للمستوى 5 أولاً)، ودوره. الصور من مجلد قادتك فقط."],
     pwa: ["استخدمها كتطبيق", "ثبّت اللوحة كتطبيق (PWA): على Android/Chrome/Edge يظهر زر «تثبيت»، وعلى iPhone/iPad من Safari: مشاركة ← إضافة إلى الشاشة الرئيسية، وعلى Mac: ملف ← إضافة إلى Dock. تفتح بملء الشاشة وتبقى مسجّلاً."],
     push: ["إشعارات الجهاز", "فعّل الإشعارات على هذا الجهاز ثم اختر الأنواع: خرج من اللعبة، الخانة عالقة أو أُعيد تشغيلها، اقتراب نهاية الاشتراك، بريد تحذير من الغش، دخول لحساب اللعبة. الإشعار يصل ما دامت اللوحة أو تطبيقها مفتوحاً (ولو في الخلفية). «أرسل إشعاراً تجريبياً» للتأكد. تغيير كلمة المرور يلغي هذه الإشعارات وربط تيليجرام ويخرج الأجهزة الأخرى."],
+    tap: ["التحكم الآمن", "«📸 التقط الآن» يطلب صورة حية من اللعبة. الأزرار الآمنة فقط: رجوع، أغلق النوافذ (يعود للمدينة/الخريطة)، «لا» على نافذة الجواهر، والتبديل بين المدينة والخريطة. بعد كل زر يرفع البوت صورة تأكيد تظهر في «آخر صورة». لا توجد نقرة حرة على إحداثيات حتى لا يُضغط زر جواهر أو شراء أو «فوري» بالخطأ. البوت يرفض «رجوع» إذا لم تكن هناك نافذة مفتوحة (حتى لا تظهر رسالة الخروج من اللعبة). يحتاج الإصدار 228."],
     rc: ["آخر الأوامر", "آخر 5 أوامر أرسلتها من المساعد مع حالتها (✅ نجح، ⏳ بالانتظار، ⚠️ فشل) ووقتها. تُحفظ في هذا المتصفح."],
     bnav: ["شريط التنقل السفلي", "على الهاتف: 5 تبويبات ثابتة في الأسفل — خاناتي، مكاسبي، الإعدادات، الجدولة، الدليل — لاستعمال اللوحة بيد واحدة. السجل وحفظ وإرسال في الزر الصغير فوقه، والمساعد من القائمة."]
   };
@@ -6065,6 +6067,14 @@ pre.log .lx{display:inline-block;margin-inline-start:6px;padding:0 6px;border-ra
     ["_all", "read_resources", "read_marches", "read_queues", "read_commanders", "read_profile", "read_characters"].forEach(k => { const b = by(k); if (b) g1.appendChild(b); });
     [by("shot"), $id("ast-shot"), q.querySelector(".ast-lrow")].forEach(x => { if (x) g2.appendChild(x); });
     [...q.children].forEach(x => { if (x.tagName === "BUTTON" && /رابط البث/.test(x.textContent)) g2.appendChild(x); });
+    // TASK-17: live capture + safe buttons only (owner's choice: no free X,Y tap)
+    const lv = document.createElement("div"); lv.className = "ast-live-act";
+    lv.innerHTML = '<small>🎯 تحكم آمن ثم صورة تأكيد <button type="button" class="info-btn" data-x="tap" aria-label="شرح">❗</button></small><div></div>';
+    [["capture_screen", "", "📸 التقط الآن"], ["safe_tap", "back", "↩️ رجوع"], ["safe_tap", "close_popups", "✖️ أغلق النوافذ"], ["safe_tap", "gem_no", "💎 لا (نافذة جواهر)"], ["safe_tap", "city_map", "🗺️ المدينة / الخريطة"]].forEach(([d, t, n]) => {
+      const b = document.createElement("button"); b.type = "button"; b.textContent = n;
+      b.addEventListener("click", () => { astAdd([{ do: d, target: t || undefined, name: t ? n : undefined }]); const w = setInterval(() => { if (!astCur && !astQueue.length) { clearInterval(w); try { astShotLoad(true); } catch (_) {} } }, 3000); setTimeout(() => clearInterval(w), 300000); });
+      lv.querySelector("div").appendChild(b); });
+    g2.appendChild(lv);
     [...q.children].forEach(x => { if (!x.classList.contains("ast-grp")) g1.appendChild(x); });
     const srv = $id("ast-srv"); if (srv) { const inner = srv.querySelector("div"); if (inner) g3.appendChild(inner); const ib = srv.querySelector(".info-btn"); if (ib) g3.querySelector("h4").insertBefore(ib, g3.querySelector("h4 i")); srv.hidden = true; }
     const rcb = document.createElement("div"); rcb.className = "ast-rc"; rcb.id = "ast-rc"; rcb.innerHTML = '<b>🧾 آخر الأوامر (آخر 5) <button type="button" class="info-btn" data-x="rc" aria-label="شرح">❗</button></b><ol></ol>';
