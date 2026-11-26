@@ -2206,13 +2206,34 @@ window.addEventListener("error", function(e) {
         <p class="spd-note">الثنائيات وترتيب المهارات توصيات شائعة بين اللاعبين — تختلف حسب مستوى قادتك وما تملكه من معدات. القادة الأحدث يظهرون بعد إضافة صورهم إلى مجلد القادة.</p>
       </section>
     </div>
-    <div class="view tool-view" id="v-tool-events">
-      <section class="panel"><div class="panel-head"><h2>📅 تقويم الأحداث</h2><span class="slug">أداة مجانية</span></div>
-        <p class="gd-p">مواعيد الأحداث المتكررة بتوقيت UTC مع نصائح الموارد.</p><div class="tool-soon">🛠️ قيد البناء — تظهر هنا قريباً.</div></section>
+    <div class="view tool-view" id="v-tool-events">   <!-- TOOLS-06 -->
+      <section class="panel evc"><div class="panel-head"><h2>📅 تقويم الأحداث <button type="button" class="info-btn" data-x="evc" aria-label="شرح">❗</button></h2><span class="slug">أداة مجانية</span></div>
+        <p class="gd-p">الأحداث المتكررة بتوقيت UTC مع نصائح الموارد. لا يوجد جدول واحد ثابت لكل الممالك، لذلك أدخل تاريخ بداية آخر مرة رأيت فيها الحدث في لعبتك، فتحسب الأداة الموعد القادم المتوقع والعد التنازلي.</p>
+        <p class="evc-now" id="evc-now"></p>
+        <div class="cg-f" id="evc-cat"></div>
+        <div id="evc-list"></div>
+        <p class="spd-note">التوقعات تقريبية: Lilith تغيّر الجدول حسب عمر المملكة والموسم. التقويم داخل اللعبة (الأحداث ← التقويم) هو المرجع النهائي. تُحفظ تواريخك في هذا المتصفح فقط.</p>
+      </section>
     </div>
-    <div class="view tool-view" id="v-tool-crystal">
-      <section class="panel"><div class="panel-head"><h2>💠 تقنية الكريستال</h2><span class="slug">أداة مجانية</span></div>
-        <p class="gd-p">حاسبة تكلفة ووقت أبحاث الكريستال الموسمية.</p><div class="tool-soon">🛠️ قيد البناء — تظهر هنا قريباً.</div></section>
+    <div class="view tool-view" id="v-tool-crystal">   <!-- TOOLS-07 -->
+      <section class="panel crc"><div class="panel-head"><h2>💠 حاسبة تقنية الكريستال <button type="button" class="info-btn" data-x="crc" aria-label="شرح">❗</button></h2><span class="slug">أداة مجانية</span></div>
+        <p class="gd-p">خطط لأبحاث الكريستال الموسمية: أدخل تكلفة ووقت كل مستوى كما تظهر في مركز أبحاث الكريستال، ونسب الخصم والسرعة، فتحسب الأداة الكريستال المطلوب بعد الخصم ووقت البحث الكلي ونقاط الموسم.</p>
+        <div class="mc-row crc-in">
+          <label>اسم التقنية <input type="text" id="crc-name" placeholder="مثلاً: Crystal Infantry" dir="auto"></label>
+          <label>المستوى الحالي <input type="number" id="crc-from" min="0" max="30" value="0"></label>
+          <label>المستوى المستهدف <input type="number" id="crc-to" min="1" max="30" value="5"></label>
+        </div>
+        <div class="mc-row crc-in">
+          <label>خصم الكريستال % (مركز الأبحاث/التحالف) <input type="number" id="crc-disc" min="0" max="90" value="0"></label>
+          <label>سرعة البحث % <input type="number" id="crc-speed" min="0" max="300" value="0"></label>
+          <label>نقاط الموسم لكل 1 كريستال <input type="number" id="crc-pts" min="0" step="any" value="0"></label>
+        </div>
+        <div class="crc-tbl" id="crc-rows"></div>
+        <div class="crc-sum" id="crc-sum"></div>
+        <div class="row"><button type="button" class="btn primary" id="crc-save">💾 حفظ هذه التقنية</button><button type="button" class="btn" id="crc-clear">مسح</button></div>
+        <div id="crc-saved"></div>
+        <p class="spd-note">تكاليف تقنيات الكريستال تتغير مع نسخ الموسم (KvK)، لذلك لا تضع الأداة أرقاماً من عندها: انسخ تكلفة كل مستوى ووقته من اللعبة. يُحفظ كل شيء في هذا المتصفح فقط.</p>
+      </section>
     </div>
     <!-- TOOLS-02 / 02B / 02C / 02D: Alliance mail generator -->
     <div class="view tool-view" id="v-tool-mail">
@@ -5875,6 +5896,16 @@ pre.log .lx{display:inline-block;margin-inline-start:6px;padding:0 6px;border-ra
   body{padding-bottom:150px}
 }
 /* TOOLS-05 commander guide */
+.evc-now{font-size:12.5px;opacity:.8;margin:4px 0 6px}
+.evc-row{display:grid;grid-template-columns:1fr auto;gap:6px 10px;padding:10px 12px;margin:8px 0;border-radius:12px;background:#ffffff0a;border:1px solid #ffffff14}
+.evc-row.live{border-color:#4cd96488;background:#4cd96414}.evc-row h4{margin:0;font-size:14px}.evc-tag{font-size:11px;padding:2px 8px;border-radius:999px;background:#ffffff14;margin-inline-start:6px}
+.evc-when{font-size:12.5px;text-align:end;white-space:nowrap}.evc-tip{grid-column:1/-1;font-size:12px;opacity:.78;margin:0}
+.evc-in{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:8px;font-size:12px;align-items:center}.evc-in input{background:#ffffff0d;border:1px solid #ffffff22;color:inherit;border-radius:8px;padding:4px 6px}
+.crc-in{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:8px;margin:8px 0}.crc-in label{display:flex;flex-direction:column;gap:4px;font-size:12.5px}.crc-in input{width:100%;box-sizing:border-box;background:#ffffff0d;border:1px solid #ffffff22;color:inherit;border-radius:10px;padding:8px 10px;font:inherit}
+.crc-tbl{display:grid;gap:4px;margin:8px 0}.crc-r{display:grid;grid-template-columns:70px 1fr 1fr;gap:6px;align-items:center;font-size:12.5px}
+.crc-r input{width:100%;box-sizing:border-box;background:#ffffff0d;border:1px solid #ffffff22;color:inherit;border-radius:8px;padding:5px 6px}
+.crc-sum{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px;margin:10px 0}.crc-sum div{padding:10px;border-radius:12px;background:#ffffff0d}.crc-sum b{display:block;font-size:17px}
+.crc-sv{display:flex;justify-content:space-between;gap:8px;padding:8px 10px;margin:4px 0;border-radius:10px;background:#ffffff08;font-size:12.5px}.crc-sv button{background:none;border:0;color:inherit;cursor:pointer;opacity:.7}
 .cg-f{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0}
 .cg-f button{border-radius:999px;padding:5px 11px;border:1px solid #ffffff22;background:#ffffff0c;color:inherit;cursor:pointer;font-size:12px}
 .cg-f button.on{background:#ffd56a;color:#1d1300;border-color:#ffd56a}
@@ -6344,6 +6375,96 @@ pre.log .lx{display:inline-block;margin-inline-start:6px;padding:0 6px;border-ra
   const t = setInterval(() => { if (moveSrv()) clearInterval(t); }, 500); setTimeout(() => clearInterval(t), 60000);
   // queue monitor buttons get the site's button classes
   setTimeout(() => { document.querySelectorAll(".qm-btn,.qm-save").forEach(b => b.classList.add("btn")); }, 0);
+})();
+</script>
+<script>
+/* ===== TOOLS-06 event calendar + TOOLS-07 crystal tech calculator (free tools, data stays in this browser) ===== */
+(function () {
+  const $ = id => document.getElementById(id);
+  const esc = t => String(t == null ? "" : t).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  const LS = { get(k, d) { try { const v = JSON.parse(localStorage.getItem(k)); return v == null ? d : v; } catch (_) { return d; } }, set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (_) {} } };
+  // ---------- TOOLS-06 ----------
+  const CATS = { comp: "🏆 تنافسي", gems: "💎 جواهر", barb: "🪓 برابرة", power: "💪 قوة", ally: "🤝 تحالف", explore: "🗺️ استكشاف" };
+  const EVS = [
+    { k: "mge", n: "أقوى حاكم (MGE)", c: "comp", dur: 6, cyc: 0, tip: "6 أيام بمراحل مختلفة: احفظ التسريعات والموارد ونقاط الحركة والجنود لكل مرحلة، واعرف ترتيب المراحل قبل أن تصرف شيئاً." },
+    { k: "wof", n: "عجلة الحظ", c: "gems", dur: 3, cyc: 14, tip: "تعود تقريباً كل أسبوعين إلى ثلاثة. حدّد عدد اللفات قبل البدء ولا تتوقف في منتصف الطريق إلى صندوق المرحلة." },
+    { k: "mtg", n: "أكثر من الجواهر", c: "gems", dur: 0, cyc: 0, tip: "اصرف فيه الجواهر التي كنت ستصرفها على أي حال (متجر، VIP، عجلة) لتأخذ مكافآت إضافية؛ موعده غير ثابت." },
+    { k: "lohar", n: "تحدي لوهار", c: "barb", dur: 0, cyc: 0, tip: "اجمع نقاط الحركة (AP) قبله واقتل البرابرة خلاله." },
+    { k: "arms", n: "التدريب العسكري", c: "power", dur: 0, cyc: 0, tip: "أجّل تدريب الجنود والأبحاث الكبيرة حتى يبدأ لتحسب لك النقاط." },
+    { k: "golden", n: "المملكة الذهبية", c: "explore", dur: 0, cyc: 0, tip: "ادخل في أول الحدث لتأخذ كل المكافآت المتاحة بالوقت." },
+    { k: "ceroli", n: "أزمة سيرولي", c: "ally", dur: 0, cyc: 0, tip: "نسّق مع التحالف على الأوقات والقادة المناسبين." },
+    { k: "shadow", n: "الفيلق الظلّي", c: "ally", dur: 0, cyc: 0, tip: "يحتاج حضور أعضاء التحالف في الوقت المحدد." },
+    { k: "ark", n: "سفينة أوزيريس", c: "ally", dur: 0, cyc: 0, tip: "سجّل مع التحالف مبكراً واتفق على الأدوار." }
+  ];
+  const EKEY = "kb_evc_v1"; let cat = "";
+  const fmtUTC = t => new Date(t).toISOString().slice(0, 16).replace("T", " ") + " UTC";
+  const span = ms => { const m = Math.max(0, Math.round(ms / 60000)), d = Math.floor(m / 1440), h = Math.floor(m % 1440 / 60); return d ? d + " يوم " + h + " س" : h + " س " + (m % 60) + " د"; };
+  function evcCalc(e, u) {
+    const st = u.start ? Date.parse(u.start + "Z") : NaN; if (isNaN(st)) return null;
+    const dur = (+u.dur || e.dur || 0) * 864e5, cyc = (+u.cyc || e.cyc || 0) * 864e5, now = Date.now();
+    let s0 = st; if (cyc > 0) while (s0 + (dur || 0) < now) s0 += cyc;
+    const live = dur > 0 && now >= s0 && now < s0 + dur;
+    return { s0, e0: dur ? s0 + dur : 0, live, past: s0 < now && !live, cyc };
+  }
+  function evcDraw() {
+    const box = $("evc-list"); if (!box) return; const D = LS.get(EKEY, {});
+    $("evc-now").textContent = "الآن: " + fmtUTC(Date.now());
+    const rows = EVS.filter(e => !cat || e.c === cat).map(e => ({ e, u: D[e.k] || {}, r: evcCalc(e, D[e.k] || {}) }))
+      .sort((a, b) => (a.r ? (a.r.live ? -1e15 : a.r.past ? 1e15 : a.r.s0) : 2e15) - (b.r ? (b.r.live ? -1e15 : b.r.past ? 1e15 : b.r.s0) : 2e15));
+    box.innerHTML = rows.map(({ e, u, r }) => {
+      let w = "أدخل تاريخ آخر بداية رأيتها";
+      if (r) w = r.live ? "🟢 جارٍ الآن · ينتهي بعد " + span(r.e0 - Date.now()) : r.past ? "انتهى · أدخل الفاصل لمعرفة القادم" : "⏳ يبدأ بعد " + span(r.s0 - Date.now()) + "<br><small>" + fmtUTC(r.s0) + "</small>";
+      return `<div class="evc-row${r && r.live ? " live" : ""}"><h4>${esc(e.n)}<span class="evc-tag">${CATS[e.c]}</span></h4><div class="evc-when">${w}</div>
+        <p class="evc-tip">💡 ${esc(e.tip)}</p>
+        <div class="evc-in" data-k="${e.k}"><label>آخر بداية (UTC) <input type="datetime-local" data-f="start" value="${esc(u.start || "")}"></label>
+        <label>المدة (يوم) <input type="number" min="0" max="30" data-f="dur" value="${esc(u.dur || e.dur || "")}" placeholder="؟" style="width:60px"></label>
+        <label>يتكرر كل (يوم) <input type="number" min="0" max="120" data-f="cyc" value="${esc(u.cyc || e.cyc || "")}" placeholder="؟" style="width:60px"></label></div></div>`;
+    }).join("");
+  }
+  document.addEventListener("change", ev => { const i = ev.target.closest && ev.target.closest(".evc-in input"); if (!i) return;
+    const k = i.closest(".evc-in").dataset.k, D = LS.get(EKEY, {}); (D[k] = D[k] || {})[i.dataset.f] = i.value; LS.set(EKEY, D); evcDraw(); });
+  function evcCats() { const b = $("evc-cat"); if (!b) return; b.innerHTML = [["", "الكل"]].concat(Object.entries(CATS)).map(([k, n]) => `<button type="button" data-c="${k}" class="${k === cat ? "on" : ""}">${n}</button>`).join(""); }
+  document.addEventListener("click", ev => { const b = ev.target.closest && ev.target.closest("#evc-cat button"); if (!b) return; cat = b.dataset.c; evcCats(); evcDraw(); });
+  // ---------- TOOLS-07 ----------
+  const CKEY = "kb_crc_v1";
+  const num = id => +($(id) && $(id).value) || 0;
+  function crcRows() {
+    const box = $("crc-rows"); if (!box) return; const a = Math.max(0, Math.min(29, num("crc-from"))), b = Math.max(a + 1, Math.min(30, num("crc-to") || a + 1));
+    const old = {}; box.querySelectorAll(".crc-r[data-l]").forEach(r => { old[r.dataset.l] = [r.querySelector("[data-c]").value, r.querySelector("[data-t]").value]; });
+    let h = `<div class="crc-r"><b>المستوى</b><b>💠 كريستال (من اللعبة)</b><b>⏱️ الوقت (ساعات)</b></div>`;
+    for (let l = a + 1; l <= b; l++) { const o = old[l] || ["", ""]; h += `<div class="crc-r" data-l="${l}"><span>${a === l - 1 ? a + " → " + l : (l - 1) + " → " + l}</span><input type="number" min="0" data-c value="${esc(o[0])}"><input type="number" min="0" step="any" data-t value="${esc(o[1])}"></div>`; }
+    box.innerHTML = h; crcSum();
+  }
+  function crcSum() {
+    const out = $("crc-sum"); if (!out) return; let c = 0, t = 0, miss = 0;
+    document.querySelectorAll("#crc-rows .crc-r[data-l]").forEach(r => { const x = +r.querySelector("[data-c]").value, y = +r.querySelector("[data-t]").value; if (!x) miss++; c += x || 0; t += y || 0; });
+    const dc = c * (1 - Math.min(90, num("crc-disc")) / 100), tt = t / (1 + num("crc-speed") / 100), pts = dc * num("crc-pts");
+    const hh = Math.floor(tt), mm = Math.round((tt - hh) * 60);
+    out.innerHTML = `<div>💠 كريستال بعد الخصم<b>${Math.round(dc).toLocaleString("en")}</b><small>قبل الخصم ${Math.round(c).toLocaleString("en")}</small></div>
+      <div>⏱️ وقت البحث<b>${hh >= 24 ? Math.floor(hh / 24) + " ي " + (hh % 24) + " س" : hh + " س " + mm + " د"}</b><small>بعد سرعة ${num("crc-speed")}%</small></div>
+      <div>🏅 نقاط الموسم<b>${pts ? Math.round(pts).toLocaleString("en") : "—"}</b><small>${num("crc-pts") ? "" : "أدخل النقاط لكل كريستال"}</small></div>` + (miss ? `<div>⚠️ ناقص<b>${miss}</b><small>مستوى بلا تكلفة</small></div>` : "");
+  }
+  function crcSaved() { const b = $("crc-saved"); if (!b) return; const L = LS.get(CKEY, []);
+    b.innerHTML = L.length ? "<h3 class='gd-sec'>تقنياتي المحفوظة</h3>" + L.map((x, i) => `<div class="crc-sv"><span>${esc(x.name || "بدون اسم")} · ${x.from}→${x.to} · 💠 ${Math.round(x.cr).toLocaleString("en")}</span><span><button type="button" data-load="${i}">فتح</button><button type="button" data-del="${i}">🗑</button></span></div>`).join("") + `<p class="gd-p">المجموع: 💠 ${Math.round(L.reduce((a, x) => a + x.cr, 0)).toLocaleString("en")}</p>` : ""; }
+  document.addEventListener("input", ev => { const t = ev.target; if (!t || !t.closest) return;
+    if (t.id === "crc-from" || t.id === "crc-to") crcRows(); else if (t.closest("#v-tool-crystal")) crcSum(); });
+  document.addEventListener("click", ev => { const t = ev.target; if (!t || !t.closest) return;
+    if (t.closest("#crc-clear")) { $("crc-rows").innerHTML = ""; crcRows(); }
+    if (t.closest("#crc-save")) { const rows = [...document.querySelectorAll("#crc-rows .crc-r[data-l]")].map(r => [r.querySelector("[data-c]").value, r.querySelector("[data-t]").value]);
+      const c = rows.reduce((a, r) => a + (+r[0] || 0), 0) * (1 - Math.min(90, num("crc-disc")) / 100);
+      const L = LS.get(CKEY, []); L.push({ name: $("crc-name").value, from: num("crc-from"), to: num("crc-to"), disc: num("crc-disc"), speed: num("crc-speed"), pts: num("crc-pts"), rows, cr: c }); LS.set(CKEY, L.slice(-40)); crcSaved(); }
+    const ld = t.closest("[data-load]"); if (ld) { const x = LS.get(CKEY, [])[+ld.dataset.load]; if (!x) return;
+      $("crc-name").value = x.name || ""; $("crc-from").value = x.from; $("crc-to").value = x.to; $("crc-disc").value = x.disc; $("crc-speed").value = x.speed; $("crc-pts").value = x.pts;
+      $("crc-rows").innerHTML = ""; crcRows(); document.querySelectorAll("#crc-rows .crc-r[data-l]").forEach((r, i) => { const v = x.rows[i] || []; r.querySelector("[data-c]").value = v[0] || ""; r.querySelector("[data-t]").value = v[1] || ""; }); crcSum(); }
+    const dl = t.closest("[data-del]"); if (dl) { const L = LS.get(CKEY, []); L.splice(+dl.dataset.del, 1); LS.set(CKEY, L); crcSaved(); } });
+  // ❗ info
+  const INFO = { evc: ["تقويم الأحداث", "أداة مجانية: الأحداث المتكررة (أقوى حاكم، عجلة الحظ، أكثر من الجواهر، لوهار، التدريب، المملكة الذهبية، سيرولي، الفيلق الظلّي، أوزيريس) مع نصيحة موارد لكل حدث. لأن مواعيدها تختلف بين الممالك، أدخل تاريخ بداية آخر مرة رأيت فيها الحدث (بتوقيت UTC) والفاصل بالأيام إن عرفته، فتعرض الأداة «جارٍ الآن» أو «يبدأ بعد…» وترتّب الأحداث حسب الأقرب. صفِّ حسب النوع بالأزرار. البيانات في هذا المتصفح فقط."],
+    crc: ["حاسبة تقنية الكريستال", "أداة مجانية لأبحاث الكريستال في موسم الفتح: اختر المستوى الحالي والمستهدف، وانسخ من مركز أبحاث الكريستال تكلفة كل مستوى ووقته، وأدخل نسبة الخصم (مركز الأبحاث أو التحالف) وسرعة البحث ونقاط الموسم لكل كريستال إن عرفتها. تعرض: الكريستال بعد الخصم، وقت البحث بعد السرعة، ونقاط الموسم. «حفظ» يجمع خطتك لعدة تقنيات مع المجموع. لا توجد أرقام مدمجة لأن اللعبة تغيّر التكاليف بين نسخ الموسم."] };
+  document.addEventListener("click", ev => { const b = ev.target.closest && ev.target.closest(".info-btn[data-x]"); if (!b || !INFO[b.dataset.x]) return; ev.preventDefault();
+    const x = INFO[b.dataset.x]; try { showInfo({ name: x[0], hint: x[1] }); } catch (_) { alert(x[0] + "\n\n" + x[1]); } });
+  function init() { try { evcCats(); evcDraw(); crcRows(); crcSaved(); } catch (e) { console.warn(e); } }
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init); else init();
+  setInterval(() => { try { if ($("v-tool-events") && $("v-tool-events").classList.contains("show")) evcDraw(); } catch (_) {} }, 60000);
 })();
 </script>
 </body></html>
