@@ -1562,7 +1562,7 @@ window.addEventListener("error", function(e) {
       <section class="panel mc" aria-labelledby="mc-h">   <!-- TASK-06 -->
         <div class="panel-head"><h2 id="mc-h">🧭 أولوية المسيرات والمهلة <button type="button" class="info-btn" data-info="march" aria-label="شرح">❗</button></h2></div>
         <div class="mc-row"><label>أقصى عدد جيوش في نفس الوقت <input type="number" id="mc-max" min="0" max="5" placeholder="0"></label>
-          <label>مهلة البحث في الخريطة (ثانية) <input type="number" id="mc-to" min="5" max="120" placeholder="15"></label></div>
+          <label>مهلة البحث في الخريطة (ثانية) <input type="number" id="mc-to" min="5" max="120" placeholder="30"></label></div>
         <div class="mc-pr"><span>الترتيب:</span><ol id="mc-ord"></ol></div>
         <p class="gd-p">تُحفظ مع «حفظ وإرسال».</p>
       </section>
@@ -2817,7 +2817,7 @@ const PAGE_INFO = {
   captcha: { name: "نافذة التحقق (كابتشا)", text: "أحياناً تطلب اللعبة إثبات أنك لست برنامجاً. عندما يكتشفها البوت يتوقف فوراً عن أي نقرة، يرسل صورة الشاشة، تتحول الحالة إلى «نافذة تحقق» ويصلك تنبيه صوتي هنا وعلى تيليجرام. حلّها يدوياً على السيرفر ثم اضغط «تم الحل — استئناف»: يتأكد البوت أن النافذة اختفت قبل أن يكمل، وإن كانت ما زالت ظاهرة يبقى متوقفاً ويخبرك. البوت لا يحاول حل التحقق بنفسه." },
   evhunt: { name: "وادي الغروب وصيد الحراس", text: "«وادي الغروب»: يلعب المحاولات المجانية اليومية فقط ضد أضعف خصم ويتخطى المعركة — لا يضغط تحديث ولا يشتري محاولات بالجواهر. «صيد الحراس»: يبحث عن الحراس حول مدينتك في الخريطة ويرسل جيشاً بالقادة الذين تختارهم هنا (نفس «قادة كل مهمة ← الحراس»). لا يستعمل نقاط الحركة ولا الجرعات؛ إذا طلبت اللعبة ذلك يغلق النافذة ويتوقف. يحتاج صورة الحارس مسجّلة مرة واحدة على السيرفر." },
   mtav: { name: "التاجر الغامض والحانة", text: "عندما يظهر التاجر الغامض في مدينتك يشتري البوت كل ما سعره طعام أو خشب أو حجر أو ذهب فقط — العناصر بالجواهر تُتخطى دائماً وأي نافذة جواهر يُجاب عليها «لا». «التحديث المجاني» يُضغط فقط إذا كان مجانياً، والتحديث المدفوع لا يُضغط أبداً. الحانة: يفتح الصناديق المجانية فقط. العدّاد يعرض ما اشتراه وفتحه اليوم. يحتاج صورة التاجر مسجّلة مرة واحدة على السيرفر." },
-  march: { name: "أولوية المسيرات والمهلة", text: "«أقصى عدد جيوش في نفس الوقت»: البوت لا يرسل جيش جمع جديداً إذا كان هذا العدد في الخارج (فارغ أو 0 = حسب خانات اللعبة). «مهلة البحث»: إذا علِق البحث في الخريطة أطول من هذه الثواني (الافتراضي 15) يلغيه ويرجع للمدينة بدل أن يتجمد. «الترتيب»: أي نوع مسيرات يُنفَّذ أولاً في كل جولة — الحشود، الجمع، البرابرة — بالأسهم ▲▼." },
+  march: { name: "أولوية المسيرات والمهلة", text: "«أقصى عدد جيوش في نفس الوقت»: البوت لا يرسل جيش جمع جديداً إذا كان هذا العدد في الخارج (فارغ أو 0 = حسب خانات اللعبة). «مهلة البحث»: إذا علِق البحث في الخريطة أطول من هذه الثواني (الافتراضي 30) يلغيه ويرجع للمدينة بدل أن يتجمد. «الترتيب»: أي نوع مسيرات يُنفَّذ أولاً في كل جولة — الحشود، الجمع، البرابرة — بالأسهم ▲▼." },
   ref: { name: "الإحالات", text: "رابط الإحالة فيه اسم حسابك في اللوحة. انسخه وأرسله لأصدقائك؛ عند تسجيلهم من الرابط يُسجَّل أنهم جاؤوا عن طريقك. المكافآت يحددها المشرف." },
   menu: { name: "القائمة", text: "القائمة الرئيسية: الدليل، الدعم، الإحالات، حسابي، ثم «أدوات مجانية» (تفتح بالضغط) وروابط المجتمع (ديسكورد، واتساب، تيليجرام، يوتيوب) — الروابط تُقرأ من إعدادات kingbot-syn فيتغيّر الرابط بدون تحديث الصفحة. تسجيل الخروج في الأسفل." },
   gnkpi: { name: "ملخص المكاسب", text: "أربع بطاقات للمورد المختار (أو مجموع الموارد الأربعة في «الكل») خلال آخر 14 أو 30 يوماً: الإجمالي، المتوسط لكل يوم نشط (الأيام التي فيها مكسب فقط)، أفضل يوم مع تاريخه، وعدد الأيام النشطة. أزرار الشخصيات فوقها تعرض «كل الشخصيات» معاً أو شخصية واحدة — تظهر الشخصيات بعد أن يبدأ البوت بحفظ المكاسب لكل شخصية (من الإصدار 224)." },
@@ -3379,7 +3379,7 @@ function mcFill() { const m = mcGet(), mx = document.getElementById("mc-max"); i
     [["▲", -1], ["▼", 1]].forEach(([t, d]) => { const b = document.createElement("button"); b.type = "button"; b.textContent = t; b.disabled = (i + d < 0 || i + d > 2);
       b.addEventListener("click", () => { const a = m.priority_order; [a[i], a[i + d]] = [a[i + d], a[i]]; mcFill(); }); li.appendChild(b); }); ol.appendChild(li); }); }
 document.addEventListener("change", e => { if (e.target.id === "mc-max") { const v = Math.max(0, Math.min(5, Math.round(+e.target.value || 0))); e.target.value = v || ""; mcGet().max_concurrent_marches = v; }
-  if (e.target.id === "mc-to") { const v = Math.max(5, Math.min(120, Math.round(+e.target.value || 15))); e.target.value = v; mcGet().search_timeout_seconds = v; } });
+  if (e.target.id === "mc-to") { const v = Math.max(5, Math.min(120, Math.round(+e.target.value || 30))); e.target.value = v; mcGet().search_timeout_seconds = v; } });
 setTimeout(() => { try { mcFill(); } catch (_) {} }, 0);
 // AI-02: the send button is only active when there is something to send (Enter sends through the form)
 document.addEventListener("input", e => { if (e.target && e.target.id === "ast-text") { const b = document.querySelector("#ast-form .ast-send"); if (b) b.disabled = !e.target.value.trim(); } });
