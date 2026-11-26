@@ -1445,6 +1445,12 @@ window.addEventListener("error", function(e) {
             <line id="ac-needle" x1="60" y1="60" x2="24.0" y2="60.0" stroke="#fff" stroke-width="3" stroke-linecap="round"></line><circle cx="60" cy="60" r="5" fill="#fff"></circle>
           </svg></div>
       </section>
+      <section class="panel hl-card" id="hl-card" aria-labelledby="hl-h">   <!-- v252: bot health + command tracking -->
+        <div class="panel-head"><h2 id="hl-h">🩺 صحة البوت والأوامر <button type="button" class="info-btn" data-x="hl" aria-label="شرح">❗</button></h2><span class="hl-st" id="hl-st">—</span></div>
+        <div class="hl-grid" id="hl-grid"></div>
+        <div class="hl-warn" id="hl-warn" hidden></div>
+        <details class="hl-cmds"><summary>آخر الأوامر المرسلة للبوت</summary><div id="hl-cmds"></div></details>
+      </section>
       <section class="panel qm-card" id="qm-card" aria-label="مراقب الطوابير">
         <div class="qm-head"><h2>⏱ مراقب الطوابير والمؤقتات الحيّة</h2><span class="qm-at" id="qm-at">—</span><span class="sp"></span>
           <button type="button" class="qm-btn" id="qm-info" title="ما هذا؟">❗</button><button type="button" class="qm-btn" id="qm-read" title="اطلب قراءة الطوابير الآن">↻ قراءة الآن</button></div>
@@ -5930,6 +5936,16 @@ pre.log .lx{display:inline-block;margin-inline-start:6px;padding:0 6px;border-ra
 .gd-q summary{list-style:none;display:flex;justify-content:space-between;gap:10px;padding:11px 13px;cursor:pointer;font-weight:600;font-size:13.5px}.gd-q summary::-webkit-details-marker{display:none}
 .gd-q summary i{font-style:normal;font-size:18px;line-height:1;transition:transform .2s;color:#ffd56a}.gd-q[open] summary i{transform:rotate(45deg)}.gd-q p{margin:0;padding:0 13px 12px;font-size:13px;opacity:.85;line-height:1.7}
 .gd-stuck{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;margin:14px 0 4px;padding:14px 16px;border-radius:14px;background:linear-gradient(135deg,#ffd56a1f,#ffffff08);border:1px solid #ffd56a55}.gd-stuck p{margin:4px 0 0;font-size:13px;opacity:.85}
+.hl-card .panel-head{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.hl-st{padding:4px 12px;border-radius:999px;font-size:12.5px;font-weight:700;background:#ffffff14;white-space:nowrap}
+.hl-st.running{background:#4cd96426;color:#7dffa0}.hl-st.waiting{background:#5ac8fa26;color:#9fe0ff}.hl-st.paused,.hl-st.frozen{background:#ffd56a26;color:#ffd56a}
+.hl-st.recovering,.hl-st.error{background:#ff9f0a26;color:#ffc069}.hl-st.offline{background:#ff453a26;color:#ff8a80}
+.hl-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:8px;margin:8px 0}
+.hl-grid div{padding:9px 12px;border-radius:12px;background:#ffffff0a;border:1px solid #ffffff14;min-width:0}
+.hl-grid small{display:block;opacity:.65;font-size:11.5px}.hl-grid b{display:block;font-size:13.5px;margin-top:2px;overflow-wrap:anywhere}
+.hl-warn{padding:9px 12px;border-radius:12px;background:#ff9f0a14;border:1px solid #ff9f0a55;font-size:12.5px;line-height:1.7;margin:6px 0}
+.hl-cmds summary{cursor:pointer;font-size:13px;opacity:.85;margin-top:4px}.hl-cmd{display:grid;grid-template-columns:auto 1fr auto;gap:8px;align-items:center;padding:7px 10px;margin:5px 0;border-radius:10px;background:#ffffff08;font-size:12.5px}
+.hl-cmd i{font-style:normal}.hl-cmd small{opacity:.65;white-space:nowrap}.hl-cmd span{overflow-wrap:anywhere}
 .evc-now{font-size:12.5px;opacity:.8;margin:4px 0 6px}
 .evc-row{display:grid;grid-template-columns:1fr auto;gap:6px 10px;padding:10px 12px;margin:8px 0;border-radius:12px;background:#ffffff0a;border:1px solid #ffffff14}
 .evc-row.live{border-color:#4cd96488;background:#4cd96414}.evc-row h4{margin:0;font-size:14px}.evc-tag{font-size:11px;padding:2px 8px;border-radius:999px;background:#ffffff14;margin-inline-start:6px}
@@ -6516,6 +6532,68 @@ pre.log .lx{display:inline-block;margin-inline-start:6px;padding:0 6px;border-ra
   function init() { try { evcCats(); evcDraw(); crcRows(); crcSaved(); } catch (e) { console.warn(e); } }
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init); else init();
   setInterval(() => { try { if ($("v-tool-events") && $("v-tool-events").classList.contains("show")) evcDraw(); } catch (_) {} }, 60000);
+})();
+</script>
+<script>
+/* ===== v252: bot health, heartbeat, active task, last sync and command acknowledgements (status.json) ===== */
+(function () {
+  const $ = id => document.getElementById(id);
+  const esc = t => String(t == null ? "" : t).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  const EN = () => (document.documentElement.lang || "ar") !== "ar";
+  const ST = { running: ["يعمل", "Running"], waiting: ["ينتظر الجولة", "Waiting"], paused: ["موقوف", "Paused"], frozen: ["مجمّد", "Frozen"],
+    recovering: ["يتعافى", "Recovering"], error: ["خطأ", "Error"], offline: ["غير متصل", "Offline"] };
+  const CS = { received: ["📥", "استُلم", "received"], queued: ["⏳", "بالانتظار بعد المهمة الحالية", "queued"], running: ["⚙️", "قيد التنفيذ", "running"],
+    done: ["✅", "تم", "done"], partial: ["⚠️", "تم جزئياً", "partial"], failed: ["❌", "فشل", "failed"], skipped: ["⏭️", "تُخطّي", "skipped"] };
+  const KIND = { action: ["أمر", "action"], probe: ["صور فحص", "probe"], shot: ["صورة الشاشة", "screenshot"], run_now: ["جولة الآن", "run now"] };
+  const RT = { gather: "جمع الموارد", gather_gems: "جمع الجواهر", collect_city: "جمع موارد المدينة", queue_manager: "مدير الطوابير", tavern: "الحانة",
+    tavern_legendary: "الحانة الأسطورية", alliance_help: "مساعدة التحالف", alliance_gifts: "منصة التحالف", rally_fort: "حشد الحصون",
+    attack_barbarians: "مهاجمة البرابرة", join_rally: "الانضمام للحشود", auto_shield: "الدرع التلقائي", auto_recall: "الاستدعاء التلقائي",
+    daily_objectives: "المهام اليومية", vip_chests: "صناديق VIP", read_mail: "قراءة البريد", events: "مكافآت الأحداث", merchant: "التاجر الغامض",
+    vip_shop: "متجر VIP", sunset_canyon: "وادي الغروب", lost_canyon: "الوادي المفقود", conduct_watch: "مراقبة السلوك", upgrade_troops: "تطوير القوات",
+    read_marches: "قراءة الجيوش", read_commanders: "قراءة القادة", read_profile: "قراءة الملف", read_characters: "قراءة الشخصيات", probe: "صور الفحص" };
+  const rname = r => { if (!r) return EN() ? "nothing (between activities)" : "لا شيء (بين المهام)"; const k = String(r).replace(/^action:/, ""); return (/^action:/.test(r) ? (EN() ? "dashboard: " : "أمر اللوحة: ") : "") + (EN() ? k : (RT[k] || k)); };
+  const ago = iso => { const t = Date.parse(iso || ""); if (!t) return "—"; const s = Math.max(0, Math.round((Date.now() - t) / 1000));
+    if (EN()) return s < 60 ? s + " s ago" : s < 3600 ? Math.round(s / 60) + " min ago" : Math.round(s / 3600) + " h ago";
+    return s < 60 ? "قبل " + s + " ث" : s < 3600 ? "قبل " + Math.round(s / 60) + " د" : "قبل " + Math.round(s / 3600) + " س"; };
+  function draw() {
+    const box = $("hl-grid"); if (!box) return;
+    const s = (typeof lastStatus === "object" && lastStatus) || null;
+    const st = $("hl-st");
+    if (!s) { st.textContent = EN() ? "no status yet" : "لا توجد حالة بعد"; return; }
+    const h = s.health || {}, upd = Date.parse(s.updated || "") || 0, hb = Date.parse(s.heartbeat_at || "") || 0;
+    let state = h.state || (s.state === "waiting" ? "waiting" : s.state === "paused" ? "paused" : "running");
+    if (!upd || Date.now() - upd > 10 * 60e3) state = "offline";
+    st.className = "hl-st " + state; st.textContent = (ST[state] || [state, state])[EN() ? 1 : 0];
+    const lc = s.last_command, cs = lc && (CS[lc.status] || ["•", lc.status, lc.status]);
+    const cells = [
+      [EN() ? "Heartbeat" : "نبض البوت", s.heartbeat_at ? ago(s.heartbeat_at) + (hb && Date.now() - hb > 3 * 60e3 ? " ⚠️" : " 💚") : (EN() ? "needs bot v252+" : "يحتاج البوت 252 أو أحدث")],
+      [EN() ? "Running now" : "المهمة الآن", rname(s.active_routine) + (h.routine_since ? " · " + ago(h.routine_since) : "")],
+      [EN() ? "Last status" : "آخر حالة", ago(s.updated)],
+      [EN() ? "Last settings read" : "آخر قراءة للإعدادات", ago(s.last_sync_at)],
+      [EN() ? "Last command" : "آخر أمر", lc ? cs[0] + " " + esc((KIND[lc.kind] || [lc.kind, lc.kind])[EN() ? 1 : 0]) + (lc.do && lc.kind === "action" ? " · " + esc(lc.do) : "") + " — " + (EN() ? cs[2] : cs[1]) + " · " + ago(lc.at) : "—"],
+      [EN() ? "Last error" : "آخر خطأ", s.last_error ? esc(s.last_error.slice(0, 90)) + " · " + ago(h.last_error_at) : (EN() ? "none" : "لا يوجد")]
+    ];
+    box.innerHTML = cells.map(([a, b]) => "<div><small>" + a + "</small><b>" + b + "</b></div>").join("");
+    const warn = [], city = s.city || {}, sup = city.task_support || {};
+    if (h.session === "disconnected") warn.push((EN() ? "🖥️ Remote Desktop disconnected the server screen - the bot is moving it back to the console. " : "🖥️ انقطع سطح المكتب البعيد فأُطفئت شاشة السيرفر — البوت يعيدها للشاشة الرئيسية. ") + esc(h.session_note || ""));
+    const miss = Object.keys(sup).filter(k => sup[k] && sup[k].missing);
+    if (miss.length) warn.push((EN() ? "🧩 Switched on but not built in the bot yet: " : "🧩 مفعّلة لكنها غير مبنية في البوت بعد: ") + miss.map(k => esc(EN() ? k : (RT[k] || k))).join("، "));
+    const ign = Object.keys(sup).filter(k => sup[k] && sup[k].ignored_options);
+    if (ign.length) warn.push((EN() ? "⚙️ Options the bot does not use: " : "⚙️ خيارات لا يستعملها البوت: ") + ign.map(k => esc(RT[k] || k) + " (" + esc(sup[k].ignored_options.slice(0, 4).join(", ")) + ")").join(" · "));
+    const dr = s.dropped_options || {};
+    if (Object.keys(dr).length) warn.push((EN() ? "🚫 Options refused by the bot (wrong type/size): " : "🚫 خيارات رفضها البوت (نوع أو حجم غير مقبول): ") + Object.keys(dr).map(k => esc(RT[k] || k) + " (" + esc(dr[k].join(", ")) + ")").join(" · "));
+    const w = $("hl-warn"); w.hidden = !warn.length; w.innerHTML = warn.join("<br>");
+    const list = (h.commands || []).map(c => { const x = CS[c.status] || ["•", c.status, c.status];
+      return '<div class="hl-cmd"><i>' + x[0] + '</i><span>' + esc((KIND[c.kind] || [c.kind, c.kind])[EN() ? 1 : 0]) + (c.do && c.kind === "action" ? " · <b>" + esc(c.do) + "</b>" : "") + " — " + (EN() ? x[2] : x[1]) + (c.detail ? "<br><small>" + esc(c.detail) + "</small>" : "") + '</span><small>' + ago(c.at) + '</small></div>'; }).join("");
+    $("hl-cmds").innerHTML = list || '<p class="note">' + (EN() ? "No commands yet." : "لا توجد أوامر بعد.") + "</p>";
+    document.querySelectorAll(".hl-miss").forEach(e => e.remove());
+    miss.forEach(k => { const lb = document.querySelector('label[for="en-' + k + '"]'); if (lb) { const c = document.createElement("span"); c.className = "chip hl-miss"; c.textContent = EN() ? "not built yet" : "غير مبنية بعد"; lb.appendChild(c); } });
+  }
+  const INFO = ["صحة البوت والأوامر", "تعرض حالة البوت من status.json: يعمل / ينتظر / موقوف / مجمّد / يتعافى / غير متصل (لا حالة منذ 10 دقائق). «نبض البوت» يُكتب كل 15 ثانية، و«المهمة الآن» ما ينفّذه البوت هذه اللحظة، و«آخر قراءة للإعدادات» متى قرأ البوت إعداداتك من GitHub. كل أمر ترسله (أمر من المساعد، صورة الشاشة، صور الفحص، جولة الآن) يمر بمراحل: استُلم ← بالانتظار بعد المهمة الحالية ← قيد التنفيذ ← تم أو فشل مع السبب. الأوامر لا تقطع مهمة جارية (حتى لا ينقر البوت في مكانين)، فتُنفّذ مباشرة بعد المهمة الحالية. التنبيهات البرتقالية: انقطاع سطح المكتب البعيد، مهام مفعّلة غير مبنية في البوت بعد، وخيارات أرسلتها اللوحة ولا يستعملها البوت. يحتاج البوت الإصدار 252 أو أحدث."];
+  document.addEventListener("click", e => { const b = e.target.closest && e.target.closest('.info-btn[data-x="hl"]'); if (!b) return; e.preventDefault();
+    try { showInfo({ name: INFO[0], hint: INFO[1] }); } catch (_) { alert(INFO[0] + "\n\n" + INFO[1]); } });
+  setInterval(() => { try { draw(); } catch (e) { console.warn(e); } }, 5000);
+  setTimeout(() => { try { draw(); } catch (_) {} }, 1500);
 })();
 </script>
 </body></html>
