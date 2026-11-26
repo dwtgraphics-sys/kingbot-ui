@@ -1,5 +1,5 @@
 {
- "count": 102,
+ "count": 106,
  "commanders": [
   {
    "name": "Aethelflaed",
@@ -158,6 +158,10 @@
    "img": "commanders/Hammurabi.png"
   },
   {
+   "name": "Hannibal Barca",
+   "img": "commanders/Hannibal Barca.png"
+  },
+  {
    "name": "Harald Sigurdsson",
    "img": "commanders/Harald Sigurdsson.png"
   },
@@ -256,6 +260,10 @@
   {
    "name": "Matilda of Flanders",
    "img": "commanders/Matilda of Flanders.png"
+  },
+  {
+   "name": "Mehmed II",
+   "img": "commanders/Mehmed II.png"
   },
   {
    "name": "Minamoto no Yoshitsune",
@@ -384,6 +392,14 @@
   {
    "name": "William I",
    "img": "commanders/William I.png"
+  },
+  {
+   "name": "Wu Zetian",
+   "img": "commanders/Wu Zetian.png"
+  },
+  {
+   "name": "Xiang Yu",
+   "img": "commanders/Xiang Yu.png"
   },
   {
    "name": "Yahya",
