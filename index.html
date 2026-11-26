@@ -3572,7 +3572,8 @@ async function capImg() { const box = document.getElementById("cap-img"); try { 
   const b = await kbImg(await download(f.id)); if (!b) { box.textContent = "🔐 الصورة مشفّرة: أدخل عبارة المرور."; return; }
   box.innerHTML = ""; const i = new Image(); i.alt = "صورة نافذة التحقق"; i.src = "data:image/jpeg;base64," + b; box.appendChild(i); } catch (e) { box.textContent = "تعذّر تحميل الصورة."; } }
 function capCheck(s) { const c = s && s.city && s.city.captcha, m = document.getElementById("cap-modal"); if (!m) return;
-  const on = !!(c && c.id) || s.state === "captcha_required";
+  const gl = ((s && s.city && s.city.game_login) || {}).stage;           // v263: the game's Log In window is not a captcha
+  const on = !(gl && gl !== "logged_in") && (!!(c && c.id) || s.state === "captcha_required");
   if (!on) { if (!m.hidden) { m.hidden = true; m.classList.remove("open"); } clearInterval(capBeepT); capBeepT = null; capShown = ""; document.title = document.title.replace(/^⚠️ /, ""); return; }
   const id = (c && c.id) || "x";
   if (c && c.still) setMsg("m-cap", "ما زالت نافذة التحقق ظاهرة في اللعبة — حلّها أولاً ثم اضغط استئناف من جديد.", "err");
