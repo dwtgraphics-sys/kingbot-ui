@@ -1581,6 +1581,16 @@ window.addEventListener("error", function(e) {
         <label>ملاحظات <input type="text" id="adm-c-notes" dir="auto" style="width:100%"></label>
         <div class="row"><button type="button" class="btn primary" id="adm-c-save"><span class="spin"></span>حفظ البطاقة</button><button type="button" class="btn" id="adm-c-close">إغلاق</button></div>
         <div class="msg" id="m-adm-c"></div>
+        <h3 style="margin:16px 0 6px">👤 حساب الزبون في لوحة التحكم <button type="button" class="btn ghost" id="adm-u-info" style="padding:2px 10px">❗</button></h3>
+        <p class="note" id="adm-u-help" hidden>اكتب اسم المستخدم وبريد الزبون ثم اضغط «إنشاء الحساب». يُنشأ حساب مربوط بهذا السيرفر فقط، واشتراكه من «البداية» لعدد «الأيام» أعلاه، ومعه كلمة مرور مؤقتة تظهر لك مرة واحدة: أرسلها للزبون مع اسم المستخدم ورابط اللوحة. عند أول دخول تطلب منه اللوحة اختيار كلمة مرور جديدة. إذا كان الزبون أنشأ حسابه بنفسه من قبل (نفس الاسم أو البريد)، يُربط حسابه بهذا السيرفر ويُفعَّل اشتراكه بدون تغيير كلمة مروره.</p>
+        <div id="adm-u-now" class="note"></div>
+        <div class="mc-row crc-in">
+          <label>اسم المستخدم <input type="text" id="adm-u-name" dir="ltr" maxlength="30" autocomplete="off" autocapitalize="none" spellcheck="false"></label>
+          <label>البريد الإلكتروني <input type="email" id="adm-u-mail" dir="ltr" maxlength="80" autocomplete="off"></label>
+        </div>
+        <div class="row"><button type="button" class="btn primary" id="adm-u-make"><span class="spin"></span>إنشاء الحساب / ربطه بالسيرفر</button></div>
+        <div class="msg" id="m-adm-u"></div>
+        <div id="adm-u-out" hidden style="margin-top:8px;padding:10px;border:1px dashed #e2b04a88;border-radius:10px"><pre id="adm-u-text" dir="auto" style="white-space:pre-wrap;margin:0"></pre><div class="row"><button type="button" class="btn" id="adm-u-copy">📋 نسخ الرسالة للزبون</button></div></div>
       </section>
     </div>
     <div class="view" id="v-live">
@@ -5193,7 +5203,14 @@ document.getElementById("cond-ic").innerHTML = gsvg("conduct", 46);
 
   function setMode(m) {
     mode = m;
-    const reg = m === "create", em = m === "email";
+    const reg = m === "create", em = m === "email", np = m === "newpw";
+    if (np) {                                                       // v262 ADM-06: temporary password from the admin
+      $g("kg-title").textContent = "اختر كلمة مرور جديدة"; $g("kg-sub").textContent = "دخلت بكلمة مرور مؤقتة من المدير. اختر كلمة مرورك الخاصة (6 أحرف على الأقل).";
+      $g("kg-mail").hidden = true; $g("kg-u").hidden = true; $g("kg-p").hidden = false; $g("kg-p2").hidden = false; $g("kg-rem").parentElement.hidden = true;
+      $g("kg-p").value = ""; $g("kg-p2").value = ""; $g("kg-p").autocomplete = "new-password"; $g("kg-p").placeholder = "كلمة المرور الجديدة";
+      $g("kg-go-t").textContent = "حفظ والدخول"; $g("kg-switch").hidden = true; return;
+    }
+    $g("kg-p").placeholder = "كلمة المرور";
     $g("kg-title").textContent = reg ? "إنشاء حساب لوحة التحكم" : em ? "أضف بريدك الإلكتروني" : "تسجيل الدخول";
     $g("kg-sub").textContent = reg ? (accounts.users.length ? "أنشئ حسابك في لوحة تحكم Kingbot" : "أول دخول: أنشئ اسم مستخدم وبريداً إلكترونياً وكلمة مرور لحماية لوحة التحكم") : em ? "البريد الإلكتروني إلزامي لحساب لوحة التحكم" : "لوحة تحكم Kingbot";
     $g("kg-mail").hidden = !(reg || em); $g("kg-p2").hidden = !reg;
@@ -5212,6 +5229,7 @@ document.getElementById("cond-ic").innerHTML = gsvg("conduct", 46);
   }
   function unlock() {
     try { window.kbNotifReset = (me && me.acc && me.acc.notif_reset) || ""; window.kbMeAcc = () => me && me.acc; } catch (_) {}
+    if (me && me.acc && me.acc.must_change) { clearTimeout(gate._t); gate.classList.remove("kg-leave"); gate.hidden = false; document.body.classList.add("kb-locked"); setMode("newpw"); setTimeout(() => { try { $g("kg-p").focus(); } catch (_) {} }, 300); return; }
     if (me && me.acc && !me.acc.email) { clearTimeout(gate._t); gate.classList.remove("kg-leave"); gate.hidden = false; document.body.classList.add("kb-locked"); setMode("email"); $g("kg-mail").value = ""; return; }
     if (!gate.hidden && !matchMedia("(prefers-reduced-motion: reduce)").matches) { gate.classList.add("kg-leave"); clearTimeout(gate._t); gate._t = setTimeout(() => { gate.hidden = true; gate.classList.remove("kg-leave"); }, 850); }
     else gate.hidden = true;
@@ -5250,6 +5268,19 @@ document.getElementById("cond-ic").innerHTML = gsvg("conduct", 46);
     const btn = $g("kg-go"); const u = ($g("kg-u").value || "").trim(), p = $g("kg-p").value || "";
     const mail = ($g("kg-mail").value || "").trim().slice(0, 80);
     const mailOk = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(mail);
+    if (mode === "newpw") {
+      const p1 = $g("kg-p").value || "";
+      if (p1.length < 6) { msg("m-kg", "كلمة المرور 6 أحرف على الأقل.", "err"); return; }
+      if (p1 !== $g("kg-p2").value) { msg("m-kg", "كلمتا المرور غير متطابقتين.", "err"); return; }
+      btn.disabled = true;
+      try {
+        await load(); const a = me && find(me.acc.u); if (!a) { logout(true); return; }
+        a.salt = newSalt(); a.hash = await hashPw(p1, a.salt); delete a.must_change; a.last = new Date().toISOString();
+        if (!(await save())) { msg("m-kg", "تعذّر الحفظ. حاول مرة أخرى.", "err"); return; }
+        await startSession(a, !!ls.get(SESS)); $g("kg-p").value = ""; $g("kg-p2").value = ""; msg("m-kg", ""); unlock();
+      } finally { btn.disabled = false; }
+      return;
+    }
     if (mode === "email") {
       if (!mailOk) { msg("m-kg", "اكتب بريداً إلكترونياً صحيحاً.", "err"); return; }
       btn.disabled = true;
@@ -5393,6 +5424,32 @@ document.getElementById("cond-ic").innerHTML = gsvg("conduct", 46);
     if (!own && v && v.classList.contains("show")) { const h = document.querySelector('[data-go="v-home"]'); if (h) h.click(); }
   }
   window.kbIsOwner = () => !!(me && isAdminAcc(me.acc));
+  // v262 ADM-06: the admin creates (or links) a customer's dashboard account from the server's subscription card
+  window.kbCustomersOf = sid => accounts.users.filter(a => a.server === sid && a.role !== "owner").map(a => ({ u: a.u, email: a.email || "", must_change: !!a.must_change, sub_until: a.sub_until || "" }));
+  window.kbAdminCustomer = async function (o) {
+    if (!(me && isAdminAcc(me.acc))) throw new Error("للمدير فقط");
+    const u = String(o.u || "").trim(), mail = String(o.email || "").trim().slice(0, 80);
+    if (!/^[A-Za-z0-9_.\-\u0600-\u06FF]{3,30}$/.test(u)) throw new Error("اسم المستخدم من 3 إلى 30 حرفاً (حروف وأرقام و _ . -)");
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(mail)) throw new Error("اكتب بريداً صحيحاً.");
+    if (RESERVED.test(u)) throw new Error("هذا الاسم محجوز. اختر اسماً آخر.");
+    await load();
+    const byU = accounts.users.find(x => norm(x.u) === norm(u)), byM = accounts.users.find(x => norm(x.email) === norm(mail));
+    if (byU && byM && byU !== byM) throw new Error("اسم المستخدم لحساب، والبريد لحساب آخر. تأكد من البيانات.");
+    const ex = byU || byM;
+    if (ex && ex.role === "owner") throw new Error("هذا حساب المالك.");
+    const st0 = o.start ? Date.parse(o.start) : NaN, start = isNaN(st0) ? Date.now() : st0, until = new Date(start + Math.max(1, +o.days || 30) * 86400000).toISOString();
+    let pass = "";
+    if (ex) {
+      ex.server = o.server; ex.sub_until = until; ex.sub_paused = false; if (!ex.email) ex.email = mail;
+    } else {
+      const abc = "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789", r = crypto.getRandomValues(new Uint8Array(10));
+      pass = Array.from(r, b => abc[b % abc.length]).join("");
+      const salt = newSalt();
+      accounts.users.push({ u, email: mail, salt, hash: await hashPw(pass, salt), role: "user", server: o.server, sub_until: until, must_change: true, created: new Date().toISOString(), created_by: "admin" });
+    }
+    if (!(await save())) throw new Error("تعذّر حفظ الحساب. حاول مرة أخرى.");
+    return { existed: !!ex, u: ex ? ex.u : u, pass, until };
+  };
   window.kbIsAdmin = window.kbIsOwner;
   // customer accounts are pinned to their own server (set by the admin)
   window.addEventListener("kb-servers", () => { try { const a = me && me.acc; if (a && !isAdminAcc(a) && a.server && localStorage.getItem("kb_server") !== a.server) { localStorage.setItem("kb_server", a.server); location.reload(); } } catch (_) {} });
@@ -6883,7 +6940,7 @@ pre.log .lx{display:inline-block;margin-inline-start:6px;padding:0 6px;border-ra
           <button type="button" class="btn" data-a="rollback">⏪ رجوع للنسخة السابقة</button>
           ${pin ? '<button type="button" class="btn" data-a="release_updates">📌 فك تثبيت النسخة</button>' : ""}
           <button type="button" class="btn danger" data-a="logout_game">🚪 تسجيل الخروج من اللعبة</button>
-          ${r.sv.legacy ? "" : '<button type="button" class="btn" data-a="sub">🧾 الاشتراك</button>'}
+          <button type="button" class="btn" data-a="sub">🧾 الاشتراك والزبون</button>
         </div></div>`;
     }).join("") || '<p class="note">لا توجد سيرفرات في servers/index.json</p>';
   }
@@ -6926,7 +6983,28 @@ pre.log .lx{display:inline-block;margin-inline-start:6px;padding:0 6px;border-ra
     $("adm-c-name").value = c.name || ""; $("adm-c-game").value = c.game_id || ""; $("adm-c-plan").value = c.plan || "crown-pilot-30";
     $("adm-c-start").value = c.start || new Date().toISOString().slice(0, 10); $("adm-c-days").value = c.days || 30; $("adm-c-frozen").checked = !!c.frozen; $("adm-c-notes").value = c.notes || "";
     $("adm-dlg").hidden = false; $("adm-dlg").scrollIntoView({ behavior: "smooth" });
+    $("adm-u-name").value = ""; $("adm-u-mail").value = ""; $("adm-u-out").hidden = true; setMsg("m-adm-u", ""); admUNow();
   }
+  function admUNow() {
+    const list = (window.kbCustomersOf && SUB) ? window.kbCustomersOf(SUB.id) : [];
+    $("adm-u-now").innerHTML = list.length ? "مربوط بهذا السيرفر: " + list.map(a => "<b>" + esc(a.u) + "</b> (" + esc(a.email || "—") + (a.must_change ? "، لم يدخل بعد" : "") + ")").join("، ") : "لا يوجد حساب زبون مربوط بهذا السيرفر بعد.";
+  }
+  document.addEventListener("click", async e => { const t = e.target; if (!t || !t.closest) return;
+    if (t.closest("#adm-u-info")) { $("adm-u-help").hidden = !$("adm-u-help").hidden; return; }
+    if (t.closest("#adm-u-copy")) { try { await navigator.clipboard.writeText($("adm-u-text").textContent); setMsg("m-adm-u", "✅ نُسخت الرسالة.", "ok"); } catch (_) { setMsg("m-adm-u", "انسخ النص يدوياً.", "err"); } return; }
+    const b = t.closest("#adm-u-make"); if (!b || !SUB) return;
+    b.classList.add("loading"); setMsg("m-adm-u", "جارٍ الحفظ…");
+    try {
+      const r = await window.kbAdminCustomer({ u: $("adm-u-name").value, email: $("adm-u-mail").value, server: SUB.id, start: $("adm-c-start").value, days: $("adm-c-days").value });
+      const link = location.origin + location.pathname, end = new Date(r.until).toLocaleDateString("ar-OM");
+      $("adm-u-text").textContent = r.existed
+        ? `مرحباً ${r.u}، تم تفعيل اشتراكك في Kingbot حتى ${end}.\nادخل لوحة التحكم بحسابك المعتاد: ${link}`
+        : `مرحباً، هذه بيانات دخولك للوحة تحكم Kingbot:\nالرابط: ${link}\nاسم المستخدم: ${r.u}\nكلمة المرور المؤقتة: ${r.pass}\nعند أول دخول اختر كلمة مرور جديدة.\nالاشتراك فعّال حتى ${end}.`;
+      $("adm-u-out").hidden = false;
+      setMsg("m-adm-u", r.existed ? "✅ الحساب موجود: رُبط بهذا السيرفر وفُعّل اشتراكه." : "✅ أُنشئ الحساب. كلمة المرور المؤقتة تظهر هنا مرة واحدة فقط.", "ok");
+      admUNow();
+    } catch (err) { setMsg("m-adm-u", err.message || String(err), "err"); }
+    finally { b.classList.remove("loading"); } });
   document.addEventListener("click", async e => { const t = e.target; if (!t || !t.closest) return;
     if (t.closest("#adm-c-close")) { $("adm-dlg").hidden = true; return; }
     const sb = t.closest("#adm-c-save"); if (!sb || !SUB) return;
