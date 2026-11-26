@@ -1,5 +1,5 @@
 {
- "count": 98,
+ "count": 97,
  "commanders": [
   {
    "name": "Aethelflaed",
@@ -266,10 +266,6 @@
    "img": "commanders/Pacal II.png"
   },
   {
-   "name": "Pakal",
-   "img": "commanders/Pakal.png"
-  },
-  {
    "name": "Pelagius",
    "img": "commanders/Pelagius.png"
   },
@@ -370,8 +366,8 @@
    "img": "commanders/Xiang Yu.png"
   },
   {
-   "name": "Yahya",
-   "img": "commanders/Yahya.png"
+   "name": "Yahya ibn Khalid",
+   "img": "commanders/Yahya ibn Khalid.png"
   },
   {
    "name": "Yi Seong-Gye",

@@ -903,6 +903,11 @@ main, .view, .panel, #top, .kbar { min-width: 0; max-width: 100%; box-sizing: bo
 .cpk-it.sel{border-color:var(--accent,#f28c28);background:rgba(242,140,40,.14)}
 .cpk-it .cmdav{width:56px;height:56px;border-radius:12px;font-size:18px}
 .cpk-it .own{font-size:10px;color:#7ee28f}
+.cmdav-crest{display:inline-flex;align-items:center;justify-content:center;background:linear-gradient(160deg,#3a2c17,#17120b)!important;color:#d9a441;border:1px solid rgba(217,164,65,.35)}
+.cmdav-crest svg{width:62%;height:62%}
+.cpk-rd{display:block;width:100%;margin-top:8px;padding:7px 12px;border-radius:999px;font:inherit;font-size:12.5px;cursor:pointer;text-align:center;border:1px solid}
+.cpk-rd.no{background:rgba(245,176,65,.1);border-color:rgba(245,176,65,.45);color:#f5c46b}
+.cpk-rd.ok{background:rgba(126,226,143,.08);border-color:rgba(126,226,143,.35);color:#9fe8ad}
 .cpk-sec{grid-column:1/-1;font-size:12px;opacity:.75;margin-top:4px;direction:rtl;text-align:right}
 .xm-box{display:flex;flex-direction:column;gap:10px;width:100%}
 .xm-card{border:1px solid var(--edge);border-radius:12px;padding:10px;background:rgba(0,0,0,.22);display:flex;flex-direction:column;gap:8px}
@@ -3730,7 +3735,10 @@ setTimeout(() => { try { cpzFill(); } catch (_) {} }, 0);
 if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", astInit); else setTimeout(astInit, 0);
 /* ---------- v192: approved commander list = pictures in kingbot-ui/commanders (GitHub) ---------- */
 // same commander, different spellings ("Suleiman" / "Suleiman I", "Edward" / "Edward of Woodstock") share one key
-const CMD_ALIAS = { edwardofwoodstock: "edward", chandraguptamaurya: "chandragupta" };
+const CMD_ALIAS = { edwardofwoodstock: "edward", chandraguptamaurya: "chandragupta", yahya: "yahyaibnkhalid", pakal: "pacal" };
+// TOOLS-05G: one canonical name per commander (spelling duplicates are merged into it)
+const CMD_NAME = { yahyaibnkhalid: "Yahya ibn Khalid", pacal: "Pacal II" };
+const cmdName = n => CMD_NAME[cmdKey(n)] || n;
 const cmdKey = n => { const k = String(n || "").normalize("NFKD").replace(/[̀-ͯ]/g, "").trim()
   .replace(/\s+(?:i|ii|iii|iv|v|vi|vii)$/i, "").toLowerCase().replace(/[^a-z0-9]/g, ""); return CMD_ALIAS[k] || k; };
 let GH_CMD = {};
@@ -3738,8 +3746,10 @@ function allCommanders() {
   // GitHub pictures give the approved spelling; the built-in names fill the list until every picture is uploaded
   const m = new Map(COMMANDERS.map(n => [cmdKey(n), n]));
   Object.values(GH_CMD).forEach(x => m.set(cmdKey(x.name), x.name));
-  return [...m.values()].sort((a, b) => a.localeCompare(b));
+  return [...m.entries()].map(([k, n]) => CMD_NAME[k] || n).sort((a, b) => a.localeCompare(b));
 }
+// TOOLS-05H: the picker lists only commanders that have a portrait; the rest appear only if the bot read them from your game
+const cmdHasPortrait = n => !!GH_CMD[cmdKey(n)];
 async function loadGhCommanders() {
   const RAW = "https://raw.githubusercontent.com/dwtgraphics-sys/kingbot-ui/main/";
   const put = arr => { const m = {}; (arr || []).forEach(x => { if (x && x.name && x.img) m[cmdKey(x.name)] = { name: x.name, url: x.img, raw: RAW + x.img.split("/").map(encodeURIComponent).join("/") }; }); GH_CMD = m; };
@@ -3779,9 +3789,9 @@ function cmdAvatar(name, size) {
   if (img && /^data:image\/jpeg;base64,[A-Za-z0-9+/=]+$/.test(img)) { const i = new Image(); i.className = "cmdav"; i.alt = ""; i.src = img; return i; }
   const d = document.createElement("span"); d.className = "cmdav";
   if (!name) { d.textContent = "＋"; d.style.background = "rgba(255,255,255,.08)"; return d; }
-  let h = 0; for (const ch of name) h = (h * 31 + ch.charCodeAt(0)) % 360;
-  d.style.background = `linear-gradient(135deg,hsl(${h} 55% 42%),hsl(${(h + 40) % 360} 60% 22%))`;
-  d.textContent = name.split(/[\s-]+/).filter(Boolean).slice(0, 2).map(w => w[0]).join("").toUpperCase();
+  // TOOLS-05H: no letter monograms - a neutral crest silhouette until the portrait exists
+  d.classList.add("cmdav-crest"); d.title = name;
+  d.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2 4 5v6c0 5 3.4 9.3 8 11 4.6-1.7 8-6 8-11V5l-8-3Zm0 4.2a2.6 2.6 0 1 1 0 5.2 2.6 2.6 0 0 1 0-5.2ZM7.6 16.2c.9-2 2.5-3.1 4.4-3.1s3.5 1.1 4.4 3.1A7.6 7.6 0 0 1 12 19.6a7.6 7.6 0 0 1-4.4-3.4Z"/></svg>';
   return d;
 }
 function cmdButton(obj, key, title) {
@@ -3793,14 +3803,17 @@ function cmdButton(obj, key, title) {
 }
 function openCmdPicker(title, current, done) {
   const box = document.createElement("div"); box.className = "imodal open";
-  box.innerHTML = '<div class="ibox cpk" role="dialog" aria-modal="true"><h3></h3><div class="cpk-top"><input type="search" placeholder="Search…"><button type="button" class="btn" data-x="none">بدون قائد</button><button type="button" class="btn" data-x="read">📥 قراءة قادتي من اللعبة</button><button type="button" class="btn" data-x="help" title="مساعدة">❗</button></div><div class="msg" data-x-msg></div><div class="cpk-grid"></div><button type="button" class="btn" data-x="close">إغلاق</button></div>';
+  box.innerHTML = '<div class="ibox cpk" role="dialog" aria-modal="true"><h3></h3><div class="cpk-top"><input type="search" placeholder="Search…"><button type="button" class="btn" data-x="none">بدون قائد</button><button type="button" class="btn" data-x="read">📥 قراءة قادتي من اللعبة</button></div><button type="button" class="cpk-rd" data-x="help"></button><div class="msg" data-x-msg></div><div class="cpk-grid"></div><button type="button" class="btn" data-x="close">إغلاق</button></div>';
   box.querySelector("h3").textContent = title.replace(/\s*\(.*\)$/, "");
   document.body.appendChild(box);
   const grid = box.querySelector(".cpk-grid"), q = box.querySelector("input");
   const close = () => box.remove();
   const draw = () => {
     const own = myCommanders(), f = q.value.trim().toLowerCase();
-    const mine = Object.keys(own).sort((a, b) => (cmdLevel(b) - cmdLevel(a)) || a.localeCompare(b)), ownK = new Set(Object.keys(own).map(cmdKey)), rest = allCommanders().filter(n => !ownK.has(cmdKey(n)));
+    const mineM = new Map(); Object.keys(own).forEach(n => { const k = cmdKey(n); if (!mineM.has(k)) mineM.set(k, cmdName(n)); });
+    const mine = [...mineM.values()].sort((a, b) => (cmdLevel(b) - cmdLevel(a)) || a.localeCompare(b)), ownK = new Set(mineM.keys()),
+          rest = allCommanders().filter(n => !ownK.has(cmdKey(n)) && cmdHasPortrait(n));
+    paintRd(mine.length);
     grid.innerHTML = "";
     const sec = (txt, arr, owned) => {
       arr = arr.filter(n => !f || n.toLowerCase().includes(f)); if (!arr.length) return;
@@ -3808,11 +3821,18 @@ function openCmdPicker(title, current, done) {
       arr.forEach(n => { const it = document.createElement("button"); it.type = "button"; it.className = "cpk-it" + (n === current ? " sel" : "");
         const nm = document.createElement("span"); nm.textContent = n; it.append(cmdFace(n), nm);
         if (owned) { const o = document.createElement("span"); o.className = "own"; const lv = cmdLevel(n); o.textContent = lv ? "✓ المستوى " + lv : "✓ لديك"; it.appendChild(o); }
-        it.addEventListener("click", () => { done(n); close(); }); grid.appendChild(it); });
+        it.addEventListener("click", () => { done(cmdName(n)); close(); }); grid.appendChild(it); });
     };
     if (mine.length) sec("قادتك (من اللعبة)", mine, true);
     sec(mine.length ? "باقي القادة (غير موجودين عندك)" : "كل القادة — يقرأ البوت قادتك وحده مرة لكل شخصية ثم أسبوعياً، أو اضغط «📥 قراءة قادتي من اللعبة» الآن", rest, false);
   };
+  function paintRd(n) {
+    const pill = box.querySelector("[data-x='help']"); if (!pill) return;
+    const st = (lastStatus || {}).city || {}, at = st.commanders_at || st.commanders_read_at;
+    pill.className = "cpk-rd " + (n ? "ok" : "no");
+    pill.textContent = n ? "✓ قُرئ " + n + " قائداً من لعبتك" + (at ? " · " + new Date(at).toLocaleDateString("ar") : "") + " — ما المقصود؟"
+                         : "لم تُقرأ قادتك من اللعبة بعد — اضغط «📥 قراءة قادتي من اللعبة»";
+  }
   draw(); q.addEventListener("input", draw); setTimeout(() => q.focus(), 50);
   box.addEventListener("click", async e => {
     if (e.target === box) return close();
@@ -3867,7 +3887,7 @@ const COMMANDERS = Array.from(new Set([
  "Hayam Wuruk","Hector","Henry","Heraclius","Hermann","Hermann Prime","Honda Tadakatsu","Huo Qubing","Imhotep","Ishida Mitsunari","Ivar the Boneless",
  "Jadwiga","Jan Zizka","Joan of Arc","Joan of Arc Prime","John Hunyadi","Julius Caesar","Justinian","Keira","Kusunoki Masashige","Lancelot","Lapu-Lapu",
  "Leonidas","Liu Che","Lohar","Lu Bu","Margaret","Mary","Matilda of Flanders","Matthias","Mehmed","Minamoto no Yoshitsune","Mulan","Narses",
- "Nebuchadnezzar","Osman","Pakal","Pelagius","Pepin","Pericles","Philip","Pyrrhus","Qin Shi Huang","Ragnar Lodbrok","Ragnar Lodbrok Prime",
+ "Nebuchadnezzar","Osman","Pacal II","Pelagius","Pepin","Pericles","Philip","Pyrrhus","Qin Shi Huang","Ragnar Lodbrok","Ragnar Lodbrok Prime",
  "Ramesses","Richard","Saladin","Sargon the Great","Sarka","Scipio Aemilianus","Scipio Africanus","Seondeok","Shajar al-Durr","Shapur",
  "Siyaj K'ak","Stephen III","Subutai","Suleiman","Sun Tzu","Sun Tzu Prime","Takeda Shingen","Tariq ibn Ziyad","Theodora","Thutmose",
  "Tokugawa Ieyasu","Tomoe Gozen","Tomyris","Torgny","Trajan","Vercingetorix","Wak Chanil Ajaw","William I","William Wallace","Wu Zetian",
@@ -4103,7 +4123,6 @@ window.kbPassDialog = kbPassDialog;
           '<input type="text" id="glg-code" inputmode="numeric" autocomplete="one-time-code" maxlength="8" placeholder="الكود" dir="ltr">' +
           '<label class="mut"><input type="checkbox" id="glg-agree"> أوافق على اتفاقية المستخدم وسياسة الخصوصية للعبة (يضع البوت العلامة في نافذة الدخول)</label>'
         : '<input type="text" id="glg-email" inputmode="email" autocomplete="email" placeholder="بريد حساب اللعبة" dir="ltr">') +
-      (encOn() ? "" : '<p class="mut" style="color:#f5b041">⚠️ تشفير 🔐 غير مفعّل لهذا السيرفر: البيانات تمر عبر مستودع kingbot-syn الخاص بدون تشفير.</p>') +
       '<div class="msg" id="m-glg">' + esc(g.detail || "") + '</div>' +
       '<div class="row">' +
       (codeStep ? '<button type="button" class="btn" id="glg-send-code"' + (busy ? " disabled" : "") + '>تسجيل الدخول</button><button type="button" class="btn ghost" id="glg-back">إعادة إرسال الكود / بريد آخر</button>'
@@ -5066,7 +5085,7 @@ renderAll();
   const saved = store.get("kb_lang");
   apply(saved && LANGS.some(x => x[0] === saved) ? saved : "ar");
 })();
-</script><datalist id="kb-cmdrs"><option value="Aethelflaed"></option><option value="Afonso"></option><option value="Alexander Nevsky"></option><option value="Alexander the Great"></option><option value="Alp Arslan"></option><option value="Archimedes"></option><option value="Artemisia"></option><option value="Arthur Pendragon"></option><option value="Ashurbanipal"></option><option value="Attila"></option><option value="Babur"></option><option value="Bai Qi"></option><option value="Baibars"></option><option value="Belisarius"></option><option value="Belisarius Prime"></option><option value="Bertrand du Guesclin"></option><option value="Bjorn Ironside"></option><option value="Boudica"></option><option value="Boudica Prime"></option><option value="Cao Cao"></option><option value="Casimir"></option><option value="Catherine de' Medici"></option><option value="Centurion"></option><option value="Chandragupta"></option><option value="Charlemagne"></option><option value="Charles Martel"></option><option value="Cheok Jun-Gyeong"></option><option value="Choe Yeong"></option><option value="City Keeper"></option><option value="Cleopatra"></option><option value="Constance"></option><option value="Constantine"></option><option value="Cyrus the Great"></option><option value="Diaochan"></option><option value="Dido"></option><option value="Dragon Lancer"></option><option value="Edward"></option><option value="El Cid"></option><option value="Eleanor of Aquitaine"></option><option value="Elizabeth"></option><option value="Eulji Mundeok"></option><option value="Flavius Aetius"></option><option value="Frederick"></option><option value="Gaius Marius"></option><option value="Gajah Mada"></option><option value="Gang Gamchan"></option><option value="Genghis Khan"></option><option value="Gilgamesh"></option><option value="Gonzalo de Cordoba"></option><option value="Gorgo"></option><option value="Guan Yu"></option><option value="Hannibal Barca"></option><option value="Harald Sigurdsson"></option><option value="Hayam Wuruk"></option><option value="Hector"></option><option value="Henry"></option><option value="Heraclius"></option><option value="Hermann"></option><option value="Hermann Prime"></option><option value="Honda Tadakatsu"></option><option value="Huo Qubing"></option><option value="Imhotep"></option><option value="Ishida Mitsunari"></option><option value="Ivar the Boneless"></option><option value="Jadwiga"></option><option value="Jan Zizka"></option><option value="Joan of Arc"></option><option value="Joan of Arc Prime"></option><option value="John Hunyadi"></option><option value="Julius Caesar"></option><option value="Justinian"></option><option value="Keira"></option><option value="Kusunoki Masashige"></option><option value="Lancelot"></option><option value="Lapu-Lapu"></option><option value="Leonidas"></option><option value="Liu Che"></option><option value="Lohar"></option><option value="Lu Bu"></option><option value="Margaret"></option><option value="Markswoman"></option><option value="Mary"></option><option value="Matilda of Flanders"></option><option value="Matthias"></option><option value="Mehmed"></option><option value="Minamoto no Yoshitsune"></option><option value="Mulan"></option><option value="Narses"></option><option value="Nebuchadnezzar"></option><option value="Osman"></option><option value="Pakal"></option><option value="Pelagius"></option><option value="Pepin"></option><option value="Pericles"></option><option value="Philip"></option><option value="Pyrrhus"></option><option value="Qin Shi Huang"></option><option value="Ragnar Lodbrok"></option><option value="Ragnar Lodbrok Prime"></option><option value="Ramesses"></option><option value="Richard"></option><option value="Saladin"></option><option value="Sargon the Great"></option><option value="Sarka"></option><option value="Scipio Aemilianus"></option><option value="Scipio Africanus"></option><option value="Seondeok"></option><option value="Shajar al-Durr"></option><option value="Shapur"></option><option value="Siyaj K'ak"></option><option value="Stephen III"></option><option value="Subutai"></option><option value="Suleiman"></option><option value="Sun Tzu"></option><option value="Sun Tzu Prime"></option><option value="Takeda Shingen"></option><option value="Tariq ibn Ziyad"></option><option value="Theodora"></option><option value="Thutmose"></option><option value="Tokugawa Ieyasu"></option><option value="Tomoe Gozen"></option><option value="Tomyris"></option><option value="Torgny"></option><option value="Trajan"></option><option value="Vercingetorix"></option><option value="Wak Chanil Ajaw"></option><option value="William I"></option><option value="William Wallace"></option><option value="Wu Zetian"></option><option value="Xiang Yu"></option><option value="Yahya ibn Khalid"></option><option value="Yi Seong-Gye"></option><option value="Yi Sun-Sin"></option><option value="Zenobia"></option><option value="Zhuge Liang"></option><option value="Amanitore"></option><option value="Moctezuma"></option><option value="Pacal II"></option></datalist>
+</script>
 <script>
 /* ---------- intro (v132: video intro — phone gate film / PC kingdom loop) ---------- */
 (function kbIntro() {
@@ -6572,7 +6591,6 @@ pre.log .lx{display:inline-block;margin-inline-start:6px;padding:0 6px;border-ra
     ["Nebuchadnezzar II", "L", "arc,gar", "Ashurbanipal · Henry V", "5-5-5-1", "حامية رماة."],
     ["Osman I", "E", "inf,conq,siege", "Sun Tzu · Charles Martel", "5-5-1-1", "حصار ومشاة مبكر."],
     ["Pacal II", "L", "inf,conq,def", "Harald Sigurdsson · Alexander the Great", "1 و2 أولاً، ثم 4", "مشاة حشود، وثانوي في الحقل."],
-    ["Pakal", "L", "inf,conq,def", "Harald Sigurdsson · Alexander the Great", "1 و2 أولاً، ثم 4", "مشاة حشود، وثانوي في الحقل."],
     ["Pelagius", "E", "cav,gar,def", "Charles Martel · Baibars", "5-5-1-1", "حامية فرسان مبكر."],
     ["Pericles", "L", "lead,gath", "Cleopatra VII · Constance", "5-5-5-1", "قيادة واقتصاد."],
     ["Pyrrhus", "L", "inf,def", "Charles Martel · Richard I", "5-5-1-1", "مشاة دفاعي أساسي يمنح مزايا وسرعة مسيرة."],
@@ -6610,7 +6628,7 @@ pre.log .lx{display:inline-block;margin-inline-start:6px;padding:0 6px;border-ra
     ["Subutai", "L", "cav,conq", "Bertrand du Guesclin", "5-5-5-5", "فرسان في الحقل، غالباً ثانوي بضرر مهارات."],
     ["Wu Zetian", "L", "lead,gar,support", "Yi Sun-sin", "5-5-1-5", "حامية ودفاع المدينة."],
     ["Xiang Yu", "L", "cav,conq,skill", "Takeda Shingen · Saladin", "5-5-1-1", "فرسان في الحقل بضرر مساحة بالغضب."],
-    ["Yahya", "L", "gath,mobility", "—", "لا يُنشر ترتيب دقيق — ارفع المهارة الأولى أولاً", "قائد جمع (Yahya ibn Khalid)."],
+    ["Yahya ibn Khalid", "L", "gath,mobility", "—", "لا يُنشر ترتيب دقيق — ارفع المهارة الأولى أولاً", "قائد جمع (Yahya ibn Khalid)."],
     ["Zenobia", "L", "inf,gar", "Flavius Aetius · Gorgo · Yi Sun-sin · Charles Martel", "5-5-5-5 (أو 5-5-1-5)", "مشاة حامية ودفاع المدينة."],
     ["Zhuge Liang", "L", "arc,skill", "Boudica Prime · Henry V", "5-5-1-1", "رماة بضرر مهارات عالٍ للحقل والحشود."]
   ];
