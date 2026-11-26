@@ -4517,7 +4517,8 @@ const MR_MIS = { gather: "جمع", barbarians: "البرابرة", rally: "حش�
 function renderMarches(c) {
   /* v230: full list from the in-game "Troops" popup - every march with commanders, units, target, status and a live countdown */
   const box = document.getElementById("mr-list"); if (!box) return;
-  let list = c && Array.isArray(c.marches) ? kbCache("marches", c.marches.length ? c.marches : null) : null;
+  const src = c && (Array.isArray(c.deployed_marches) ? c.deployed_marches : c.marches);
+  let list = Array.isArray(src) ? kbCache("marches", src.length ? src : null) : null;
   let at = c && c.marches_at, rd = c && c.marches_read_utc; if (list && at) kbCache("marches_at", { t: at, u: rd || "" });
   if (!list) { list = kbCache("marches", null); const k = kbCache("marches_at", null) || {}; at = k.t; rd = k.u; }
   if (!list) return;
