@@ -1,5 +1,5 @@
 {
- "count": 81,
+ "count": 102,
  "commanders": [
   {
    "name": "Aethelflaed",
@@ -36,6 +36,10 @@
   {
    "name": "Babur",
    "img": "commanders/Babur.png"
+  },
+  {
+   "name": "Bai Qi",
+   "img": "commanders/Bai Qi.png"
   },
   {
    "name": "Baibars",
@@ -146,8 +150,20 @@
    "img": "commanders/Gorgo.png"
   },
   {
+   "name": "Guan Yu",
+   "img": "commanders/Guan Yu.png"
+  },
+  {
+   "name": "Hammurabi",
+   "img": "commanders/Hammurabi.png"
+  },
+  {
    "name": "Harald Sigurdsson",
    "img": "commanders/Harald Sigurdsson.png"
+  },
+  {
+   "name": "Hayam Wuruk",
+   "img": "commanders/Hayam Wuruk.png"
   },
   {
    "name": "Henry V",
@@ -162,8 +178,20 @@
    "img": "commanders/Hermann.png"
   },
   {
+   "name": "Hippolyta",
+   "img": "commanders/Hippolyta.png"
+  },
+  {
+   "name": "Honda Tadakatsu",
+   "img": "commanders/Honda Tadakatsu.png"
+  },
+  {
    "name": "Imhotep",
    "img": "commanders/Imhotep.png"
+  },
+  {
+   "name": "Isabella I",
+   "img": "commanders/Isabella I.png"
   },
   {
    "name": "Joan of Arc Prime",
@@ -182,6 +210,14 @@
    "img": "commanders/Keira.png"
   },
   {
+   "name": "Khawla",
+   "img": "commanders/Khawla.png"
+  },
+  {
+   "name": "Kim Yu-shin",
+   "img": "commanders/Kim Yu-shin.png"
+  },
+  {
    "name": "Kusunoki Masashige",
    "img": "commanders/Kusunoki Masashige.png"
   },
@@ -192,6 +228,14 @@
   {
    "name": "Leonidas I",
    "img": "commanders/Leonidas I.png"
+  },
+  {
+   "name": "Liu Bei",
+   "img": "commanders/Liu Bei.png"
+  },
+  {
+   "name": "Liu Che",
+   "img": "commanders/Liu Che.png"
   },
   {
    "name": "Lohar",
@@ -206,12 +250,20 @@
    "img": "commanders/Margaret I.png"
   },
   {
+   "name": "Mary",
+   "img": "commanders/Mary.png"
+  },
+  {
    "name": "Matilda of Flanders",
    "img": "commanders/Matilda of Flanders.png"
   },
   {
    "name": "Minamoto no Yoshitsune",
    "img": "commanders/Minamoto no Yoshitsune.png"
+  },
+  {
+   "name": "Montezuma",
+   "img": "commanders/Montezuma.png"
   },
   {
    "name": "Mulan",
@@ -246,6 +298,10 @@
    "img": "commanders/Pyrrhus.png"
   },
   {
+   "name": "Qin Shi Huang",
+   "img": "commanders/Qin Shi Huang.png"
+  },
+  {
    "name": "Ragnar Lodbrok Prime",
    "img": "commanders/Ragnar Lodbrok Prime.png"
   },
@@ -262,6 +318,18 @@
    "img": "commanders/Richard I.png"
   },
   {
+   "name": "Saladin",
+   "img": "commanders/Saladin.png"
+  },
+  {
+   "name": "Sammuramat",
+   "img": "commanders/Sammuramat.png"
+  },
+  {
+   "name": "Sargon the Great",
+   "img": "commanders/Sargon the Great.png"
+  },
+  {
    "name": "Sarka",
    "img": "commanders/Sarka.png"
   },
@@ -272,6 +340,10 @@
   {
    "name": "Seondeok",
    "img": "commanders/Seondeok.png"
+  },
+  {
+   "name": "Subutai",
+   "img": "commanders/Subutai.png"
   },
   {
    "name": "Suleiman I",
@@ -314,6 +386,10 @@
    "img": "commanders/William I.png"
   },
   {
+   "name": "Yahya",
+   "img": "commanders/Yahya.png"
+  },
+  {
    "name": "Yi Seong-Gye",
    "img": "commanders/Yi Seong-Gye.png"
   },
@@ -324,6 +400,14 @@
   {
    "name": "Zeno",
    "img": "commanders/Zeno.png"
+  },
+  {
+   "name": "Zenobia",
+   "img": "commanders/Zenobia.png"
+  },
+  {
+   "name": "Zhuge Liang",
+   "img": "commanders/Zhuge Liang.png"
   }
  ]
 }
