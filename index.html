@@ -1395,17 +1395,6 @@ window.addEventListener("error", function(e) {
 
     <!-- HOME -->
     <div class="view" id="v-home">
-      <section class="panel qm-card" id="qm-card" aria-label="مراقب الطوابير">
-        <div class="qm-head"><h2>⏱ مراقب الطوابير والمؤقتات الحيّة</h2><span class="qm-at" id="qm-at">—</span><span class="sp"></span>
-          <button type="button" class="qm-btn" id="qm-info" title="ما هذا؟">❗</button><button type="button" class="qm-btn" id="qm-read" title="اطلب قراءة الطوابير الآن">↻ قراءة الآن</button></div>
-        <div class="qm-grid" id="qm-grid"></div>
-        <div class="qm-foot"><label class="qm-master"><input type="checkbox" id="qm-on"> تشغيل مدير الطوابير</label><span class="sp"></span><button type="button" class="qm-save" id="qm-save">💾 حفظ وإرسال للبوت</button></div>
-        <div class="msg" id="m-qm"></div>
-      </section>
-      <section class="panel lv-card" id="lv-home" aria-label="البث المباشر">
-        <div class="lv-head"><h2>📺 البث المباشر</h2><span class="lv-badge" data-lv="badge"><i></i><span>متوقف</span></span><span class="sp"></span><button type="button" data-lv="open">فتح بحجم كبير</button></div>
-        <div class="lv-slot" id="lv-slot-home"></div>
-      </section>
       <section class="panel acc" aria-label="حساب البوت">
         <div class="acc-top">
           <div class="acc-badge"><img id="ac-av" alt="" src="data:image/jpeg;base64,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"><span id="ac-av0" hidden="">👑</span></div>
@@ -1445,6 +1434,17 @@ window.addEventListener("error", function(e) {
             <path d="M76 15 A48 48 0 0 1 100 30" stroke="#e6d36b"></path><path d="M103 34 A48 48 0 0 1 108 62" stroke="#81c995"></path>
             <line id="ac-needle" x1="60" y1="60" x2="24.0" y2="60.0" stroke="#fff" stroke-width="3" stroke-linecap="round"></line><circle cx="60" cy="60" r="5" fill="#fff"></circle>
           </svg></div>
+      </section>
+      <section class="panel qm-card" id="qm-card" aria-label="مراقب الطوابير">
+        <div class="qm-head"><h2>⏱ مراقب الطوابير والمؤقتات الحيّة</h2><span class="qm-at" id="qm-at">—</span><span class="sp"></span>
+          <button type="button" class="qm-btn" id="qm-info" title="ما هذا؟">❗</button><button type="button" class="qm-btn" id="qm-read" title="اطلب قراءة الطوابير الآن">↻ قراءة الآن</button></div>
+        <div class="qm-grid" id="qm-grid"></div>
+        <div class="qm-foot"><label class="qm-master"><input type="checkbox" id="qm-on"> تشغيل مدير الطوابير</label><span class="sp"></span><button type="button" class="qm-save" id="qm-save">💾 حفظ وإرسال للبوت</button></div>
+        <div class="msg" id="m-qm"></div>
+      </section>
+      <section class="panel lv-card" id="lv-home" aria-label="البث المباشر">
+        <div class="lv-head"><h2>📺 البث المباشر</h2><span class="lv-badge" data-lv="badge"><i></i><span>متوقف</span></span><span class="sp"></span><button type="button" data-lv="open">فتح بحجم كبير</button></div>
+        <div class="lv-slot" id="lv-slot-home"></div>
       </section>
       <section class="panel" aria-labelledby="st-h">
         <div class="panel-head">
@@ -6245,6 +6245,46 @@ pre.log .lx{display:inline-block;margin-inline-start:6px;padding:0 6px;border-ra
   window.v18bFill = () => { try { srDraw(); ifrDraw(); paDraw(); } catch (_) {} };
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", boot); else boot();
   setInterval(() => { try { pnWatch(); } catch (_) {} try { srStatus(); } catch (_) {} }, 60000);
+})();
+</script>
+<style>
+/* owner 26-11: server switcher inside the account card (instead of the top bar) */
+.acc-row .kbar-srv{max-width:none!important;font-size:20px!important;height:44px;padding:0 16px;border-radius:999px;gap:10px;background:rgba(255,255,255,.08);border:1px solid var(--edge,#ffffff22);color:var(--ink,#fff)}
+.acc-row .kbar-srv i{width:10px;height:10px}
+.acc-row .kbar-srv::after{content:"▾";font-size:14px;opacity:.7}
+#ac-slot.v18-hide,#ac-edit.v18-hide{display:none}
+/* owner 26-11: queue monitor in the site's own style (panel, pill buttons, switches, fonts, colours) */
+.qm-card{background:var(--glass)!important;border:1px solid var(--edge)!important}
+.qm-head h2{font-size:inherit;color:var(--ink,#fff)!important;font-weight:800}
+.qm-head{margin-bottom:0}
+.qm-btn,.qm-save{height:auto!important;border-radius:999px!important;padding:8px 16px!important;font:inherit;font-weight:700;font-size:13px;border:1px solid var(--edge)!important;background:rgba(255,255,255,.1)!important;color:var(--ink,#fff)!important;box-shadow:0 6px 16px rgba(0,0,0,.25)}
+.qm-save{background:linear-gradient(145deg,var(--accent-2),var(--accent))!important;color:#1b0f02!important;border-color:transparent!important;box-shadow:0 8px 22px rgba(242,140,40,.4)}
+.qm-sec{border:1px solid var(--edge)!important;border-radius:16px!important;background:rgba(255,255,255,.05)!important;padding:12px 14px!important}
+.qm-sh b{color:var(--ink,#fff)!important;font-size:15px!important}
+.qm-sw{width:54px!important;height:30px!important}
+.qm-sw i{border-radius:999px!important;background:rgba(255,255,255,.14)!important;box-shadow:inset 0 2px 5px rgba(0,0,0,.4)}
+.qm-sw i:before{width:24px!important;height:24px!important;top:3px!important;left:3px!important;background:linear-gradient(180deg,#fff,#d9dde4)!important;box-shadow:0 3px 8px rgba(0,0,0,.4)}
+.qm-sw input:checked+i{background:linear-gradient(90deg,var(--accent),var(--accent-2))!important;box-shadow:0 0 14px rgba(242,140,40,.45)}
+.qm-sw input:checked+i:before{transform:translateX(24px)!important}
+.qm-row{font-size:14px!important;border-top:1px solid rgba(255,255,255,.07)!important;padding:6px 0!important}
+.qm-t{border-radius:999px!important;padding:3px 12px!important;font-weight:700!important;background:rgba(77,141,255,.18)!important;color:#cfe0ff!important;border:1px solid rgba(77,141,255,.35)}
+.qm-t.idle{background:rgba(242,140,40,.16)!important;color:#ffd08a!important;border-color:rgba(242,140,40,.4)}
+.qm-t.done{background:rgba(62,207,110,.16)!important;color:#b9f5cc!important;border-color:rgba(62,207,110,.4)}
+.qm-t.unk{background:rgba(255,255,255,.08)!important;color:#bbb!important;border-color:rgba(255,255,255,.15)}
+.qm-opts select,.qm-opts input[type=number]{height:34px!important;border-radius:999px!important;border:1px solid var(--edge)!important;background:rgba(255,255,255,.08)!important;color:var(--ink,#fff)!important;padding:0 12px!important;font:inherit;font-size:13px}
+.qm-master{display:inline-flex;align-items:center;gap:8px;font-weight:700}
+</style>
+<script>
+(function () {
+  function moveSrv() {
+    const b = document.getElementById("kbar-srv"), h = document.getElementById("ac-slot");
+    if (!b || !h) return false;
+    if (b.parentNode !== h.parentNode) { h.parentNode.insertBefore(b, h); h.classList.add("v18-hide"); const e = document.getElementById("ac-edit"); if (e) e.classList.add("v18-hide"); }
+    return true;
+  }
+  const t = setInterval(() => { if (moveSrv()) clearInterval(t); }, 500); setTimeout(() => clearInterval(t), 60000);
+  // queue monitor buttons get the site's button classes
+  setTimeout(() => { document.querySelectorAll(".qm-btn,.qm-save").forEach(b => b.classList.add("btn")); }, 0);
 })();
 </script>
 </body></html>
