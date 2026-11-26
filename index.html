@@ -1170,6 +1170,10 @@ main, .view, .panel, #top, .kbar { min-width: 0; max-width: 100%; box-sizing: bo
 .lv-mini{cursor:pointer}
   body:not(.kb-is-owner) #v-admin { display: none !important; }
   .kb-owner-only[hidden] { display: none !important; }
+  #adm-subs-slot:empty { display: none; }
+  #adm-subs-slot > .pg-card { margin: 0; }
+  .acc-sub select.acc-srv { max-width: 11rem; }
+  #adm-dlg[hidden] { display: none !important; }
 </style>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&amp;display=swap">
 </head>
@@ -1564,6 +1568,7 @@ window.addEventListener("error", function(e) {
         <div id="adm-list"></div>
         <div class="msg" id="m-adm"></div>
       </section>
+      <section class="panel" id="adm-subs-slot"></section>
       <section class="panel adm-dlg" id="adm-dlg" hidden><div class="panel-head"><h2 id="adm-dlg-h">بطاقة الاشتراك</h2></div>
         <div class="mc-row crc-in">
           <label>اسم العميل <input type="text" id="adm-c-name" dir="auto"></label>
@@ -2462,8 +2467,16 @@ window.addEventListener("error", function(e) {
             <input id="acc-pw2" type="password" placeholder="تأكيد كلمة المرور الجديدة" autocomplete="new-password">
             <button class="btn primary" type="submit">تغيير كلمة المرور</button></form>
           <div class="msg" id="m-acc-pw"></div></div>
+        <div class="pg-card" id="acc-admin" hidden><h3>🛡️ حساب المسؤول (admin) <button type="button" class="info-btn" data-x="admin" aria-label="شرح">❗</button></h3>
+          <p class="note" id="acc-admin-st"></p>
+          <form id="acc-admin-f" autocomplete="off">
+            <input id="acc-admin-p0" type="password" placeholder="كلمة مرور حسابك الحالي" autocomplete="current-password">
+            <input id="acc-admin-p1" type="password" placeholder="كلمة مرور admin الجديدة (8 أحرف على الأقل)" autocomplete="new-password">
+            <input id="acc-admin-p2" type="password" placeholder="تأكيد كلمة مرور admin" autocomplete="new-password">
+            <button class="btn primary" type="submit" id="acc-admin-go">تفعيل حساب admin</button></form>
+          <div class="msg" id="m-acc-admin"></div></div>
         <div class="pg-card" id="acc-subs"><h3>المشتركون (حسابات اللوحة)</h3>
-          <p class="note">يظهر هنا لمالك اللوحة فقط. الحساب الجديد يرى صفحة التعريف والباقات حتى تفعّل اشتراكه.</p>
+          <p class="note">يظهر هنا لحساب المسؤول (admin) فقط. اختر لكل زبون سيرفره ليرى لوحة سيرفره وحده. الحساب الجديد يرى صفحة التعريف والباقات حتى تفعّل اشتراكه.</p>
           <div id="acc-subs-list" class="acc-subs"><div class="acc-sub"><div><b>Kak</b><small>hahah@gmaila.com · <span class="off">موقوف</span></small></div><div class="acts"><button type="button" class="btn" data-a="add" data-u="Kak">+30 يوم</button><button type="button" class="btn" data-a="pause" data-u="Kak">استئناف</button><button type="button" class="btn acc-out" data-a="del" data-u="Kak">حذف</button></div></div><div class="acc-sub"><div><b>yahya</b><small>yahyamohammedd4@gmail.com · <span class="off">موقوف</span></small></div><div class="acts"><button type="button" class="btn" data-a="add" data-u="yahya">+30 يوم</button><button type="button" class="btn" data-a="pause" data-u="yahya">استئناف</button><button type="button" class="btn acc-out" data-a="del" data-u="yahya">حذف</button></div></div><div class="acc-sub"><div><b>yahy</b><small>dwt.desiner@gmail.com · <span class="on">مشترك حتى ٢١ ديسمبر، ٢٠٢٦، ١١:٣٥&nbsp;ص</span></small></div><div class="acts"><button type="button" class="btn" data-a="add" data-u="yahy">+30 يوم</button><button type="button" class="btn" data-a="pause" data-u="yahy">إيقاف</button><button type="button" class="btn acc-out" data-a="del" data-u="yahy">حذف</button></div></div></div><div class="msg" id="m-acc-subs"></div></div>
         <!-- GUIDE-20: install as an app + device notifications -->
         <div class="pg-card" id="pw-card"><h3>📲 استخدمها كتطبيق <button type="button" class="info-btn" data-x="pwa" aria-label="شرح">❗</button></h3>
@@ -5075,19 +5088,24 @@ document.getElementById("cond-ic").innerHTML = gsvg("conduct", 46);
   async function load() {
     if (db) {
       try { const sn = await db.doc(DOC).get(); const d = sn.exists ? sn.data() : null;
-        accounts = { users: Array.isArray(d && d.users) ? d.users.map(u => Object.assign({}, u)) : [] }; store = "db"; return; }
+        accounts = { users: Array.isArray(d && d.users) ? d.users.map(u => Object.assign({}, u)) : [] }; if (d && d.admin && d.admin.hash) accounts.admin = Object.assign({}, d.admin); store = "db"; return; }
       catch (e) { console.warn("accounts db read failed", e); }
     }
-    const l = ls.get(LOCAL); accounts = { users: Array.isArray(l && l.users) ? l.users : [] }; store = "local";
+    const l = ls.get(LOCAL); accounts = { users: Array.isArray(l && l.users) ? l.users : [] }; if (l && l.admin && l.admin.hash) accounts.admin = l.admin; store = "local";
   }
   async function save() {
     if (store === "db" && db) {
-      try { await db.doc(DOC).set({ users: accounts.users }); return true; }
-      catch (e) { if (e && e.code === "unavailable") { await new Promise(r => setTimeout(r, 800 + Math.random() * 800)); try { await db.doc(DOC).set({ users: accounts.users }); return true; } catch (_) {} } console.warn(e); return false; }
+      try { await db.doc(DOC).set(docBody()); return true; }
+      catch (e) { if (e && e.code === "unavailable") { await new Promise(r => setTimeout(r, 800 + Math.random() * 800)); try { await db.doc(DOC).set(docBody()); return true; } catch (_) {} } console.warn(e); return false; }
     }
     ls.set(LOCAL, accounts); return true;
   }
-  const find = u => accounts.users.find(x => norm(x.u) === norm(u));
+  // ADM-05: separate administrator login "admin" (not a customer account, never listed with subscribers)
+  const ADMIN_U = "admin", RESERVED = /^(admin|administrator|root|owner|kingbot|مسؤول|المسؤول|الادمن|ادمن)$/i;
+  function docBody() { const b = { users: accounts.users }; if (accounts.admin) b.admin = accounts.admin; return b; }
+  const find = u => norm(u) === ADMIN_U ? (accounts.admin && accounts.admin.hash ? Object.assign(accounts.admin, { u: ADMIN_U, role: "admin", email: accounts.admin.email || "admin" }) : null)
+                                         : accounts.users.find(x => norm(x.u) === norm(u));
+  const isAdminAcc = a => !!a && !a.disabled && (a.role === "admin" || (a.role === "owner" && !(accounts.admin && accounts.admin.hash)));
 
   function setMode(m) {
     mode = m;
@@ -5117,8 +5135,9 @@ document.getElementById("cond-ic").innerHTML = gsvg("conduct", 46);
     $g("kb-welcome").hidden = true; const bv = $g("kbw-bg"); if (bv) { bv.pause(); bv.removeAttribute("src"); }
     document.body.classList.remove("kb-locked"); render();
   }
-  function isActive(a) { return a.role === "owner" || (!!a.sub_until && Date.parse(a.sub_until) > Date.now() && !a.sub_paused); }
+  function isActive(a) { return a.role === "owner" || a.role === "admin" || (!!a.sub_until && Date.parse(a.sub_until) > Date.now() && !a.sub_paused); }
   function showWelcome() {
+    applyOwnerGate(); const ac = $g("acc-admin"); if (ac) ac.hidden = true;
     const w = $g("kb-welcome"); w.hidden = false; document.body.classList.add("kb-locked");
     const logo = document.querySelector(".brand img"); if (logo && logo.src) w.querySelector(".kbw-logo").src = logo.src;
     $g("kbw-u").textContent = me.acc.u; $g("kbw-u2").textContent = me.acc.u; $g("kbw-mail").textContent = me.acc.email || "—";
@@ -5161,6 +5180,7 @@ document.getElementById("cond-ic").innerHTML = gsvg("conduct", 46);
     try {
       await load();
       if (mode === "create") {
+        if (RESERVED.test(u.trim())) { msg("m-kg", "هذا الاسم محجوز. اختر اسم مستخدم آخر.", "err"); return; }
         if (find(u)) { msg("m-kg", "اسم المستخدم مستخدم من قبل. اختر اسماً آخر أو سجّل الدخول.", "err"); return; }
         if (accounts.users.some(x => norm(x.email) === norm(mail))) { msg("m-kg", "هذا البريد مسجّل بحساب آخر.", "err"); return; }
         if (p !== $g("kg-p2").value) { msg("m-kg", "كلمتا المرور غير متطابقتين.", "err"); return; }
@@ -5173,11 +5193,13 @@ document.getElementById("cond-ic").innerHTML = gsvg("conduct", 46);
         const acc = find(u);
         const ok = acc && !acc.disabled && (await hashPw(p, acc.salt)) === acc.hash;
         if (!ok) { await new Promise(r => setTimeout(r, 700)); msg("m-kg", "اسم المستخدم أو كلمة المرور غير صحيحة.", "err"); return; }
+        if (acc.role === "admin") window.kbGoAdmin = true;
         acc.prev_last = acc.last; acc.last = new Date().toISOString(); save();
         await startSession(acc, $g("kg-rem").checked);
       }
       $g("kg-p").value = ""; $g("kg-p2").value = ""; msg("m-kg", "");
       unlock();
+      if (window.kbGoAdmin) { window.kbGoAdmin = false; setTimeout(() => { const g = document.querySelector('[data-go="v-admin"]'); if (g) g.click(); }, 350); }
     } catch (err) { msg("m-kg", "حدث خطأ: " + ((err && (err.message || err.code)) || err), "err"); }
     finally { btn.disabled = false; }
   });
@@ -5198,11 +5220,16 @@ document.getElementById("cond-ic").innerHTML = gsvg("conduct", 46);
   }
   function renderSubs() {
     const box = $g("acc-subs"); if (!box) return;
-    box.hidden = !(me && me.acc.role === "owner"); if (box.hidden) return;
+    box.hidden = !(me && isAdminAcc(me.acc)); if (box.hidden) return;
     const list = $g("acc-subs-list"), others = accounts.users.filter(a => a.role !== "owner");
     list.innerHTML = others.length ? others.map((a, i) => '<div class="acc-sub"><div><b>' + esc(a.u) + '</b><small>' + esc(a.email || "—") + ' · ' + subLine(a) + '</small></div><div class="acts">' +
       '<button type="button" class="btn" data-a="add" data-u="' + esc(a.u) + '">+30 يوم</button><button type="button" class="btn" data-a="pause" data-u="' + esc(a.u) + '">' + (a.sub_paused ? "استئناف" : "إيقاف") + '</button>' +
+      '<select class="acc-srv" data-u="' + esc(a.u) + '" title="سيرفر هذا الزبون"><option value="">— سيرفر الزبون —</option>' + (typeof SERVERS !== "undefined" ? SERVERS : []).map(s => '<option value="' + esc(s.id) + '"' + (a.server === s.id ? " selected" : "") + '>' + esc(s.name || s.id) + '</option>').join("") + '</select>' +
       '<button type="button" class="btn acc-out" data-a="del" data-u="' + esc(a.u) + '">حذف</button></div></div>').join("") : '<p class="note">لا يوجد مشتركون بعد. الحساب الجديد يُنشأ من شاشة الدخول ← «إنشاء حساب جديد».</p>';
+    list.querySelectorAll("select.acc-srv").forEach(sl => sl.addEventListener("change", async () => {
+      await load(); const a = find(sl.dataset.u); if (!a) return; a.server = sl.value || undefined; if (!a.server) delete a.server;
+      msg("m-acc-subs", (await save()) ? "تم ربط " + a.u + " بالسيرفر." : "تعذّر الحفظ.", "ok");
+    }));
     list.querySelectorAll("button[data-a]").forEach(b => b.addEventListener("click", async () => {
       await load(); const a = find(b.dataset.u); if (!a) return;
       if (b.dataset.a === "add") { const base = a.sub_until && Date.parse(a.sub_until) > Date.now() ? Date.parse(a.sub_until) : Date.now(); a.sub_until = new Date(base + 30 * 86400000).toISOString(); a.sub_paused = false; }
@@ -5222,10 +5249,18 @@ document.getElementById("cond-ic").innerHTML = gsvg("conduct", 46);
     $g("acc-exp").textContent = fmt(me.sess.exp);
     $g("acc-store").textContent = store === "db" ? "محفوظ في حسابك على claude.ai" : "محفوظ على هذا الجهاز فقط";
     const ku = $g("kbar-user"); if (ku) ku.textContent = a.u;
-    $g("acc-role").textContent = a.role === "owner" ? "مالك اللوحة" : (isActive(a) ? "مشترك حتى " + fmt(a.sub_until) : "غير مشترك");
-    renderSubs();
+    $g("acc-role").textContent = a.role === "admin" ? "المسؤول (admin)" : a.role === "owner" ? "مالك اللوحة" : (isActive(a) ? "مشترك حتى " + fmt(a.sub_until) : "غير مشترك");
+    renderSubs(); renderAdminCard();
   }
-
+  function renderAdminCard() {
+    const c = $g("acc-admin"); if (!c) return;
+    const a = me && me.acc, can = !!a && (a.role === "admin" || a.role === "owner");
+    c.hidden = !can; if (!can) return;
+    const set = !!(accounts.admin && accounts.admin.hash);
+    $g("acc-admin-st").innerHTML = set ? '<span class="on">مفعّل</span> — ادخل باسم المستخدم <b>admin</b> وكلمة مروره من شاشة الدخول.' + (accounts.admin.last ? " آخر دخول: " + fmt(accounts.admin.last) : "")
+                                       : '<span class="off">غير مفعّل</span> — حتى تفعّله تبقى إدارة السيرفرات ظاهرة لحساب المالك فقط.';
+    $g("acc-admin-go").textContent = set ? "تغيير كلمة مرور admin" : "تفعيل حساب admin";
+  }
   $g("acc-mail-f").addEventListener("submit", async e => {
     e.preventDefault(); if (!me) return;
     const v = ($g("acc-mail-i").value || "").trim().slice(0, 80);
@@ -5255,6 +5290,7 @@ document.getElementById("cond-ic").innerHTML = gsvg("conduct", 46);
     $g("kb-welcome").hidden = true; const bv = $g("kbw-bg"); if (bv) { bv.pause(); bv.removeAttribute("src"); }
     ls.del(SESS); try { sessionStorage.removeItem(SESS); } catch (_) {}
     me = null; $g("kg-u").value = ""; msg("m-kg", "تم تسجيل الخروج.", "ok");
+    applyOwnerGate(); const ac = $g("acc-admin"); if (ac) ac.hidden = true; const sb = $g("acc-subs"); if (sb) sb.hidden = true;
     if (typeof showView === "function") showView("v-home");
     lock();
   }
@@ -5262,13 +5298,34 @@ document.getElementById("cond-ic").innerHTML = gsvg("conduct", 46);
   window.kbMe = () => (me && me.acc) || null;
   // ADM-04: admin area only for the dashboard owner (role "owner")
   function applyOwnerGate() {
-    const own = !!(me && me.acc && me.acc.role === "owner" && !me.acc.disabled);
+    const own = !!(me && isAdminAcc(me.acc));
+    document.body.classList.toggle("kb-admin-login", !!(me && me.acc && me.acc.role === "admin"));
+    const sw = document.getElementById("kbar-srv"); if (sw) sw.hidden = !own;
+    const subs = document.getElementById("acc-subs"), slot = document.getElementById("adm-subs-slot");
+    if (subs && slot && own && subs.parentElement !== slot) slot.appendChild(subs);
     document.body.classList.toggle("kb-is-owner", own);
     document.querySelectorAll(".kb-owner-only").forEach(el => { el.hidden = !own; });
     const v = document.getElementById("v-admin");
     if (!own && v && v.classList.contains("show")) { const h = document.querySelector('[data-go="v-home"]'); if (h) h.click(); }
   }
-  window.kbIsOwner = () => !!(me && me.acc && me.acc.role === "owner" && !me.acc.disabled);
+  window.kbIsOwner = () => !!(me && isAdminAcc(me.acc));
+  window.kbIsAdmin = window.kbIsOwner;
+  // customer accounts are pinned to their own server (set by the admin)
+  window.addEventListener("kb-servers", () => { try { const a = me && me.acc; if (a && !isAdminAcc(a) && a.server && localStorage.getItem("kb_server") !== a.server) { localStorage.setItem("kb_server", a.server); location.reload(); } } catch (_) {} });
+  $g("acc-admin-f").addEventListener("submit", async e => {
+    e.preventDefault(); if (!me || !(me.acc.role === "admin" || me.acc.role === "owner")) return;
+    const p0 = $g("acc-admin-p0").value, p1 = $g("acc-admin-p1").value, p2 = $g("acc-admin-p2").value;
+    if (p1.length < 8) { msg("m-acc-admin", "كلمة مرور admin لا تقل عن 8 أحرف.", "err"); return; }
+    if (p1 !== p2) { msg("m-acc-admin", "كلمتا المرور غير متطابقتين.", "err"); return; }
+    await load();
+    const cur = find(me.acc.u); if (!cur || (await hashPw(p0, cur.salt)) !== cur.hash) { msg("m-acc-admin", "كلمة مرورك الحالية غير صحيحة.", "err"); return; }
+    const salt = newSalt(), A = accounts.admin || { u: ADMIN_U, role: "admin", email: "admin", created: new Date().toISOString() };
+    A.salt = salt; A.hash = await hashPw(p1, salt); A.changed = new Date().toISOString(); accounts.admin = A;
+    if (!(await save())) { msg("m-acc-admin", "تعذّر الحفظ. حاول مرة أخرى.", "err"); return; }
+    ["acc-admin-p0", "acc-admin-p1", "acc-admin-p2"].forEach(i => $g(i).value = "");
+    if (me.acc.role === "admin") { await startSession(A, !!ls.get(SESS)); }
+    msg("m-acc-admin", "تم. صفحة إدارة السيرفرات والمشتركين صارت لحساب admin فقط.", "ok"); render();
+  });
   $g("acc-logout").addEventListener("click", () => logout());
   try { PAGE_INFO.account = { name: "الحساب", text: "هذا حساب الدخول إلى لوحة تحكم Kingbot فقط (اسم مستخدم وكلمة مرور)، وهو منفصل تماماً عن حساب اللعبة وشخصياتها.\n\n• أول مرة تفتح فيها اللوحة تنشئ الحساب، وبعدها تُطلب كلمة المرور عند الدخول.\n• «تذكرني» يبقيك داخل اللوحة 5 أيام على هذا الجهاز.\n• تغيير كلمة المرور يُخرج الأجهزة الأخرى.\n• «تسجيل الخروج» من القائمة ☰ أو من هذه الصفحة." }; } catch (_) {}
 
@@ -5388,7 +5445,7 @@ document.getElementById("cond-ic").innerHTML = gsvg("conduct", 46);
   function fillSubs(anim) {
     const me = window.kbMe ? window.kbMe() : null, arc = document.getElementById("sp-arc");
     let days = null, total = 30, label = "دائم", state = "مفعّل", ok = true;
-    if (me && me.role !== "owner") {
+    if (me && me.role !== "owner" && me.role !== "admin") {
       const until = me.sub_until ? Date.parse(me.sub_until) : 0;
       days = Math.max(0, Math.ceil((until - Date.now()) / 86400000)); label = "يوم متبقٍ";
       if (!until || until <= Date.now()) { state = "منتهي"; ok = false; } else if (me.sub_paused) { state = "موقوف"; ok = false; }
@@ -6604,7 +6661,7 @@ pre.log .lx{display:inline-block;margin-inline-start:6px;padding:0 6px;border-ra
       $("crc-rows").innerHTML = ""; crcRows(); document.querySelectorAll("#crc-rows .crc-r[data-l]").forEach((r, i) => { const v = x.rows[i] || []; r.querySelector("[data-c]").value = v[0] || ""; r.querySelector("[data-t]").value = v[1] || ""; }); crcSum(); }
     const dl = t.closest("[data-del]"); if (dl) { const L = LS.get(CKEY, []); L.splice(+dl.dataset.del, 1); LS.set(CKEY, L); crcSaved(); } });
   // ❗ info
-  const INFO = { sox: ["تسجيل الخروج من حساب اللعبة", "«سجّل الخروج الآن» يجعل البوت يفتح الإعدادات ← الحساب ويضغط زر تسجيل الخروج (Sign out / Switch account) ثم التأكيد، بعد انتهاء المهمة الجارية. لا يضغط أبداً أي زر فيه حذف أو فك ربط (Delete / Unbind)، ويحفظ صورة كل خطوة. بعد الخروج يتوقف البوت تماماً ولا يسجّل الدخول بنفسه: عندما تسجّل الدخول (برمز البريد) يعود للعمل تلقائياً خلال دقيقتين، أو اضغط «سجّلتُ الدخول». الخروج التلقائي: اختر الوقت بتوقيتك والأيام (بدون أيام = كل يوم) ثم «حفظ وإرسال» — يُنفَّذ مرة في اليوم خلال ساعة من الوقت المحدد. يحتاج البوت الإصدار 258 أو أحدث."],
+  const INFO = { admin: ["حساب المسؤول (admin)", "حساب منفصل عن حسابات الزبائن: ادخل من شاشة الدخول باسم المستخدم admin وكلمة المرور التي تفعّلها هنا، فتفتح «إدارة السيرفرات» مباشرة مع قائمة المشتركين (تفعيل +30 يوم، إيقاف، حذف، وربط كل زبون بسيرفره). بعد التفعيل لا يرى أحد غيره صفحة إدارة السيرفرات ولا قائمة المشتركين ولا مبدّل السيرفرات — حتى حساب المالك. الزبون الذي ينشئ حساباً يرى لوحة سيرفره فقط، ولا يستطيع التسجيل بأسماء محجوزة مثل admin. لتغيير كلمة المرور لاحقاً: ادخل بحساب admin ← الحساب."], sox: ["تسجيل الخروج من حساب اللعبة", "«سجّل الخروج الآن» يجعل البوت يفتح الإعدادات ← الحساب ويضغط زر تسجيل الخروج (Sign out / Switch account) ثم التأكيد، بعد انتهاء المهمة الجارية. لا يضغط أبداً أي زر فيه حذف أو فك ربط (Delete / Unbind)، ويحفظ صورة كل خطوة. بعد الخروج يتوقف البوت تماماً ولا يسجّل الدخول بنفسه: عندما تسجّل الدخول (برمز البريد) يعود للعمل تلقائياً خلال دقيقتين، أو اضغط «سجّلتُ الدخول». الخروج التلقائي: اختر الوقت بتوقيتك والأيام (بدون أيام = كل يوم) ثم «حفظ وإرسال» — يُنفَّذ مرة في اليوم خلال ساعة من الوقت المحدد. يحتاج البوت الإصدار 258 أو أحدث."],
     evc: ["تقويم الأحداث", "أداة مجانية: الأحداث المتكررة (أقوى حاكم، عجلة الحظ، أكثر من الجواهر، لوهار، التدريب، المملكة الذهبية، سيرولي، الفيلق الظلّي، أوزيريس) مع نصيحة موارد لكل حدث. لأن مواعيدها تختلف بين الممالك، أدخل تاريخ بداية آخر مرة رأيت فيها الحدث (بتوقيت UTC) والفاصل بالأيام إن عرفته، فتعرض الأداة «جارٍ الآن» أو «يبدأ بعد…» وترتّب الأحداث حسب الأقرب. صفِّ حسب النوع بالأزرار. البيانات في هذا المتصفح فقط."],
     crc: ["حاسبة تقنية الكريستال", "أداة مجانية لأبحاث الكريستال في موسم الفتح: اختر المستوى الحالي والمستهدف، وانسخ من مركز أبحاث الكريستال تكلفة كل مستوى ووقته، وأدخل نسبة الخصم (مركز الأبحاث أو التحالف) وسرعة البحث ونقاط الموسم لكل كريستال إن عرفتها. تعرض: الكريستال بعد الخصم، وقت البحث بعد السرعة، ونقاط الموسم. «حفظ» يجمع خطتك لعدة تقنيات مع المجموع. لا توجد أرقام مدمجة لأن اللعبة تغيّر التكاليف بين نسخ الموسم."] };
   document.addEventListener("click", ev => { const b = ev.target.closest && ev.target.closest(".info-btn[data-x]"); if (!b || !INFO[b.dataset.x]) return; ev.preventDefault();
