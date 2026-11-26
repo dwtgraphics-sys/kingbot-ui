@@ -1,5 +1,5 @@
 {
- "count": 106,
+ "count": 98,
  "commanders": [
   {
    "name": "Aethelflaed",
@@ -154,10 +154,6 @@
    "img": "commanders/Guan Yu.png"
   },
   {
-   "name": "Hammurabi",
-   "img": "commanders/Hammurabi.png"
-  },
-  {
    "name": "Hannibal Barca",
    "img": "commanders/Hannibal Barca.png"
   },
@@ -182,20 +178,12 @@
    "img": "commanders/Hermann.png"
   },
   {
-   "name": "Hippolyta",
-   "img": "commanders/Hippolyta.png"
-  },
-  {
    "name": "Honda Tadakatsu",
    "img": "commanders/Honda Tadakatsu.png"
   },
   {
    "name": "Imhotep",
    "img": "commanders/Imhotep.png"
-  },
-  {
-   "name": "Isabella I",
-   "img": "commanders/Isabella I.png"
   },
   {
    "name": "Joan of Arc Prime",
@@ -214,14 +202,6 @@
    "img": "commanders/Keira.png"
   },
   {
-   "name": "Khawla",
-   "img": "commanders/Khawla.png"
-  },
-  {
-   "name": "Kim Yu-shin",
-   "img": "commanders/Kim Yu-shin.png"
-  },
-  {
    "name": "Kusunoki Masashige",
    "img": "commanders/Kusunoki Masashige.png"
   },
@@ -232,10 +212,6 @@
   {
    "name": "Leonidas I",
    "img": "commanders/Leonidas I.png"
-  },
-  {
-   "name": "Liu Bei",
-   "img": "commanders/Liu Bei.png"
   },
   {
    "name": "Liu Che",
@@ -330,10 +306,6 @@
    "img": "commanders/Saladin.png"
   },
   {
-   "name": "Sammuramat",
-   "img": "commanders/Sammuramat.png"
-  },
-  {
    "name": "Sargon the Great",
    "img": "commanders/Sargon the Great.png"
   },
@@ -384,10 +356,6 @@
   {
    "name": "Tomyris",
    "img": "commanders/Tomyris.png"
-  },
-  {
-   "name": "Tribhuwana",
-   "img": "commanders/Tribhuwana.png"
   },
   {
    "name": "William I",
