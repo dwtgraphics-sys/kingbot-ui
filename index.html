@@ -414,8 +414,9 @@ body.kb-locked { overflow: hidden; }
 @media (max-width: 520px) { .kbw-feats { grid-template-columns: minmax(0, 1fr); } }
 .kbw-safe ul { list-style: none; padding: 0; margin: 22px auto 0; max-width: 720px; display: grid; gap: 10px; }
 .kbw-safe li { padding: 14px 18px; border-radius: 16px; background: rgba(76,175,80,.07); border: 1px solid rgba(76,175,80,.28); }
-.kbw-plans { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; margin-top: 26px; align-items: stretch; perspective: 1000px; }
-@media (max-width: 820px) { .kbw-plans { grid-template-columns: minmax(0, 1fr); } }
+.kbw-plans { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; margin-top: 26px; align-items: stretch; perspective: 1000px; }
+@media (max-width: 1100px) { .kbw-plans { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 620px) { .kbw-plans { grid-template-columns: minmax(0, 1fr); } }
 .kbw-plan { position: relative; display: flex; flex-direction: column; gap: 8px; padding: 26px 20px; border-radius: 22px; background: rgba(12,10,8,.6); border: 1px solid rgba(255,255,255,.12); text-align: center; -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); transform-style: preserve-3d; }
 .kbw-plan.in { transform: perspective(900px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)); transition: transform .2s ease-out, opacity .9s, filter .9s; }
 .kbw-plan.best { border-color: transparent; background: linear-gradient(rgba(28,20,12,.92), rgba(16,12,8,.92)) padding-box, conic-gradient(from var(--ang, 0deg), #ffd978, #ff8a2a, #7a3cff, #ffd978) border-box; border: 2px solid transparent; box-shadow: 0 20px 50px rgba(239,154,51,.2); animation: kbwSpin 6s linear infinite; }
@@ -1179,6 +1180,23 @@ main, .view, .panel, #top, .kbar { min-width: 0; max-width: 100%; box-sizing: bo
   #adm-subs-slot > .pg-card { margin: 0; }
   .acc-sub select.acc-srv { max-width: 11rem; }
   #adm-dlg[hidden] { display: none !important; }
+  .plan-now{display:flex;flex-wrap:wrap;gap:8px;align-items:baseline;margin-bottom:8px}.plan-now span{opacity:.8;font-size:13px}.plan-now a{color:#f2c14e;font-size:13px}
+  .plan-det{margin:6px 0;border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:6px 10px}.plan-det summary{cursor:pointer;font-weight:600}
+  .plan-list{list-style:none;margin:8px 0 2px;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:6px}
+  .plan-list li{display:flex;gap:6px;align-items:center;padding:6px 9px;border-radius:10px;background:rgba(255,255,255,.04);font-size:13px}
+  .plan-list li small{opacity:.55;font-size:11px;flex:1;text-align:end}.plan-list li.off{opacity:.5}
+  .plan-list em{font-style:normal;font-size:11px;padding:1px 7px;border-radius:999px}.plan-list em.ok{color:#7ee28f}.plan-list em.soon{background:rgba(242,193,78,.14);color:#f2c14e}
+  .task.plan-locked{opacity:.55}.task.plan-locked .switch{pointer-events:none}.plan-chip{background:rgba(245,176,65,.15)!important;color:#f5c46b!important}
+  .note.warn{color:#f5c46b}
+  .kbw-pl{list-style:none;padding:0;margin:8px 0 12px;font-size:13px;opacity:.85}.kbw-pl li::before{content:"✓ ";color:#f2c14e}
+  .kbw-was{opacity:.55;font-size:.5em;margin-inline-start:6px}.kbw-bill{text-align:center;opacity:.75;font-size:13px;margin-top:14px}
+  .kbw-pay{max-width:620px;margin:22px auto 0;padding:18px;border:1px solid rgba(242,193,78,.35);border-radius:18px;background:rgba(20,14,6,.7)}
+  .kbw-pay h3{margin:0 0 10px}.kbw-pay label{display:flex;flex-direction:column;gap:4px;margin:8px 0;font-size:13px}
+  .kbw-pay input,.kbw-pay select{padding:9px 12px;border-radius:999px;border:1px solid rgba(242,193,78,.35);background:rgba(0,0,0,.35);color:inherit;font:inherit}
+  .kbw-pay .row{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+  .kbw-pay-st{padding:8px 12px;border-radius:12px;margin-bottom:6px;font-size:13.5px}.kbw-pay-st:empty{display:none}
+  .kbw-pay-st.pending{background:rgba(242,193,78,.12);color:#f5c46b}.kbw-pay-st.active{background:rgba(126,226,143,.1);color:#9fe8ad}.kbw-pay-st.expired{background:rgba(255,99,99,.1);color:#ff9a9a}
+  .acc-sub .pay{display:block;font-size:12px;color:#f5c46b}
 </style>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&amp;display=swap">
 </head>
@@ -1292,9 +1310,25 @@ window.addEventListener("error", function(e) {
     <section class="kbw-sec" id="kbw-plans">
       <h2 class="rv">الباقات</h2>
       <div class="kbw-plans">
-        <div class="kbw-plan tilt rv" style="--d:0s"><h3>Solo</h3><div class="kbw-price">9.99$<small> / شهر</small></div><p>حساب واحد · كل الأنشطة الأساسية · إشعارات تيليجرام.</p><a class="kbw-btn" href="https://discord.gg/MJWvUJvJC" target="_blank" rel="noopener">اشترك عبر الديسكورد</a></div>
-        <div class="kbw-plan best tilt rv" style="--d:.12s"><span class="kbw-badge">خصم 🔥 الأكثر طلباً</span><h3>Solo + Leader</h3><div class="kbw-price">14.99$<small> / شهر</small></div><p>حساب واحد + أوامر القيادة: الحصون، التجمعات، البرابرة المتتالية.</p><a class="kbw-btn gold shine" href="https://discord.gg/MJWvUJvJC" target="_blank" rel="noopener">اشترك عبر الديسكورد</a></div>
-        <div class="kbw-plan tilt rv" style="--d:.24s"><h3>Multi</h3><div class="kbw-price sm">باقة خاصة</div><p>أكثر من حساب؟ تواصل معنا ونصمم لك باقة خاصة.</p><a class="kbw-btn" href="https://discord.gg/MJWvUJvJC" target="_blank" rel="noopener">💬 تواصل على الديسكورد</a></div>
+        <div class="kbw-plan tilt rv" style="--d:0s" data-tier="solo"><h3>Solo</h3><div class="kbw-price">25$<small> / شهر</small></div><p>48 نشاطاً تلقائياً للاعب: الجواهر والموارد، البرابرة والحصون، وادي الغروب، التطوير والبحث والتدريب، المكافآت والمتاجر، وتبديل الشخصيات.</p><ul class="kbw-pl"><li>خانة واحدة (جهاز = حساب لعبة)</li><li>الشاشة المباشرة</li><li>لوحة الويب والمجدول الذكي</li></ul><button type="button" class="kbw-btn" data-pick="solo">اختر Solo</button></div>
+        <div class="kbw-plan tilt rv" style="--d:.08s" data-tier="leader"><h3>Leader</h3><div class="kbw-price">25$<small> / شهر</small></div><p>8 أوامر لإدارة التحالف والمملكة: نقطة الموارد، الرصيد اليومي، الأعضاء، حدث التعبئة، الحشود، الألقاب، البحث عن مدينة، مسح المملكة.</p><ul class="kbw-pl"><li>خانة واحدة</li><li>الشاشة المباشرة</li><li>لوحة الويب والمجدول الذكي</li></ul><button type="button" class="kbw-btn" data-pick="leader">اختر Leader</button></div>
+        <div class="kbw-plan best tilt rv" style="--d:.16s" data-tier="solo_leader_bundle"><span class="kbw-badge">🔥 أفضل قيمة</span><h3>Solo + Leader</h3><div class="kbw-price">45$<small> / شهر</small> <s class="kbw-was">50$</s></div><p>كل الـ56 نشاطاً (48 للاعب + 8 للقيادة) على خانة واحدة.</p><ul class="kbw-pl"><li>خانة واحدة</li><li>الشاشة المباشرة</li><li>لوحة الويب والمجدول الذكي</li></ul><button type="button" class="kbw-btn gold shine" data-pick="solo_leader_bundle">اختر Solo + Leader</button></div>
+        <div class="kbw-plan tilt rv" style="--d:.24s" data-tier="group"><h3>Group</h3><div class="kbw-price sm">سعر مخصص</div><p>عدة خانات لفريقك أو تحالفك، سيرفر مخصص، دعم مخصص ومساعدة في الإعداد.</p><ul class="kbw-pl"><li>عدد خانات تختاره</li><li>سيرفر مخصص</li><li>دعم وإعداد</li></ul><button type="button" class="kbw-btn" data-pick="group">اطلب عرض Group</button></div>
+      </div>
+      <p class="kbw-bill rv">1 خانة = جهاز واحد يشغّل حساب لعبة واحد · الدفع مقدّم شهرياً · بدون تجديد تلقائي.</p>
+      <div class="kbw-pay" id="kbw-pay" hidden>
+        <h3>اختيار الباقة وتأكيد الدفع</h3>
+        <div class="kbw-pay-st" id="kbw-pay-st"></div>
+        <div id="kbw-pay-form">
+          <label>الباقة <select id="kbw-pay-tier"><option value="solo">Solo — 25$</option><option value="leader">Leader — 25$</option><option value="solo_leader_bundle">Solo + Leader — 45$</option><option value="group">Group — مخصص</option></select></label>
+          <label>عدد الخانات <input type="number" id="kbw-pay-slots" min="1" max="50" value="1"></label>
+          <label>طريقة الدفع <select id="kbw-pay-method"><option value="paypal">PayPal</option><option value="bank">تحويل بنكي</option><option value="crypto">USDT / Crypto</option><option value="other">أخرى</option></select></label>
+          <label>رقم العملية / المرجع <input type="text" id="kbw-pay-ref" maxlength="80" dir="ltr" placeholder="Transaction ID"></label>
+          <label>ملاحظة (اختياري) <input type="text" id="kbw-pay-note" maxlength="200" dir="auto"></label>
+          <div class="row"><button type="button" class="kbw-btn gold" id="kbw-pay-send">إرسال للتأكيد</button>
+            <a class="kbw-btn" href="https://discord.gg/MJWvUJvJC" target="_blank" rel="noopener">💬 أرسل الإيصال على الديسكورد</a></div>
+        </div>
+        <div class="msg" id="m-kbw-pay"></div>
       </div>
       <div class="kbw-next rv">
         <b>بعد الدفع</b>
@@ -1578,7 +1612,8 @@ window.addEventListener("error", function(e) {
         <div class="mc-row crc-in">
           <label>اسم العميل <input type="text" id="adm-c-name" dir="auto"></label>
           <label>رقم الحاكم في اللعبة <input type="text" id="adm-c-game" dir="ltr"></label>
-          <label>الباقة <select id="adm-c-plan"><option value="crown-pilot-30">Crown Pilot 30 يوم</option><option value="crown-pilot-90">Crown Pilot 90 يوم</option><option value="trial-3">تجربة 3 أيام</option><option value="owner">حساب المالك</option></select></label>
+          <label>نوع الباقة <select id="adm-c-tier"><option value="">كاملة (بدون تحديد)</option><option value="solo">Solo — 25$ (48 نشاط لاعب)</option><option value="leader">Leader — 25$ (8 أوامر قيادة)</option><option value="solo_leader_bundle">Solo + Leader — 45$ (56 نشاطاً)</option><option value="group">Group — مخصص (عدة خانات)</option></select></label>
+          <label>المدة <select id="adm-c-plan"><option value="crown-pilot-30">Crown Pilot 30 يوم</option><option value="crown-pilot-90">Crown Pilot 90 يوم</option><option value="trial-3">تجربة 3 أيام</option><option value="owner">حساب المالك</option></select></label>
           <label>البداية <input type="date" id="adm-c-start"></label>
           <label>الأيام <input type="number" id="adm-c-days" min="1" max="3650"></label>
           <label class="row"><input type="checkbox" id="adm-c-frozen"> <span>مجمّد</span></label>
@@ -1608,6 +1643,10 @@ window.addEventListener("error", function(e) {
       </section>
     </div>
     <div class="view show" id="v-acts">
+      <section class="panel plan-pn" aria-labelledby="plan-h">   <!-- PLAN-01..04 -->
+        <div class="panel-head"><h2 id="plan-h">💳 باقتك والأنشطة المشمولة <button type="button" class="info-btn" data-info="plans" aria-label="شرح">❗</button></h2></div>
+        <div id="plan-box"><p class="note">جارٍ التحميل…</p></div>
+      </section>
       <div style="display:flex;justify-content:flex-end;margin-bottom:8px"><button class="btn" type="button" onclick="showView('v-sched')">🕒 الجدولة</button></div>
       <section class="panel mc" aria-labelledby="mc-h">   <!-- TASK-06 -->
         <div class="panel-head"><h2 id="mc-h">🧭 أولوية المسيرات والمهلة <button type="button" class="info-btn" data-info="march" aria-label="شرح">❗</button></h2></div>
@@ -2878,6 +2917,7 @@ const PAGE_INFO = {
   guide: { name: "الدليل", text: "دليل استعمال اللوحة خطوة بخطوة: اضغط أي عنوان في «في هذه الصفحة» للانتقال إليه مباشرة. الأرقام 1–7 في مخطط «لوحتك» تطابق الشرح تحته، و«معنى الحالة» يشرح كل حالة تظهر في رأس الخانة." },
   mail: { name: "مولّد رسائل التحالف", text: "أداة مجانية لكتابة بريد تحالف منسّق في Rise of Kingdoms. حدد نصاً واضغط عريض / مائل / الحجم / لون / تدرج فتوضع علامات اللعبة حوله (إذا لم تحدد شيئاً توضع العلامات عند المؤشر). العدّاد يحسب العلامات أيضاً لأن حد اللعبة 2,000 حرف يشملها. المسودة وقوالبك تُحفظ على هذا الجهاز فقط. «نسخ الكود» ينسخ النص بالعلامات لتلصقه في بريد التحالف." },
   uxq: { name: "في المدينة", text: "بطاقات الطوابير النشطة في مدينتك كما قرأها البوت من «نظرة عامة على الطوابير»: تدريب المشاة والفرسان والرماة والحصار (مع المستوى المختار في إعدادات الطوابير)، إنتاج المواد، والعلاج. العدّاد ينقص كل ثانية، والشريط يقارن الوقت المتبقي بأطول وقت رآه البوت لنفس الطابور (اللعبة لا تعرض المدة الكاملة). يقرأ البوت الطوابير كل 10 دقائق تقريباً وبعد تبديل الشخصية." },
+  plans: { name: "باقتك والأنشطة المشمولة", text: "كل سيرفر (خانة = جهاز واحد يشغّل حساب لعبة واحد) له باقة يحددها المسؤول: Solo بـ25$ شهرياً (48 نشاط لاعب)، Leader بـ25$ (8 أوامر إدارة تحالف ومملكة)، Solo + Leader بـ45$ بدل 50$ (كل الـ56 نشاطاً)، وGroup بسعر مخصص لعدة خانات وسيرفر مخصص ودعم خاص. الدفع مقدّم شهرياً بدون تجديد تلقائي. الأنشطة غير المشمولة تظهر مقفلة 🔒 ولا يشغّلها البوت (يكتب السبب في السجل). ✓ = جاهز في البوت، «قريباً» = قيد البناء. للترقية تواصل مع المسؤول." },
   cpresets: { name: "قادة كل مهمة", text: "اختر قائداً أساسياً وثانوياً لكل مهمة (جمع الطعام/الخشب/الحجر/الذهب، البرابرة، الحشود، الحراس). عند تجهيز المسيرة يبدّل البوت القادة في نافذة الجيش الجديد إلى من اخترته (يبحث عن الاسم في قائمة القادة). إذا لم تختر قائداً تبقى التشكيلة المحفوظة في اللعبة كما هي. إذا كان القائد في مسيرة أخرى يكمل البوت بالتشكيلة المحفوظة. القادة الظاهرون أولاً هم الذين قرأهم البوت من حسابك." },
   alerts: { name: "تنبيهات فورية", text: "يرسل البوت رسالة فورية مع صورة من اللعبة إلى تيليجرام (وإلى ديسكورد إن وضعت رابط Webhook في local_config.json على السيرفر) فقط عند الأحداث المهمة: هجوم أو استكشاف على المدينة، انتهاء درع السلام، ظهور نافذة تحقق، أو بقاء اللعبة بلا اتصال بعد كل محاولات الانتظار (عند انقطاع الشبكة أو الصيانة ينتظر البوت 30 ثانية ثم دقيقتين ثم 5 ثم 10 دقائق قبل إعادة المحاولة، ثم يعيد تشغيل اللعبة). كل رسالة فيها اسم السيرفر والشخصية ونوع الحدث، ولا يتكرر نفس التنبيه خلال 5 دقائق. «إرسال تنبيه تجريبي» يتأكد أن القناة تعمل (يحتاج البوت الإصدار 232 أو أحدث)." },
   smartsched: { name: "جلسات عمل واستراحات", text: "يقسّم البوت وقت عمله اليومي إلى جلسات (مثلاً 90 دقيقة) تليها استراحات (مثلاً 20 دقيقة) مثل اللاعب الحقيقي، ويتوقف لبقية اليوم عند بلوغ «حد الساعات اليومي» (يُحسب وقت تنفيذ المهام فقط، ويبدأ العد من جديد 00:00 بتوقيت غرينتش). «العشوائية ±%» تغيّر أطوال الجلسات والاستراحات وفترات الانتظار قليلاً. النقرات نفسها دقيقة دائماً في المكان الصحيح بدون أي إزاحة عشوائية. يعمل داخل ساعات «الجدولة الذكية» إن كانت مفعّلة. الشريط يعرض الساعات المستخدمة اليوم والحالة: يعمل / استراحة / انتهى حد اليوم." },
@@ -4320,6 +4360,7 @@ function renderActs() {
         ${STEPPER[meta.routine] ? `<span class="stepwrap"><span class="steplab">${STEPPER[meta.routine].label}</span><span class="stepper" aria-label="${STEPPER[meta.routine].label}"><button type="button" data-d="1" aria-label="زيادة">+</button><output>${t.times}</output><button type="button" data-d="-1" aria-label="نقص">−</button></span></span>` : ""}
         <button type="button" class="info-btn" aria-label="شرح هذا الخيار">❗</button>`;
       row.querySelector("input").addEventListener("change", e => { t.enabled = e.target.checked; row.classList.toggle("on", t.enabled); updateCounts(); });
+      try { planLock(row, meta.routine); } catch (_) {}
       row.querySelector(".star").addEventListener("click", e => {
         favs = favs.includes(meta.routine) ? favs.filter(x => x !== meta.routine) : favs.concat(meta.routine);
         e.currentTarget.classList.toggle("on"); try { localStorage.setItem("kingbot-favs", JSON.stringify(favs)); } catch (_) {}
@@ -4334,6 +4375,43 @@ function renderActs() {
   });
   if (!box.children.length) box.innerHTML = '<p class="note">لا توجد أنشطة بهذا البحث أو التصفية.</p>';
   updateCounts();
+  try { renderPlanPanel(); } catch (_) {}
+}
+/* ---------- PLAN-01..04: subscription tiers (kingbot-syn config/plans.json) ---------- */
+const PLAN_TIERS = {
+  solo: { name: "Solo", ar: "سولو", price: "25$", groups: ["solo"] },
+  leader: { name: "Leader", ar: "القائد", price: "25$", groups: ["leader"] },
+  solo_leader_bundle: { name: "Solo + Leader", ar: "سولو + القائد", price: "45$", groups: ["solo", "leader"] },
+  group: { name: "Group", ar: "المجموعات", price: "مخصص", groups: ["solo", "leader"] } };
+const PLAN_ALIAS = { bundle: "solo_leader_bundle", "solo+leader": "solo_leader_bundle", solo_leader: "solo_leader_bundle", multi: "group" };
+let PLAN_CFG = null;
+function planTier() { const t = String((typeof settings === "object" && settings && settings.plan) || "").trim().toLowerCase(); const k = PLAN_ALIAS[t] || t; return PLAN_TIERS[k] ? k : ""; }
+function planHas(group) { const t = planTier(); return !t || PLAN_TIERS[t].groups.includes(group); }
+function planLock(row, routine) {
+  const grp = /^leader_/.test(routine) ? "leader" : "solo"; if (planHas(grp)) return;
+  row.classList.add("plan-locked"); const inp = row.querySelector("input[type=checkbox]"); if (inp) inp.disabled = true;   // the bot skips it; the choice is kept for an upgrade
+  const nm = row.querySelector(".name"); if (nm && !nm.querySelector(".plan-chip")) nm.insertAdjacentHTML("afterbegin", '<span class="chip plan-chip">🔒 غير مشمول في باقتك</span>');
+}
+async function planCfg() {
+  if (PLAN_CFG) return PLAN_CFG;
+  try { const r = await fetch("https://raw.githubusercontent.com/dwtgraphics-sys/kingbot-syn/main/config/plans.json?t=" + Math.floor(Date.now() / 3600e3)); if (r.ok) PLAN_CFG = await r.json(); } catch (_) {}
+  if (!PLAN_CFG) try { if (typeof ghGetJson === "function") PLAN_CFG = await ghGetJson("config/plans.json"); } catch (_) {}
+  return PLAN_CFG;
+}
+async function renderPlanPanel() {
+  const box = document.getElementById("plan-box"); if (!box) return;
+  const t = planTier(), T = t ? PLAN_TIERS[t] : null, cfg = await planCfg(), esc2 = x => String(x == null ? "" : x).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+  const skipped = ((lastStatus || {}).plan || {}).skipped || {};
+  const head = T ? `<div class="plan-now"><b>باقتك: ${T.name}</b> <span>${T.ar} · ${T.price}${t === "group" ? "" : " / شهر"}</span>${planHas("leader") ? "" : ' <a href="#" data-plan-up>رقِّ إلى Solo + Leader (45$)</a>'}</div>`
+                 : '<div class="plan-now"><b>باقتك: كاملة</b> <span>لم يحدّد المسؤول باقة لهذا السيرفر — كل الأنشطة متاحة.</span></div>';
+  const solo = (cfg && cfg.activities && cfg.activities.solo) || [], lead = (cfg && cfg.activities && cfg.activities.leader) || [];
+  const li = (a, grp) => { const has = planHas(grp), built = grp === "solo" ? !!a.routine : !!a.built;
+    return `<li class="${has ? "" : "off"}"><span>${esc2(a.name_ar || a.name)}</span><small>${esc2(a.name)}</small>${!has ? '<em class="lk">🔒</em>' : built ? '<em class="ok">✓</em>' : '<em class="soon">قريباً</em>'}</li>`; };
+  box.innerHTML = head +
+    `<details class="plan-det"><summary>أنشطة اللاعب (Solo) — ${solo.length || 48} نشاطاً ${planHas("solo") ? "" : "🔒"}</summary><ul class="plan-list">${solo.map(a => li(a, "solo")).join("")}</ul></details>` +
+    `<details class="plan-det"${planHas("leader") && t ? " open" : ""}><summary>👑 أوامر القائد (Leader) — 8 أوامر ${planHas("leader") ? "" : "🔒"}</summary><p class="note">إدارة التحالف: نقطة الموارد، الرصيد اليومي، الأعضاء، حدث التعبئة · إدارة المملكة: الحشود، الألقاب، البحث عن مدينة، مسح بيانات المملكة. قيد البناء — تتطلب رتبة R4/R5 أو الملك في اللعبة.</p><ul class="plan-list">${lead.map(a => li(a, "leader")).join("")}</ul></details>` +
+    (Object.keys(skipped).length ? `<p class="note warn">تخطّى البوت بسبب الباقة: ${Object.keys(skipped).map(esc2).join("، ")}</p>` : "");
+  const up = box.querySelector("[data-plan-up]"); if (up) up.addEventListener("click", e => { e.preventDefault(); try { if (window.astOpen) window.astOpen(); } catch (_) {} alert("للترقية: أرسل اسم المستخدم للمسؤول عبر الديسكورد أو الواتساب ليفعّل باقة Solo + Leader على سيرفرك."); });
 }
 $("q").addEventListener("input", renderActs);
 document.querySelectorAll("[data-f]").forEach(b => b.addEventListener("click", () => {
@@ -5267,7 +5345,44 @@ document.getElementById("cond-ic").innerHTML = gsvg("conduct", 46);
     if (bv && !bv.getAttribute("src")) { bv.poster = "bg_" + v + ".jpg"; bv.src = "bg_" + v + ".mp4"; try { bv.play().catch(() => {}); } catch (_) {} }
     msg("m-kbw", me.acc.sub_until && Date.parse(me.acc.sub_until) <= Date.now() ? "انتهى اشتراكك في " + fmt(me.acc.sub_until) + ". جدّده عبر الديسكورد." : (me.acc.sub_paused ? "اشتراكك موقوف مؤقتاً. تواصل معنا على الديسكورد." : ""), me.acc.sub_until || me.acc.sub_paused ? "err" : "");
     w.scrollTop = 0;
+    try { renderPay(); } catch (_) {}
   }
+  // WEB-03: plan choice + payment reference -> pending until the admin confirms it
+  const TIER_NAME = { solo: "Solo — 25$", leader: "Leader — 25$", solo_leader_bundle: "Solo + Leader — 45$", group: "Group — مخصص" };
+  function payState(a) {
+    if (!a) return "";
+    if (isActive(a)) return "active";
+    if (a.pay && a.pay.status === "pending") return "pending";
+    if (a.sub_until && Date.parse(a.sub_until) <= Date.now()) return "expired";
+    return "";
+  }
+  function renderPay() {
+    const box = $g("kbw-pay"); if (!box || !me) return;
+    const a = me.acc, st = payState(a), el = $g("kbw-pay-st");
+    box.hidden = !(st || box.dataset.open);
+    el.className = "kbw-pay-st " + st;
+    el.textContent = st === "pending" ? "⏳ في انتظار تأكيد الدفع — " + (TIER_NAME[a.pay.tier] || a.pay.tier) + " · المرجع " + (a.pay.ref || "—") + " · أُرسل " + fmt(a.pay.at) + ". سيُفعَّل حسابك فور تأكيد المسؤول."
+                  : st === "active" ? "✅ مدفوع ومفعّل حتى " + fmt(a.sub_until)
+                  : st === "expired" ? "⛔ منتهي منذ " + fmt(a.sub_until) + " — اختر باقة وأرسل مرجع الدفع للتجديد." : "";
+    if (a.pay && a.pay.tier) $g("kbw-pay-tier").value = a.pay.tier;
+  }
+  document.addEventListener("click", e => {
+    const b = e.target.closest && e.target.closest("[data-pick]"); if (!b || !me) return;
+    const box = $g("kbw-pay"); box.dataset.open = "1"; box.hidden = false; $g("kbw-pay-tier").value = b.dataset.pick;
+    $g("kbw-pay-slots").value = b.dataset.pick === "group" ? 3 : 1; renderPay(); box.scrollIntoView({ behavior: "smooth", block: "center" });
+  });
+  $g("kbw-pay-send").addEventListener("click", async e => {
+    const ref = ($g("kbw-pay-ref").value || "").trim(), tier = $g("kbw-pay-tier").value;
+    if (tier !== "group" && ref.length < 4) { msg("m-kbw-pay", "اكتب رقم العملية / مرجع الدفع (4 أحرف على الأقل).", "err"); return; }
+    e.currentTarget.disabled = true; msg("m-kbw-pay", "جارٍ الإرسال…");
+    try {
+      await load(); const a = me && find(me.acc.u); if (!a) { msg("m-kbw-pay", "تعذّر العثور على حسابك.", "err"); return; }
+      a.pay = { tier, slots: Math.max(1, Math.min(50, parseInt($g("kbw-pay-slots").value, 10) || 1)), method: $g("kbw-pay-method").value,
+                ref: ref.slice(0, 80), note: ($g("kbw-pay-note").value || "").trim().slice(0, 200), at: new Date().toISOString(), status: "pending" };
+      if (!(await save())) { msg("m-kbw-pay", "تعذّر الحفظ. حاول مرة أخرى.", "err"); return; }
+      me.acc = a; renderPay(); msg("m-kbw-pay", "تم الإرسال ✅ — سيراجع المسؤول الدفع ويفعّل حسابك. يمكنك أيضاً إرسال الإيصال على الديسكورد لتسريع التأكيد.", "ok");
+    } finally { e.currentTarget.disabled = false; }
+  });
 
   async function startSession(u, remember) {
     const exp = Date.now() + (remember ? 5 : 1) * 86400000;
@@ -5357,7 +5472,9 @@ document.getElementById("cond-ic").innerHTML = gsvg("conduct", 46);
     const box = $g("acc-subs"); if (!box) return;
     box.hidden = !(me && isAdminAcc(me.acc)); if (box.hidden) return;
     const list = $g("acc-subs-list"), others = accounts.users.filter(a => a.role !== "owner");
-    list.innerHTML = others.length ? others.map((a, i) => '<div class="acc-sub"><div><b>' + esc(a.u) + '</b><small>' + esc(a.email || "—") + ' · ' + subLine(a) + '</small></div><div class="acts">' +
+    list.innerHTML = others.length ? others.map((a, i) => '<div class="acc-sub"><div><b>' + esc(a.u) + '</b><small>' + esc(a.email || "—") + ' · ' + subLine(a) + (a.tier ? ' · ' + esc(TIER_NAME[a.tier] || a.tier) : "") + '</small>' +
+      (a.pay && a.pay.status === "pending" ? '<span class="pay">⏳ دفع بانتظار التأكيد: ' + esc(TIER_NAME[a.pay.tier] || a.pay.tier) + ' · ' + esc(a.pay.slots || 1) + ' خانة · ' + esc(a.pay.method || "") + ' · ' + esc(a.pay.ref || "—") + (a.pay.note ? ' · ' + esc(a.pay.note) : "") + ' · ' + fmt(a.pay.at) + '</span>' : "") + '</div><div class="acts">' +
+      (a.pay && a.pay.status === "pending" ? '<button type="button" class="btn primary" data-a="approve" data-u="' + esc(a.u) + '">✅ تأكيد الدفع والتفعيل</button>' : "") +
       '<button type="button" class="btn" data-a="add" data-u="' + esc(a.u) + '">+30 يوم</button><button type="button" class="btn" data-a="pause" data-u="' + esc(a.u) + '">' + (a.sub_paused ? "استئناف" : "إيقاف") + '</button>' +
       '<select class="acc-srv" data-u="' + esc(a.u) + '" title="سيرفر هذا الزبون"><option value="">— سيرفر الزبون —</option>' + (typeof SERVERS !== "undefined" ? SERVERS : []).map(s => '<option value="' + esc(s.id) + '"' + (a.server === s.id ? " selected" : "") + '>' + esc(s.name || s.id) + '</option>').join("") + '</select>' +
       '<button type="button" class="btn acc-out" data-a="del" data-u="' + esc(a.u) + '">حذف</button></div></div>').join("") : '<p class="note">لا يوجد مشتركون بعد. الحساب الجديد يُنشأ من شاشة الدخول ← «إنشاء حساب جديد».</p>';
@@ -5367,7 +5484,12 @@ document.getElementById("cond-ic").innerHTML = gsvg("conduct", 46);
     }));
     list.querySelectorAll("button[data-a]").forEach(b => b.addEventListener("click", async () => {
       await load(); const a = find(b.dataset.u); if (!a) return;
-      if (b.dataset.a === "add") { const base = a.sub_until && Date.parse(a.sub_until) > Date.now() ? Date.parse(a.sub_until) : Date.now(); a.sub_until = new Date(base + 30 * 86400000).toISOString(); a.sub_paused = false; }
+      if (b.dataset.a === "approve") {
+        const base = a.sub_until && Date.parse(a.sub_until) > Date.now() ? Date.parse(a.sub_until) : Date.now();
+        a.sub_until = new Date(base + 30 * 86400000).toISOString(); a.sub_paused = false; a.tier = (a.pay && a.pay.tier) || a.tier || "";
+        a.pay = Object.assign({}, a.pay, { status: "paid", approved_at: new Date().toISOString() });
+        if (a.server && window.kbAdmSetPlan) { try { await window.kbAdmSetPlan(a.server, a.tier); } catch (e) { console.warn(e); } }
+      } else if (b.dataset.a === "add") { const base = a.sub_until && Date.parse(a.sub_until) > Date.now() ? Date.parse(a.sub_until) : Date.now(); a.sub_until = new Date(base + 30 * 86400000).toISOString(); a.sub_paused = false; }
       else if (b.dataset.a === "pause") a.sub_paused = !a.sub_paused;
       else if (b.dataset.a === "del") { if (!confirm("حذف حساب " + a.u + "؟")) return; accounts.users = accounts.users.filter(x => x !== a); }
       msg("m-acc-subs", (await save()) ? "تم الحفظ." : "تعذّر الحفظ.", "ok"); renderSubs();
@@ -6963,6 +7085,7 @@ pre.log .lx{display:inline-block;margin-inline-start:6px;padding:0 6px;border-ra
         </div></div>`;
     }).join("") || '<p class="note">لا توجد سيرفرات في servers/index.json</p>';
   }
+  window.kbAdmSetPlan = async (sid, tier) => { const sv = SERVERS.find(x => x.id === sid); if (!sv) return; await writeControl(sv, { plan: tier || null }, "plan " + (tier || "full")); };
   async function writeControl(sv, patch, label) {
     const cur = (await ghGetJson(sv.control)) || {};
     const next = Object.assign({}, cur, patch, { sent_at: new Date().toISOString() });
@@ -6999,7 +7122,7 @@ pre.log .lx{display:inline-block;margin-inline-start:6px;padding:0 6px;border-ra
   function openSub(sv) {
     SUB = sv; const r = DATA[sv.id] || {}, c = (r.info && r.info.client) || {};
     $("adm-dlg-h").textContent = "بطاقة الاشتراك — " + (sv.name || sv.id);
-    $("adm-c-name").value = c.name || ""; $("adm-c-game").value = c.game_id || ""; $("adm-c-plan").value = c.plan || "crown-pilot-30";
+    $("adm-c-name").value = c.name || ""; $("adm-c-game").value = c.game_id || ""; $("adm-c-plan").value = c.plan || "crown-pilot-30"; $("adm-c-tier").value = c.tier || "";
     $("adm-c-start").value = c.start || new Date().toISOString().slice(0, 10); $("adm-c-days").value = c.days || 30; $("adm-c-frozen").checked = !!c.frozen; $("adm-c-notes").value = c.notes || "";
     $("adm-dlg").hidden = false; $("adm-dlg").scrollIntoView({ behavior: "smooth" });
     $("adm-u-name").value = ""; $("adm-u-mail").value = ""; $("adm-u-out").hidden = true; setMsg("m-adm-u", ""); admUNow();
@@ -7031,8 +7154,9 @@ pre.log .lx{display:inline-block;margin-inline-start:6px;padding:0 6px;border-ra
     try {
       const path = `servers/${SUB.id}/server.json`, info = (await ghGetJson(path)) || { id: SUB.id, name: SUB.name, role: SUB.role };
       info.client = Object.assign({}, info.client || {}, { id: (info.client && info.client.id) || SUB.id, name: $("adm-c-name").value.trim(), game_id: $("adm-c-game").value.trim(),
-        plan: $("adm-c-plan").value, start: $("adm-c-start").value || null, days: Math.max(1, parseInt($("adm-c-days").value, 10) || 30), frozen: $("adm-c-frozen").checked, notes: $("adm-c-notes").value.trim() });
+        plan: $("adm-c-plan").value, tier: $("adm-c-tier").value, start: $("adm-c-start").value || null, days: Math.max(1, parseInt($("adm-c-days").value, 10) || 30), frozen: $("adm-c-frozen").checked, notes: $("adm-c-notes").value.trim() });
       await ghPutJson(path, info, `admin: subscription card ${SUB.id}`, false);
+      try { await writeControl(SUB, { plan: $("adm-c-tier").value || null }, "plan " + ($("adm-c-tier").value || "full")); } catch (e2) { setMsg("m-adm-c", "حُفظت البطاقة لكن تعذّر إرسال الباقة للبوت: " + (e2.message || e2), "err"); return; }
       setMsg("m-adm-c", "✅ حُفظت بطاقة الاشتراك.", "ok"); load();
     } catch (err) { setMsg("m-adm-c", "تعذّر الحفظ: " + (err.message || err), "err"); }
     finally { sb.classList.remove("loading"); } });
