@@ -4068,6 +4068,89 @@ function kbPassDialog() {
   };
 }
 window.kbPassDialog = kbPassDialog;
+/* v262 LOGIN-01: first game login of a new account from the dashboard (verification code).
+   The bot reports city.game_login.stage: need_email -> sending_code -> code_sent -> logging_in -> logged_in.
+   The form opens by itself while the game waits for a login, and right after the bot is switched on. */
+(function () {
+  const ACTIVE = ["need_email", "sending_code", "code_sent", "logging_in"];
+  let shownStage = "", closedStage = "", closedAt = 0;
+  const esc = t => String(t == null ? "" : t).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+  function glOf(s) { return ((s || {}).city || {}).game_login || {}; }
+  function encOn() { try { const cs = curServer(); return !!(KB_ENC.sealed.has(cs.status) || KB_ENC.sealed.has(cs.control)); } catch (_) { return false; } }
+  function render(g) {
+    let box = document.getElementById("kb-glg-dlg");
+    const st = g.stage || "need_email", codeStep = st === "code_sent" || st === "logging_in";
+    const keep = box ? { e: (box.querySelector("#glg-email") || {}).value || "", c: (box.querySelector("#glg-code") || {}).value || "" } : { e: "", c: "" };
+    if (!box) { box = document.createElement("div"); box.id = "kb-glg-dlg"; box.className = "kb-dlg"; document.body.appendChild(box); }
+    shownStage = st;
+    const busy = st === "sending_code" || st === "logging_in";
+    box.innerHTML = '<div class="kb-dlg-in"><h3>🎮 تسجيل الدخول في اللعبة <button type="button" class="btn ghost" id="glg-info" title="شرح" style="float:left;padding:2px 10px">❗</button></h3>' +
+      '<p class="mut" id="glg-help" style="display:none">عند أول تشغيل لحساب جديد تطلب اللعبة تسجيل الدخول. اكتب بريد حسابك في اللعبة (حساب Lilith)، فيكتبه البوت في نافذة الدخول ويضغط «Get Code». يصلك كود على بريدك، اكتبه هنا والبوت يكمل الدخول. إذا كان البريد غير مسجّل في اللعبة تنشئ اللعبة حساباً جديداً عليه تلقائياً. البوت لا يحفظ البريد ولا الكود ولا يكتبهما في السجل.</p>' +
+      '<p class="mut">' + (codeStep ? "١ ✔ البريد · <b>٢ الكود</b>" : "<b>١ البريد</b> · ٢ الكود") + '</p>' +
+      (codeStep
+        ? '<p class="mut">وصل كود إلى ' + esc(g.email_hint || "بريدك") + '. اكتبه هنا:</p>' +
+          '<input type="text" id="glg-code" inputmode="numeric" autocomplete="one-time-code" maxlength="8" placeholder="الكود" dir="ltr">' +
+          '<label class="mut"><input type="checkbox" id="glg-agree"> أوافق على اتفاقية المستخدم وسياسة الخصوصية للعبة (يضع البوت العلامة في نافذة الدخول)</label>'
+        : '<input type="text" id="glg-email" inputmode="email" autocomplete="email" placeholder="بريد حساب اللعبة" dir="ltr">') +
+      (encOn() ? "" : '<p class="mut" style="color:#f5b041">⚠️ تشفير 🔐 غير مفعّل لهذا السيرفر: البيانات تمر عبر مستودع kingbot-syn الخاص بدون تشفير.</p>') +
+      '<div class="msg" id="m-glg">' + esc(g.detail || "") + '</div>' +
+      '<div class="row">' +
+      (codeStep ? '<button type="button" class="btn" id="glg-send-code"' + (busy ? " disabled" : "") + '>تسجيل الدخول</button><button type="button" class="btn ghost" id="glg-back">إعادة إرسال الكود / بريد آخر</button>'
+                : '<button type="button" class="btn" id="glg-send-email"' + (busy ? " disabled" : "") + '>إرسال الكود إلى بريدي</button>') +
+      '<button type="button" class="btn ghost" id="glg-x">إغلاق</button></div></div>';
+    const e = box.querySelector("#glg-email"), c = box.querySelector("#glg-code");
+    if (e) { e.value = keep.e; e.focus(); }
+    if (c) { c.value = keep.c; c.focus(); }
+    box.querySelector("#glg-info").onclick = () => { const h = box.querySelector("#glg-help"); h.style.display = h.style.display === "none" ? "" : "none"; };
+    box.querySelector("#glg-x").onclick = () => { closedStage = shownStage; closedAt = Date.now(); box.remove(); };
+    const back = box.querySelector("#glg-back"); if (back) back.onclick = () => render({ stage: "need_email" });
+    const se = box.querySelector("#glg-send-email");
+    if (se) se.onclick = async () => {
+      const v = (e.value || "").trim();
+      if (!/^[^@\s]+@[^@\s]+\.[A-Za-z]{2,}$/.test(v)) { setMsg("m-glg", "اكتب بريداً صحيحاً.", "err"); return; }
+      const id = stamp();
+      if (await sendSettings({ action_request: { id, do: "game_login_email", email: v } }, "m-glg", se)) {
+        setMsg("m-glg", "أُرسل. البوت يكتب البريد ويضغط Get Code خلال دقيقة تقريباً، ثم افحص بريدك (والبريد المزعج).", "ok");
+        fastPoll(600);
+      }
+    };
+    const sc = box.querySelector("#glg-send-code");
+    if (sc) sc.onclick = async () => {
+      const v = (c.value || "").replace(/\s/g, "");
+      if (!/^[0-9A-Za-z]{4,8}$/.test(v)) { setMsg("m-glg", "اكتب الكود كما وصلك (4 إلى 8 أحرف أو أرقام).", "err"); return; }
+      if (!box.querySelector("#glg-agree").checked) { setMsg("m-glg", "يجب الموافقة على اتفاقية المستخدم أولاً.", "err"); return; }
+      const id = stamp();
+      if (await sendSettings({ action_request: { id, do: "game_login_code", code: v, agree: true } }, "m-glg", sc)) {
+        setMsg("m-glg", "أُرسل الكود. البوت يسجّل الدخول خلال دقيقة تقريباً.", "ok");
+        fastPoll(600);
+      }
+    };
+  }
+  window.glOpen = function (force) {
+    const g = glOf(typeof lastStatus === "object" ? lastStatus : null);
+    if (!ACTIVE.includes(g.stage) && !force) return false;
+    render(ACTIVE.includes(g.stage) ? g : { stage: "need_email" });
+    return true;
+  };
+  window.glCheck = function (s) {
+    const g = glOf(s), box = document.getElementById("kb-glg-dlg");
+    if (g.stage === "logged_in") {
+      if (box) { box.remove(); try { setMsg("m-status", "✅ تم تسجيل الدخول في اللعبة — البوت يبدأ العمل.", "ok"); } catch (_) {} }
+      return;
+    }
+    if (!ACTIVE.includes(g.stage)) return;
+    if (box) {
+      if (g.stage !== shownStage) render(g);
+      else if (g.detail) { const m = box.querySelector("#m-glg"); if (m && !m.classList.contains("ok")) setMsg("m-glg", g.detail, /البريد غير|لم أجد|رسالة اللعبة|خطأ|يجب/.test(g.detail) ? "err" : ""); }
+      return;
+    }
+    if (closedStage === g.stage && Date.now() - closedAt < 10 * 60e3) return;   // closed by hand: ask again after 10 min
+    render(g);
+  };
+  document.addEventListener("change", ev => {
+    if (ev.target && ev.target.id === "running" && ev.target.checked) setTimeout(() => window.glOpen(false), 300);
+  });
+})();
 const GH_OWNER = "dwtgraphics-sys";
 const GH_REPO = "kingbot-syn";
 function getGhToken() {
@@ -4462,6 +4545,7 @@ async function refreshStatus(btn) {
     renderCity(s.city);
     try { renderConduct(s.city); } catch (_) {}
     try { checkCharChange(s); checkWatched(s); astTick(s); } catch (_) {}
+    try { if (window.glCheck) glCheck(s); } catch (_) {}   // v262 LOGIN-01
     try { if (window.liveUpdate) liveUpdate(s); } catch (_) {}
     try { astStreamPaint(); } catch (_) {}   // MOD-04
     try { if (window.qmUpdate) qmUpdate(s); } catch (_) {}
