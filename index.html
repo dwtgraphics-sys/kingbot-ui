@@ -5558,7 +5558,20 @@ document.getElementById("cond-ic").innerHTML = gsvg("conduct", 46);
   }
   const WHY = { "the bot is paused": "البوت موقوف من لوحة التحكم، فالبث متوقف.", "the bot is frozen": "البوت مجمّد، فالبث متوقف.",
     "switched off in the dashboard": "أوقفت البث من هنا. اضغط «تشغيل البث».", "the bot is not running": "البوت لا يعمل على السيرفر الآن.",
-    "no data from the bot yet": "في انتظار أول حالة من البوت…" };
+    "no data from the bot yet": "في انتظار أول حالة من البوت…",
+    "no one is watching": "البث يعمل عند المشاهدة فقط لتوفير موارد السيرفر — يبدأ خلال دقيقة تقريباً من فتحك لهذه الصفحة." };
+  // v247: on-demand stream - OBS + the sender run only while someone watches (they took the server to 97% CPU)
+  let lvAsk = 0;
+  const onDemand = () => { const sd = (typeof settings === "object" && settings) || {}; return !(sd.stream && sd.stream.on_demand === false); };
+  function lvWatch() {
+    const sd = (typeof settings === "object" && settings) || null; if (!sd || !wantOn || !onDemand()) return;
+    const v = document.querySelector(".view.show"); if (!v || v.id !== "v-live" || document.hidden || lvPaused || lvOther) return;
+    const now = Date.now() / 1000, wu = +((sd.stream || {}).watch_until || 0);
+    if (wu - now > 300 || Date.now() - lvAsk < 90e3) return;
+    lvAsk = Date.now(); sd.stream = Object.assign({}, sd.stream || {}, { enabled: true, watch_until: Math.round(now + 1200) });
+    try { sendSettings({ stream: sd.stream }, "m-live", null); } catch (_) {}
+  }
+  setInterval(() => { try { lvWatch(); } catch (_) {} }, 30000);
   window.liveUpdate = function (s) {
     lastS = s || {};
     if (lastS.stream && /^https:\/\/vdo\.ninja\//.test(lastS.stream.view_url || "")) { astStreamSave(lastS.stream.view_url); }
@@ -5569,7 +5582,7 @@ document.getElementById("cond-ic").innerHTML = gsvg("conduct", 46);
     if (st && typeof st === "object") { on = !!st.active && age < 10; why = WHY[st.reason] || st.reason; if (!on && st.active && age >= 10) why = "لا توجد حالة جديدة من البوت منذ " + Math.round(age) + " دقيقة."; }
     else { on = wantOn && sd.running !== false && /working|waiting/.test(lastS.state || "") && age < 10; why = on ? "" : "البث يبدأ تلقائياً عندما يعمل البوت."; }
     if (!wantOn) { on = false; why = WHY["switched off in the dashboard"]; }
-    setActive(on, why);
+    setActive(on, why); lvWatch();
     $l("lv-task").innerHTML = ""; const b = document.createElement("b"); b.textContent = (STATE_AR[lastS.state] || "") + (lastS.state === "working" ? " · " : "");
     $l("lv-task").append(b, document.createTextNode(lastS.state === "working" ? taskText(lastS.task) : ""));
     $l("lv-since").textContent = st && st.since && on ? "منذ " + new Date(st.since).toLocaleTimeString("ar-OM", { hour: "2-digit", minute: "2-digit" }) : "";
@@ -5598,6 +5611,12 @@ document.getElementById("cond-ic").innerHTML = gsvg("conduct", 46);
       if (ok) { wantOn = next; setMsg("m-live", next ? "طلبت تشغيل البث. يبدأ خلال دقيقة تقريباً." : "طلبت إيقاف البث. البوت يكمل عمله.", "ok"); if (lastS) liveUpdate(lastS); }
     });
     if (location.hash === "#live") go();
+    const od = document.createElement("label"); od.className = "row lv-od"; od.innerHTML = '<input type="checkbox" id="lv-od"> <span>البث عند المشاهدة فقط (يخفف الضغط على السيرفر)</span>';
+    $l("lv-toggle").insertAdjacentElement("afterend", od);
+    const odIn = $l("lv-od"); odIn.checked = onDemand();
+    odIn.addEventListener("change", async () => { settings.stream = Object.assign({}, settings.stream || {}, { on_demand: odIn.checked });
+      if (await sendSettings({ stream: settings.stream }, "m-live", null)) setMsg("m-live", odIn.checked ? "البث يعمل فقط وأنت تشاهد هذه الصفحة." : "البث يعمل طوال عمل البوت (يستهلك موارد السيرفر).", "ok"); });
+    document.querySelectorAll(".view").forEach(v => new MutationObserver(() => { try { lvWatch(); } catch (_) {} }).observe(v, { attributes: true, attributeFilter: ["class"] }));
   }
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init); else init();
 })();
