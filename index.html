@@ -1832,6 +1832,18 @@ window.addEventListener("error", function(e) {
         <p class="sr-val" id="ifr-st"></p>
         <div class="msg" id="m-ifr"></div>
       </section>
+      <section class="panel ssx" aria-labelledby="sox-h">   <!-- v258: sign out of the game account -->
+        <div class="panel-head"><h2 id="sox-h">🚪 تسجيل الخروج من حساب اللعبة <button type="button" class="info-btn" data-x="sox" aria-label="شرح">❗</button></h2></div>
+        <div class="row"><button type="button" class="btn danger" id="sox-now"><span class="spin"></span>🚪 سجّل الخروج الآن</button>
+          <button type="button" class="btn" id="sox-in"><span class="spin"></span>✅ سجّلتُ الدخول — شغّل البوت</button></div>
+        <label class="row" for="sox-on"><span>تسجيل خروج تلقائي في وقت محدد</span><span class="switch"><input type="checkbox" id="sox-on"><span></span></span></label>
+        <div class="mc-row ssx-in" id="sox-cfg">
+          <label>الوقت (بتوقيتك) <input type="time" id="sox-time" value="03:00"></label>
+          <div class="cg-f" id="sox-days"></div>
+        </div>
+        <p class="gd-p" id="sox-utc"></p>
+        <div class="msg" id="m-sox"></div>
+      </section>
       <section class="panel ssx" aria-labelledby="alx-h">   <!-- TASK-18 -->
         <div class="panel-head"><h2 id="alx-h">🔔 تنبيهات فورية (تيليجرام / ديسكورد) <button type="button" class="info-btn" data-info="alerts" aria-label="شرح">❗</button></h2>
           <label class="row" for="alx-on"><span>مفعّل</span><span class="switch"><input type="checkbox" id="alx-on"><span></span></span></label></div>
@@ -3599,6 +3611,29 @@ document.addEventListener("change", e => { const id = e.target && e.target.id; i
   if (id === "mtx-tav") { m.tavern_free_chests = e.target.checked; const t = (settings.tasks || []).find(y => y.routine === "tavern"); if (t) t.enabled = e.target.checked; const sw = document.getElementById("en-tavern"); if (sw) sw.checked = e.target.checked; }
   if (id === "mtx-ref") m.merchant_free_refresh = e.target.checked; });
 setTimeout(() => { try { mtxFill(); } catch (_) {} }, 0); setInterval(() => { try { mtxCount(); } catch (_) {} }, 60000);
+// v258: sign_out_schedule {enabled, time_utc "HH:MM", days [0..6] Mon=0}; dashboard actions sign_out / signed_in
+const SOX_D = ["الإثنين", "الثلاثاء", "الأربعاء", "الخميس", "الجمعة", "السبت", "الأحد"];
+function soxGet() { if (typeof settings !== "object" || !settings) return {}; const c = settings.sign_out_schedule = (settings.sign_out_schedule && typeof settings.sign_out_schedule === "object") ? settings.sign_out_schedule : {};
+  if (!Array.isArray(c.days)) c.days = []; return c; }
+const soxOff = () => -new Date().getTimezoneOffset();            // minutes east of UTC
+function soxToUtc(t) { const [h, m] = (t || "03:00").split(":").map(Number); let x = ((h * 60 + m - soxOff()) % 1440 + 1440) % 1440; return String(Math.floor(x / 60)).padStart(2, "0") + ":" + String(x % 60).padStart(2, "0"); }
+function soxToLocal(t) { const [h, m] = (t || "23:00").split(":").map(Number); let x = ((h * 60 + m + soxOff()) % 1440 + 1440) % 1440; return String(Math.floor(x / 60)).padStart(2, "0") + ":" + String(x % 60).padStart(2, "0"); }
+function soxFill() { const on = document.getElementById("sox-on"); if (!on) return; const c = soxGet(); on.checked = !!c.enabled;
+  document.getElementById("sox-cfg").style.opacity = c.enabled ? 1 : .5;
+  if (c.time_local) document.getElementById("sox-time").value = c.time_local; else if (c.time_utc) document.getElementById("sox-time").value = soxToLocal(c.time_utc);
+  document.getElementById("sox-days").innerHTML = SOX_D.map((n, i) => `<button type="button" data-sd="${i}" class="${c.days.includes(i) ? "on" : ""}">${n}</button>`).join("");
+  document.getElementById("sox-utc").textContent = c.enabled ? "يسجّل البوت الخروج " + (c.days.length ? "أيام: " + c.days.map(i => SOX_D[i]).join("، ") : "كل يوم") + " الساعة " + document.getElementById("sox-time").value + " بتوقيتك (" + (c.time_utc || soxToUtc(document.getElementById("sox-time").value)) + " UTC). تُحفظ مع «حفظ وإرسال»." : "معطّل — استعمل الزر للخروج الآن."; }
+document.addEventListener("change", e => { const t = e.target; if (!t) return;
+  if (t.id === "sox-on") { const c = soxGet(); c.enabled = t.checked; soxTime(document.getElementById("sox-time").value); soxFill(); }
+  if (t.id === "sox-time") { soxTime(t.value); soxFill(); } });
+function soxTime(v) { const c = soxGet(); c.time_local = v || "03:00"; c.tz_min = soxOff(); c.time_utc = soxToUtc(c.time_local); }   // days are YOUR days
+document.addEventListener("click", async e => { const t = e.target; if (!t || !t.closest) return;
+  const d = t.closest("#sox-days [data-sd]"); if (d) { const c = soxGet(), i = +d.dataset.sd; c.days = c.days.includes(i) ? c.days.filter(x => x !== i) : c.days.concat(i).sort(); soxTime(document.getElementById("sox-time").value); soxFill(); return; }
+  const now = t.closest("#sox-now"); if (now) {
+    if (!confirm("سيخرج البوت من حساب اللعبة ويتوقف حتى تسجّل الدخول من جديد بنفسك (برمز البريد). متأكد؟")) return;
+    const id = stamp(); if (await sendSettings({ action_request: { id, do: "sign_out" } }, "m-sox", now)) { setMsg("m-sox", "طلبت تسجيل الخروج… يُنفَّذ بعد المهمة الجارية.", "ok"); watchAction(id, "m-sox", "✅ تم تسجيل الخروج — البوت متوقف حتى تسجّل الدخول."); } return; }
+  const inn = t.closest("#sox-in"); if (inn) { const id = stamp(); if (await sendSettings({ action_request: { id, do: "signed_in" } }, "m-sox", inn)) { setMsg("m-sox", "أبلغت البوت أنك سجّلت الدخول — يعود للعمل خلال دقيقتين.", "ok"); watchAction(id, "m-sox", "✅ البوت يعمل من جديد."); } } });
+setTimeout(() => { try { soxFill(); } catch (_) {} }, 0);
 // TASK-18: alerts {enabled, on_attack, on_shield_drop, on_captcha, on_server_offline, on_subscription_expiring}
 function alxGet() { if (typeof settings !== "object" || !settings) return {}; const c = settings.alerts = (settings.alerts && typeof settings.alerts === "object") ? settings.alerts : {};
   if (c.enabled == null) c.enabled = true; ["on_attack", "on_shield_drop", "on_captcha", "on_server_offline", "on_subscription_expiring"].forEach(k => { if (c[k] == null) c[k] = true; }); return c; }
@@ -4407,11 +4442,12 @@ async function loadSettings() {
     if (f) {
       const d = await kbParse(await download(f.id), curServer().control);
       if (d._locked) { setMsg("m-send", "🔐 الإعدادات مشفّرة: أدخل عبارة المرور لعرضها وتعديلها.", "err"); renderAll(); return; }
-      settings = { running: d.running !== false, loop_minutes: d.loop_minutes || 60, tasks: Array.isArray(d.tasks) ? d.tasks : settings.tasks, schedule: d.schedule || settings.schedule, daily_pause: d.daily_pause || settings.daily_pause, freeze_until: d.freeze_until || null, presets: (d.presets && typeof d.presets === "object") ? d.presets : (settings.presets || {}), char_rotation: d.char_rotation || settings.char_rotation || { enabled: false, slots: [] }, stream: (d.stream && typeof d.stream === "object") ? d.stream : (settings.stream || { enabled: true }), march_control: (d.march_control && typeof d.march_control === "object") ? d.march_control : (settings.march_control || {}), commander_presets: (d.commander_presets && typeof d.commander_presets === "object") ? d.commander_presets : (settings.commander_presets || {}), smart_schedule: (d.smart_schedule && typeof d.smart_schedule === "object") ? d.smart_schedule : (settings.smart_schedule || undefined), events_hunter: (d.events_hunter && typeof d.events_hunter === "object") ? d.events_hunter : (settings.events_hunter || undefined), merchant_tavern: (d.merchant_tavern && typeof d.merchant_tavern === "object") ? d.merchant_tavern : (settings.merchant_tavern || undefined), relogin_cooldown_min: d.relogin_cooldown_min || settings.relogin_cooldown_min || undefined, conduct_min: d.conduct_min || settings.conduct_min || undefined, schedule_profiles: Array.isArray(d.schedule_profiles) ? d.schedule_profiles : (settings.schedule_profiles || undefined), automation_rules: Array.isArray(d.automation_rules) ? d.automation_rules : (settings.automation_rules || undefined), sched_ranges: (d.sched_ranges && typeof d.sched_ranges === "object") ? d.sched_ranges : (settings.sched_ranges || undefined), telegram_reset: d.telegram_reset || settings.telegram_reset || undefined, alerts: (d.alerts && typeof d.alerts === "object") ? d.alerts : (settings.alerts || undefined) };
+      settings = { running: d.running !== false, loop_minutes: d.loop_minutes || 60, tasks: Array.isArray(d.tasks) ? d.tasks : settings.tasks, schedule: d.schedule || settings.schedule, daily_pause: d.daily_pause || settings.daily_pause, freeze_until: d.freeze_until || null, presets: (d.presets && typeof d.presets === "object") ? d.presets : (settings.presets || {}), char_rotation: d.char_rotation || settings.char_rotation || { enabled: false, slots: [] }, stream: (d.stream && typeof d.stream === "object") ? d.stream : (settings.stream || { enabled: true }), march_control: (d.march_control && typeof d.march_control === "object") ? d.march_control : (settings.march_control || {}), commander_presets: (d.commander_presets && typeof d.commander_presets === "object") ? d.commander_presets : (settings.commander_presets || {}), smart_schedule: (d.smart_schedule && typeof d.smart_schedule === "object") ? d.smart_schedule : (settings.smart_schedule || undefined), events_hunter: (d.events_hunter && typeof d.events_hunter === "object") ? d.events_hunter : (settings.events_hunter || undefined), merchant_tavern: (d.merchant_tavern && typeof d.merchant_tavern === "object") ? d.merchant_tavern : (settings.merchant_tavern || undefined), relogin_cooldown_min: d.relogin_cooldown_min || settings.relogin_cooldown_min || undefined, conduct_min: d.conduct_min || settings.conduct_min || undefined, schedule_profiles: Array.isArray(d.schedule_profiles) ? d.schedule_profiles : (settings.schedule_profiles || undefined), automation_rules: Array.isArray(d.automation_rules) ? d.automation_rules : (settings.automation_rules || undefined), sched_ranges: (d.sched_ranges && typeof d.sched_ranges === "object") ? d.sched_ranges : (settings.sched_ranges || undefined), telegram_reset: d.telegram_reset || settings.telegram_reset || undefined, alerts: (d.alerts && typeof d.alerts === "object") ? d.alerts : (settings.alerts || undefined), sign_out_schedule: (d.sign_out_schedule && typeof d.sign_out_schedule === "object") ? d.sign_out_schedule : (settings.sign_out_schedule || undefined) };
       try { mcFill(); } catch (_) {}
       try { cpzFill(); } catch (_) {}
       try { ssxFill(); } catch (_) {}
       try { alxFill(); } catch (_) {}
+      try { soxFill(); } catch (_) {}
       try { ehxFill(); } catch (_) {}
       try { mtxFill(); } catch (_) {}
       try { if (window.v18bFill) window.v18bFill(); } catch (_) {}
@@ -5946,6 +5982,8 @@ pre.log .lx{display:inline-block;margin-inline-start:6px;padding:0 6px;border-ra
 .hl-warn{padding:9px 12px;border-radius:12px;background:#ff9f0a14;border:1px solid #ff9f0a55;font-size:12.5px;line-height:1.7;margin:6px 0}
 .hl-cmds summary{cursor:pointer;font-size:13px;opacity:.85;margin-top:4px}.hl-cmd{display:grid;grid-template-columns:auto 1fr auto;gap:8px;align-items:center;padding:7px 10px;margin:5px 0;border-radius:10px;background:#ffffff08;font-size:12.5px}
 .hl-cmd i{font-style:normal}.hl-cmd small{opacity:.65;white-space:nowrap}.hl-cmd span{overflow-wrap:anywhere}
+#sox-time{min-width:120px;direction:ltr;background:#ffffff0d;border:1px solid #ffffff22;color:inherit;border-radius:10px;padding:7px 10px;font:inherit}
+.btn.danger{background:#ff453a22;border-color:#ff453a88;color:#ffb3ad}.btn.danger:hover{background:#ff453a38}
 .evc-now{font-size:12.5px;opacity:.8;margin:4px 0 6px}
 .evc-row{display:grid;grid-template-columns:1fr auto;gap:6px 10px;padding:10px 12px;margin:8px 0;border-radius:12px;background:#ffffff0a;border:1px solid #ffffff14}
 .evc-row.live{border-color:#4cd96488;background:#4cd96414}.evc-row h4{margin:0;font-size:14px}.evc-tag{font-size:11px;padding:2px 8px;border-radius:999px;background:#ffffff14;margin-inline-start:6px}
@@ -6525,7 +6563,8 @@ pre.log .lx{display:inline-block;margin-inline-start:6px;padding:0 6px;border-ra
       $("crc-rows").innerHTML = ""; crcRows(); document.querySelectorAll("#crc-rows .crc-r[data-l]").forEach((r, i) => { const v = x.rows[i] || []; r.querySelector("[data-c]").value = v[0] || ""; r.querySelector("[data-t]").value = v[1] || ""; }); crcSum(); }
     const dl = t.closest("[data-del]"); if (dl) { const L = LS.get(CKEY, []); L.splice(+dl.dataset.del, 1); LS.set(CKEY, L); crcSaved(); } });
   // ❗ info
-  const INFO = { evc: ["تقويم الأحداث", "أداة مجانية: الأحداث المتكررة (أقوى حاكم، عجلة الحظ، أكثر من الجواهر، لوهار، التدريب، المملكة الذهبية، سيرولي، الفيلق الظلّي، أوزيريس) مع نصيحة موارد لكل حدث. لأن مواعيدها تختلف بين الممالك، أدخل تاريخ بداية آخر مرة رأيت فيها الحدث (بتوقيت UTC) والفاصل بالأيام إن عرفته، فتعرض الأداة «جارٍ الآن» أو «يبدأ بعد…» وترتّب الأحداث حسب الأقرب. صفِّ حسب النوع بالأزرار. البيانات في هذا المتصفح فقط."],
+  const INFO = { sox: ["تسجيل الخروج من حساب اللعبة", "«سجّل الخروج الآن» يجعل البوت يفتح الإعدادات ← الحساب ويضغط زر تسجيل الخروج (Sign out / Switch account) ثم التأكيد، بعد انتهاء المهمة الجارية. لا يضغط أبداً أي زر فيه حذف أو فك ربط (Delete / Unbind)، ويحفظ صورة كل خطوة. بعد الخروج يتوقف البوت تماماً ولا يسجّل الدخول بنفسه: عندما تسجّل الدخول (برمز البريد) يعود للعمل تلقائياً خلال دقيقتين، أو اضغط «سجّلتُ الدخول». الخروج التلقائي: اختر الوقت بتوقيتك والأيام (بدون أيام = كل يوم) ثم «حفظ وإرسال» — يُنفَّذ مرة في اليوم خلال ساعة من الوقت المحدد. يحتاج البوت الإصدار 258 أو أحدث."],
+    evc: ["تقويم الأحداث", "أداة مجانية: الأحداث المتكررة (أقوى حاكم، عجلة الحظ، أكثر من الجواهر، لوهار، التدريب، المملكة الذهبية، سيرولي، الفيلق الظلّي، أوزيريس) مع نصيحة موارد لكل حدث. لأن مواعيدها تختلف بين الممالك، أدخل تاريخ بداية آخر مرة رأيت فيها الحدث (بتوقيت UTC) والفاصل بالأيام إن عرفته، فتعرض الأداة «جارٍ الآن» أو «يبدأ بعد…» وترتّب الأحداث حسب الأقرب. صفِّ حسب النوع بالأزرار. البيانات في هذا المتصفح فقط."],
     crc: ["حاسبة تقنية الكريستال", "أداة مجانية لأبحاث الكريستال في موسم الفتح: اختر المستوى الحالي والمستهدف، وانسخ من مركز أبحاث الكريستال تكلفة كل مستوى ووقته، وأدخل نسبة الخصم (مركز الأبحاث أو التحالف) وسرعة البحث ونقاط الموسم لكل كريستال إن عرفتها. تعرض: الكريستال بعد الخصم، وقت البحث بعد السرعة، ونقاط الموسم. «حفظ» يجمع خطتك لعدة تقنيات مع المجموع. لا توجد أرقام مدمجة لأن اللعبة تغيّر التكاليف بين نسخ الموسم."] };
   document.addEventListener("click", ev => { const b = ev.target.closest && ev.target.closest(".info-btn[data-x]"); if (!b || !INFO[b.dataset.x]) return; ev.preventDefault();
     const x = INFO[b.dataset.x]; try { showInfo({ name: x[0], hint: x[1] }); } catch (_) { alert(x[0] + "\n\n" + x[1]); } });
