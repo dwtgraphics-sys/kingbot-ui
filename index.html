@@ -1168,6 +1168,8 @@ main, .view, .panel, #top, .kbar { min-width: 0; max-width: 100%; box-sizing: bo
 .lv-q{font-size:11.5px;padding:3px 9px;border-radius:999px;white-space:nowrap}.lv-q:empty{display:none}.lv-q.ok{background:#2ecc7126;color:#9ff0bf}.lv-q.last{background:#f39c1233;color:#ffd08a}.lv-q.none{background:#e74c3c33;color:#ffb3a8}
 #lv-again{margin-top:10px}
 .lv-mini{cursor:pointer}
+  body:not(.kb-is-owner) #v-admin { display: none !important; }
+  .kb-owner-only[hidden] { display: none !important; }
 </style>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&amp;display=swap">
 </head>
@@ -1377,7 +1379,7 @@ window.addEventListener("error", function(e) {
         </details>
         <hr>
         <button type="button" data-go="v-home"><span data-i="home"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l9-7 9 7"></path><path d="M5 10v10h14V10"></path></svg></span>الرئيسية</button>
-        <button type="button" data-go="v-admin"><span><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="6" rx="1.5"></rect><rect x="3" y="14" width="18" height="6" rx="1.5"></rect><path d="M7 7h.01M7 17h.01"></path></svg></span>إدارة السيرفرات</button>
+        <button type="button" data-go="v-admin" class="kb-owner-only" hidden><span><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="6" rx="1.5"></rect><rect x="3" y="14" width="18" height="6" rx="1.5"></rect><path d="M7 7h.01M7 17h.01"></path></svg></span>إدارة السيرفرات</button>
         <button type="button" data-go="v-live"><span><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="6" width="13" height="12" rx="2"></rect><path d="m16 10 5-3v10l-5-3"></path></svg></span>البث المباشر</button>
         <button type="button" data-go="assistant"><span><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="8" width="14" height="11" rx="3"></rect><path d="M12 4v4M9 13h.01M15 13h.01M9 16h6"></path></svg></span>المساعد</button>
         <button type="button" data-go="v-subs"><span data-i="coins"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="9" r="6"></circle><path d="M15.5 9.5A6 6 0 1 1 9.5 15.5"></path></svg></span>الاشتراكات</button>
@@ -5211,6 +5213,7 @@ document.getElementById("cond-ic").innerHTML = gsvg("conduct", 46);
   }
   function render() {
     const a = me && me.acc; if (!a) return;
+    applyOwnerGate();
     $g("acc-u").textContent = a.u;
     $g("acc-role").textContent = a.role === "owner" ? "مالك اللوحة" : (a.role || "مستخدم");
     $g("acc-mail").textContent = a.email || "—"; $g("acc-mail-i").value = a.email || "";
@@ -5257,6 +5260,15 @@ document.getElementById("cond-ic").innerHTML = gsvg("conduct", 46);
   }
   window.kbLogout = logout;
   window.kbMe = () => (me && me.acc) || null;
+  // ADM-04: admin area only for the dashboard owner (role "owner")
+  function applyOwnerGate() {
+    const own = !!(me && me.acc && me.acc.role === "owner" && !me.acc.disabled);
+    document.body.classList.toggle("kb-is-owner", own);
+    document.querySelectorAll(".kb-owner-only").forEach(el => { el.hidden = !own; });
+    const v = document.getElementById("v-admin");
+    if (!own && v && v.classList.contains("show")) { const h = document.querySelector('[data-go="v-home"]'); if (h) h.click(); }
+  }
+  window.kbIsOwner = () => !!(me && me.acc && me.acc.role === "owner" && !me.acc.disabled);
   $g("acc-logout").addEventListener("click", () => logout());
   try { PAGE_INFO.account = { name: "الحساب", text: "هذا حساب الدخول إلى لوحة تحكم Kingbot فقط (اسم مستخدم وكلمة مرور)، وهو منفصل تماماً عن حساب اللعبة وشخصياتها.\n\n• أول مرة تفتح فيها اللوحة تنشئ الحساب، وبعدها تُطلب كلمة المرور عند الدخول.\n• «تذكرني» يبقيك داخل اللوحة 5 أيام على هذا الجهاز.\n• تغيير كلمة المرور يُخرج الأجهزة الأخرى.\n• «تسجيل الخروج» من القائمة ☰ أو من هذه الصفحة." }; } catch (_) {}
 
@@ -6679,6 +6691,7 @@ pre.log .lx{display:inline-block;margin-inline-start:6px;padding:0 6px;border-ra
   function subLine(c) { if (!c) return "بلا اشتراك (حساب المالك)"; const st = Date.parse(c.start || ""), left = st ? Math.ceil((st + (c.days || 30) * 864e5 - Date.now()) / 864e5) : null;
     return `👤 ${esc(c.name || "عميل")} · ${esc(c.plan || "")}${c.game_id ? " · ID " + esc(c.game_id) : ""} · ${left == null ? "لم يبدأ" : left > 0 ? "باقي " + left + " يوم" : "منتهي"}${c.frozen ? " · ❄️ مجمّد" : ""}`; }
   async function load() {
+    if (!(window.kbIsOwner && window.kbIsOwner())) return;
     if (busy) return; busy = true; $("adm-refresh") && $("adm-refresh").classList.add("loading");
     try {
       try { await loadServers(); } catch (_) {}
@@ -6747,6 +6760,7 @@ pre.log .lx{display:inline-block;margin-inline-start:6px;padding:0 6px;border-ra
     const t = e.target; if (!t || !t.closest) return;
     if (t.closest("#adm-refresh")) { load(); return; }
     const b = t.closest("#v-admin [data-a]"); if (!b) return;
+    if (!(window.kbIsOwner && window.kbIsOwner())) return;
     const sid = b.closest("[data-sid]").dataset.sid, sv = SERVERS.find(x => x.id === sid), a = b.dataset.a; if (!sv) return;
     if (a === "switch") { try { localStorage.setItem("kb_server", sid); } catch (_) {} location.hash = ""; location.reload(); return; }
     if (a === "sub") { openSub(sv); return; }
