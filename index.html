@@ -849,6 +849,16 @@ main, .view, .panel, #top, .kbar { min-width: 0; max-width: 100%; box-sizing: bo
 .ct-form textarea { min-height: 120px; resize: vertical; }
 
 .mr-list { display: grid; gap: 10px; }
+.mr2{padding:12px 14px;border-radius:16px;background:rgba(255,255,255,.05);border:1px solid var(--edge,rgba(255,255,255,.12));display:grid;gap:8px}
+.mr2-h{display:flex;flex-wrap:wrap;align-items:center;gap:8px}.mr2-h b{font-size:16px}
+.mr2-rc{font-size:12px;padding:2px 10px;border-radius:999px;background:rgba(242,196,90,.15);border:1px solid rgba(242,196,90,.45);color:#ffd46a}
+.mr2-b{display:flex;gap:12px;align-items:flex-start}.mr2-av{height:56px;width:auto;max-width:112px;border-radius:12px;object-fit:cover;flex:none}
+.mr2-i{flex:1;min-width:0;display:grid;gap:6px}
+.mr2-g{display:flex;flex-wrap:wrap;gap:6px}.mr2-g span{font-size:13px;padding:3px 10px;border-radius:999px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);font-variant-numeric:tabular-nums}
+.mr2-t{display:inline-flex;align-items:center;gap:8px}.mr2-cd{font-size:20px;font-weight:800;font-variant-numeric:tabular-nums;padding:2px 12px;border-radius:999px;background:rgba(77,141,255,.16);border:1px solid rgba(77,141,255,.35);color:#cfe0ff}
+.mr2-cd.done{font-size:13px;background:rgba(62,207,110,.14);border-color:rgba(62,207,110,.4);color:#b9f5cc}
+.mr-chip.preparing{color:#ffd46a;border-color:rgba(226,176,74,.5)}.mr-chip.garrison{color:#c9b6ff;border-color:rgba(160,130,255,.5)}.mr-chip.rally{color:#ffb38a;border-color:rgba(242,140,40,.5)}
+
 .mr-cmd{display:flex;flex-wrap:wrap;gap:6px 12px;margin-top:6px}.mr-c{display:inline-flex;align-items:center;gap:6px;min-width:0}.mr-c .cmdface{width:30px;height:30px;flex:none}.mr-c .cmdface img,.mr-c .cmdface .cmdav{width:30px;height:30px}.mr-c small{font-size:11.5px;opacity:.85}.mr-mis{color:#ffd08a;font-weight:700}.mr-hp i{background:linear-gradient(90deg,#e74c3c,#2ecc71)!important}
 .mr { display: grid; grid-template-columns: 52px minmax(0, 1fr); gap: 12px; align-items: center; padding: 10px 12px; border-radius: 14px; background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.09); }
 .mr img, .mr .noav { width: 52px; height: 52px; border-radius: 12px; object-fit: cover; background: rgba(255,255,255,.08); }
@@ -2764,7 +2774,7 @@ const PAGE_INFO = {
   uxq: { name: "في المدينة", text: "بطاقات الطوابير النشطة في مدينتك كما قرأها البوت من «نظرة عامة على الطوابير»: تدريب المشاة والفرسان والرماة والحصار (مع المستوى المختار في إعدادات الطوابير)، إنتاج المواد، والعلاج. العدّاد ينقص كل ثانية، والشريط يقارن الوقت المتبقي بأطول وقت رآه البوت لنفس الطابور (اللعبة لا تعرض المدة الكاملة). يقرأ البوت الطوابير كل 10 دقائق تقريباً وبعد تبديل الشخصية." },
   cpresets: { name: "قادة كل مهمة", text: "اختر قائداً أساسياً وثانوياً لكل مهمة (جمع الطعام/الخشب/الحجر/الذهب، البرابرة، الحشود، الحراس). عند تجهيز المسيرة يبدّل البوت القادة في نافذة الجيش الجديد إلى من اخترته (يبحث عن الاسم في قائمة القادة). إذا لم تختر قائداً تبقى التشكيلة المحفوظة في اللعبة كما هي. إذا كان القائد في مسيرة أخرى يكمل البوت بالتشكيلة المحفوظة. القادة الظاهرون أولاً هم الذين قرأهم البوت من حسابك." },
   smartsched: { name: "جلسات عمل واستراحات", text: "يقسّم البوت وقت عمله اليومي إلى جلسات (مثلاً 90 دقيقة) تليها استراحات (مثلاً 20 دقيقة) مثل اللاعب الحقيقي، ويتوقف لبقية اليوم عند بلوغ «حد الساعات اليومي» (يُحسب وقت تنفيذ المهام فقط، ويبدأ العد من جديد 00:00 بتوقيت غرينتش). «العشوائية ±%» تغيّر أطوال الجلسات والاستراحات وفترات الانتظار قليلاً. النقرات نفسها دقيقة دائماً في المكان الصحيح بدون أي إزاحة عشوائية. يعمل داخل ساعات «الجدولة الذكية» إن كانت مفعّلة. الشريط يعرض الساعات المستخدمة اليوم والحالة: يعمل / استراحة / انتهى حد اليوم." },
-  mrcards: { name: "الجيوش المرسلة", text: "العدّاد يعرض عدد الجيوش خارج المدينة من الحد الأقصى (مثل 2/5). كل بطاقة: صورة القائد الأساسي والثانوي واسمهما (تُقرأ من نافذة الجيش في اللعبة، وإن لم تظهر تُؤخذ من «قادة كل مهمة»)، الإحداثيات ونوع المهمة [جمع / البرابرة / حشد]، عدد الجنود، الحالة (يجمع، ذاهب للهجوم، في حشد، عائد…) وشريط الصحة عندما تظهر النسبة. تتحدث مع «تحديث المسيرات» في المساعد أو تلقائياً." },
+  mrcards: { name: "الجيوش المرسلة", text: "تُقرأ الآن من قائمة «Troops» في اللعبة (الزر الأزرق بجانب عدّاد المسيرات 1/5): كل جيش مع القائد الأساسي والثانوي، عدد الجنود، الإحداثيات والهدف، الحالة، ومؤقت تنازلي حي (HH:MM:SS) يتحرك في اللوحة كل ثانية من آخر قراءة، و«قابل للاستدعاء» إذا ظهر زر الاستدعاء الأصفر. البوت لا يضغط الاستدعاء أبداً. (إصدار 230+). العدّاد يعرض عدد الجيوش خارج المدينة من الحد الأقصى (مثل 2/5). كل بطاقة: صورة القائد الأساسي والثانوي واسمهما (تُقرأ من نافذة الجيش في اللعبة، وإن لم تظهر تُؤخذ من «قادة كل مهمة»)، الإحداثيات ونوع المهمة [جمع / البرابرة / حشد]، عدد الجنود، الحالة (يجمع، ذاهب للهجوم، في حشد، عائد…) وشريط الصحة عندما تظهر النسبة. تتحدث مع «تحديث المسيرات» في المساعد أو تلقائياً." },
   equipcalc: { name: "حاسبة المعدات والتصنيع", text: "«المعدات»: كل قطع الحداد مع فلاتر الخانة (سلاح، خوذة، صدر، قفازات، أرجل، أحذية، إكسسوار) والجودة (أسطوري، ملحمي، نخبة، متقدم، عادي) ونوع الجنود (مشاة، فرسان، رماة، قيادة، جمع). اضغط البطاقة لتفاصيلها و«➕ أضف» لإضافتها.\n«قائمة التصنيع»: مجموع المواد (جلد، حديد، أبنوس، عظم) والذهب ومجموع المزايا لكل القطع المختارة، مع تغيير العدد أو الحذف. القائمة محفوظة في متصفحك فقط. هذه أداة حساب فقط — البوت لا يصنع المعدات ولا يصرف شيئاً." },
   speedcalc: { name: "حاسبة التسريعات", text: "ثلاثة أوضاع: «التسريعات» لعدّ حقيبتك، «التدريب» لحساب وقت تدريب عدد من الجنود حسب المستوى ونسبة سرعة التدريب (مع القوة المضافة وهل تكفي تسريعاتك)، و«العلاج» لمقارنة وقت المستشفى بتسريعات العلاج والعامة. اكتب عدد كل فئة تسريع في حقيبتك (1د، 5د … 7 أيام) تحت كل نوع. المجموع يظهر فوراً بالأيام والساعات والدقائق لكل نوع، ومع «العامة» (لأن التسريع العام يُستعمل للتدريب والبناء والبحث والعلاج). الأرقام تُحفظ في هذا المتصفح فقط؛ «مسح الكل» يصفّرها." },
   captcha: { name: "نافذة التحقق (كابتشا)", text: "أحياناً تطلب اللعبة إثبات أنك لست برنامجاً. عندما يكتشفها البوت يتوقف فوراً عن أي نقرة، يرسل صورة الشاشة، تتحول الحالة إلى «نافذة تحقق» ويصلك تنبيه صوتي هنا وعلى تيليجرام. حلّها يدوياً على السيرفر ثم اضغط «تم الحل — استئناف»: يتأكد البوت أن النافذة اختفت قبل أن يكمل، وإن كانت ما زالت ظاهرة يبقى متوقفاً ويخبرك. البوت لا يحاول حل التحقق بنفسه." },
@@ -4454,34 +4464,55 @@ $("ac-ref").addEventListener("click", async () => {
 });
 
 /* ---------- v131: marches ---------- */
-const MR_ST = { gather: "يجمع الموارد", standby: "متوقف في الخريطة", return: "عائد للمدينة", attack: "ذاهب للهجوم", march: "في مسيرة", rally: "في حشد" };
+const MR_ST = { gather: "يجمع الموارد", standby: "مخيّم بانتظار الأوامر", return: "عائد للمدينة", attack: "ذاهب للهجوم", march: "في مسيرة", rally: "في حشد", preparing: "يستعد", garrison: "حامية" };
 const MR_MIS = { gather: "جمع", barbarians: "البرابرة", rally: "حشد" };   // UX-03
 function renderMarches(c) {
+  /* v230: full list from the in-game "Troops" popup - every march with commanders, units, target, status and a live countdown */
   const box = document.getElementById("mr-list"); if (!box) return;
   let list = c && Array.isArray(c.marches) ? kbCache("marches", c.marches.length ? c.marches : null) : null;
-  let at = c && c.marches_at; if (list && at) kbCache("marches_at", { t: at });
-  if (!list) { list = kbCache("marches", null); at = (kbCache("marches_at", null) || {}).t; }
+  let at = c && c.marches_at, rd = c && c.marches_read_utc; if (list && at) kbCache("marches_at", { t: at, u: rd || "" });
+  if (!list) { list = kbCache("marches", null); const k = kbCache("marches_at", null) || {}; at = k.t; rd = k.u; }
   if (!list) return;
-  const mx = (c && c.marches_max) || 5;
-  document.getElementById("mr-n").textContent = list.length + "/" + mx + " مسيرات خارجاً";   // UX-03
-  document.getElementById("mr-at").textContent = at ? "آخر قراءة " + at : "";
+  const sum = (c && c.deployed_marches_summary) || {}, mx = sum.total || (c && c.marches_max) || 5, act = sum.active != null ? sum.active : list.length;
+  document.getElementById("mr-n").textContent = "مسيرات خارجاً " + act + "/" + mx;
+  document.getElementById("mr-at").textContent = (sum.last_read || at) ? "آخر قراءة " + (sum.last_read || at) : "";
   if (!list.length) { box.innerHTML = '<p class="note">لا توجد جيوش خارج المدينة.</p>'; return; }
   const okAv = v => typeof v === "string" && /^data:image\/jpeg;base64,[A-Za-z0-9+/=]+$/.test(v);
-  box.innerHTML = list.map(a => {
-    const pct = a.cap ? Math.min(100, Math.round(a.got / a.cap * 100)) : (a.pct != null ? a.pct : null);
-    const loc = a.x != null ? "📍 X:" + a.x + " Y:" + a.y : "📍 —";
-    return '<div class="mr">' + (okAv(a.avatar) ? '<img alt="" src="' + a.avatar + '">' : '<span class="noav"></span>') +
-      '<div><div class="mr-top"><b>الجيش ' + esc(a.slot) + '</b><span class="mr-chip ' + esc(a.status) + '">' + (MR_ST[a.status] || esc(a.status)) + '</span>' +
-      (a.troops ? '<span>⚔️ ' + fmtInt(a.troops) + ' جندي</span>' : '') + '</div>' +
-      '<div class="mr-sub">' + loc + (MR_MIS[a.mission] ? ' <span class="mr-mis">[' + MR_MIS[a.mission] + ']</span>' : '') + (a.target ? ' · ' + esc(a.target) : '') + '</div>' +
-      (Array.isArray(a.commanders) && a.commanders.length ? '<div class="mr-cmd" data-cmd="' + esc(a.commanders.slice(0, 2).join("|")) + '"' + (a.commanders_from === "preset" ? ' title="حسب «قادة كل مهمة»"' : '') + '></div>' : '') +
-      (a.health != null ? '<div class="mr-sub">❤️ الصحة ' + (+a.health) + '%</div><div class="mr-bar mr-hp"><i style="width:' + Math.max(0, Math.min(100, +a.health)) + '%"></i></div>' : '') +
-      (pct != null ? '<div class="mr-sub">عداد الجمع: ' + (a.cap ? fmtInt(a.got) + ' من ' + fmtInt(a.cap) + ' · ' : '') + pct + '%</div><div class="mr-bar"><i style="width:' + pct + '%"></i></div>' : '') +
-      '</div></div>';
+  const base = Date.parse(rd || (list[0] && list[0].updated_at) || "") || 0;
+  box.innerHTML = list.map((a, i) => {
+    const pct = a.cap ? Math.min(100, Math.round(a.got / a.cap * 100)) : (a.progress_percent != null ? a.progress_percent : (a.pct != null ? a.pct : null));
+    const x = a.coords ? a.coords.x : a.x, y = a.coords ? a.coords.y : a.y;
+    const units = a.units != null ? a.units : a.troops;
+    const cmds = Array.isArray(a.commanders) && a.commanders.length ? a.commanders.slice(0, 2) : [a.primary_commander, a.secondary_commander].filter(Boolean);
+    const end = a.timer_seconds != null && base ? base + a.timer_seconds * 1000 : 0;
+    return '<div class="mr2">' +
+      '<div class="mr2-h"><b>الجيش ' + esc(a.index || a.slot || i + 1) + '</b><span class="mr-chip ' + esc(a.status) + '">' + (MR_ST[a.status] || esc(a.status || "—")) + '</span>' +
+        (a.can_recall ? '<span class="mr2-rc" title="زر الاستدعاء ظاهر في اللعبة">↩️ قابل للاستدعاء</span>' : '') + '</div>' +
+      '<div class="mr2-b">' + (okAv(a.avatar) ? '<img class="mr2-av" alt="" src="' + a.avatar + '">' : '') +
+        '<div class="mr2-i">' +
+          (cmds.length ? '<div class="mr-cmd" data-cmd="' + esc(cmds.join("|")) + '"' + (a.commanders_from === "preset" ? ' title="حسب «قادة كل مهمة»"' : '') + '></div>' : '') +
+          '<div class="mr2-g">' +
+            '<span>📍 ' + (x != null ? 'X:' + esc(x) + ' Y:' + esc(y) : '—') + '</span>' +
+            ((a.target_label || a.target) ? '<span>🎯 ' + esc(a.target_label || a.target) + '</span>' : (MR_MIS[a.mission] ? '<span>🎯 ' + MR_MIS[a.mission] + '</span>' : '')) +
+            (units != null ? '<span>⚔️ ' + fmtInt(units) + ' جندي</span>' : '') +
+          '</div>' +
+          (a.status_text ? '<div class="mr-sub">' + esc(a.status_text.replace(/\s*(\d+\s*d\s*)?\d{1,2}:\d{2}:\d{2}\s*/, " ").trim()) + '</div>' : '') +
+          (end ? '<div class="mr2-t"><span>⏱️</span><b class="mr2-cd" data-end="' + end + '" dir="ltr">' + esc(a.timer_raw || "") + '</b></div>' : '') +
+          (pct != null ? '<div class="mr-bar"><i style="width:' + Math.max(0, Math.min(100, pct)) + '%"></i></div><div class="mr-sub">' + (a.cap ? fmtInt(a.got) + ' من ' + fmtInt(a.cap) + ' · ' : '') + pct + '%</div>' : '') +
+          (a.health != null ? '<div class="mr-sub">❤️ الصحة ' + (+a.health) + '%</div><div class="mr-bar mr-hp"><i style="width:' + Math.max(0, Math.min(100, +a.health)) + '%"></i></div>' : '') +
+        '</div></div></div>';
   }).join("");
   box.querySelectorAll(".mr-cmd[data-cmd]").forEach(el => { el.dataset.cmd.split("|").forEach((n, i) => { const w = document.createElement("span"); w.className = "mr-c";
     try { w.appendChild(cmdFace(n)); } catch (_) {} const t = document.createElement("small"); t.textContent = (i ? "ثانوي: " : "أساسي: ") + n; w.appendChild(t); el.appendChild(w); }); });
+  mrTick();
 }
+function mrTick() {
+  document.querySelectorAll(".mr2-cd[data-end]").forEach(el => { const s = Math.round((+el.dataset.end - Date.now()) / 1000);
+    if (s <= 0) { el.textContent = "انتهى — بانتظار قراءة جديدة"; el.classList.add("done"); return; }
+    const d = Math.floor(s / 86400), h = Math.floor(s % 86400 / 3600), m = Math.floor(s % 3600 / 60), ss = s % 60, p = n => String(n).padStart(2, "0");
+    el.textContent = (d ? d + "d " : "") + p(h) + ":" + p(m) + ":" + p(ss); });
+}
+setInterval(mrTick, 1000);
 setInterval(() => { try { renderAccount(); } catch (_) {} }, 60000);
 try { renderMarches({}); } catch (_) {}
 function renderPages() {
