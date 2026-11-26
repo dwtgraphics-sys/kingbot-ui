@@ -1377,6 +1377,7 @@ window.addEventListener("error", function(e) {
         </details>
         <hr>
         <button type="button" data-go="v-home"><span data-i="home"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l9-7 9 7"></path><path d="M5 10v10h14V10"></path></svg></span>الرئيسية</button>
+        <button type="button" data-go="v-admin"><span><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="6" rx="1.5"></rect><rect x="3" y="14" width="18" height="6" rx="1.5"></rect><path d="M7 7h.01M7 17h.01"></path></svg></span>إدارة السيرفرات</button>
         <button type="button" data-go="v-live"><span><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="6" width="13" height="12" rx="2"></rect><path d="m16 10 5-3v10l-5-3"></path></svg></span>البث المباشر</button>
         <button type="button" data-go="assistant"><span><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="8" width="14" height="11" rx="3"></rect><path d="M12 4v4M9 13h.01M15 13h.01M9 16h6"></path></svg></span>المساعد</button>
         <button type="button" data-go="v-subs"><span data-i="coins"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="9" r="6"></circle><path d="M15.5 9.5A6 6 0 1 1 9.5 15.5"></path></svg></span>الاشتراكات</button>
@@ -1554,6 +1555,27 @@ window.addEventListener("error", function(e) {
     </div>
 
     <!-- ACTIVITIES -->
+    <div class="view" id="v-admin">   <!-- ADM-01: admin control of every managed server -->
+      <section class="panel adm"><div class="panel-head"><h2>🛡️ إدارة السيرفرات <button type="button" class="info-btn" data-x="adm" aria-label="شرح">❗</button></h2>
+        <div class="row"><button type="button" class="btn" id="adm-refresh"><span class="spin"></span>تحديث</button><span class="note" id="adm-at"></span></div></div>
+        <div class="adm-sum" id="adm-sum"></div>
+        <div id="adm-list"></div>
+        <div class="msg" id="m-adm"></div>
+      </section>
+      <section class="panel adm-dlg" id="adm-dlg" hidden><div class="panel-head"><h2 id="adm-dlg-h">بطاقة الاشتراك</h2></div>
+        <div class="mc-row crc-in">
+          <label>اسم العميل <input type="text" id="adm-c-name" dir="auto"></label>
+          <label>رقم الحاكم في اللعبة <input type="text" id="adm-c-game" dir="ltr"></label>
+          <label>الباقة <select id="adm-c-plan"><option value="crown-pilot-30">Crown Pilot 30 يوم</option><option value="crown-pilot-90">Crown Pilot 90 يوم</option><option value="trial-3">تجربة 3 أيام</option><option value="owner">حساب المالك</option></select></label>
+          <label>البداية <input type="date" id="adm-c-start"></label>
+          <label>الأيام <input type="number" id="adm-c-days" min="1" max="3650"></label>
+          <label class="row"><input type="checkbox" id="adm-c-frozen"> <span>مجمّد</span></label>
+        </div>
+        <label>ملاحظات <input type="text" id="adm-c-notes" dir="auto" style="width:100%"></label>
+        <div class="row"><button type="button" class="btn primary" id="adm-c-save"><span class="spin"></span>حفظ البطاقة</button><button type="button" class="btn" id="adm-c-close">إغلاق</button></div>
+        <div class="msg" id="m-adm-c"></div>
+      </section>
+    </div>
     <div class="view" id="v-live">
       <section class="panel lv-card" aria-label="البث المباشر (Live)">
         <div class="lv-head"><h2>📺 البث المباشر (Live)</h2><span class="lv-badge" data-lv="badge"><i></i><span>متوقف</span></span><span class="sp"></span>
@@ -5984,6 +6006,13 @@ pre.log .lx{display:inline-block;margin-inline-start:6px;padding:0 6px;border-ra
 .hl-cmd i{font-style:normal}.hl-cmd small{opacity:.65;white-space:nowrap}.hl-cmd span{overflow-wrap:anywhere}
 #sox-time{min-width:120px;direction:ltr;background:#ffffff0d;border:1px solid #ffffff22;color:inherit;border-radius:10px;padding:7px 10px;font:inherit}
 .btn.danger{background:#ff453a22;border-color:#ff453a88;color:#ffb3ad}.btn.danger:hover{background:#ff453a38}
+.adm-sum{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:8px;margin:8px 0}.adm-sum div{padding:10px;border-radius:12px;background:#ffffff0a;text-align:center}.adm-sum b{display:block;font-size:20px}
+.adm-srv{border-radius:14px;background:#ffffff08;border:1px solid #ffffff16;padding:12px 14px;margin:10px 0}.adm-srv.cur{border-color:#ffd56a88;box-shadow:0 0 0 1px #ffd56a44 inset}
+.adm-top{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:8px}.adm-top h3{margin:0;font-size:15px}.adm-top small{opacity:.65;font-size:12px}
+.adm-kv{display:grid;grid-template-columns:repeat(auto-fit,minmax(118px,1fr));gap:6px;margin:10px 0}.adm-kv div{padding:7px 9px;border-radius:10px;background:#ffffff08;font-size:12px;min-width:0}.adm-kv small{display:block;opacity:.6;font-size:11px}.adm-kv b{overflow-wrap:anywhere}
+.adm-bar{display:block;height:5px;border-radius:9px;background:#ffffff14;margin-top:4px;overflow:hidden}.adm-bar i{display:block;height:100%;border-radius:9px;background:#4cd964}.adm-bar i.w{background:#ffd56a}.adm-bar i.r{background:#ff453a}
+.adm-btns{display:flex;flex-wrap:wrap;gap:6px}.adm-btns .btn{padding:6px 10px;font-size:12.5px}.adm-sub{font-size:12px;opacity:.8;margin-top:6px}
+.adm-dlg select{background:#ffffff0d;border:1px solid #ffffff22;color:inherit;border-radius:10px;padding:8px 10px;font:inherit}
 .evc-now{font-size:12.5px;opacity:.8;margin:4px 0 6px}
 .evc-row{display:grid;grid-template-columns:1fr auto;gap:6px 10px;padding:10px 12px;margin:8px 0;border-radius:12px;background:#ffffff0a;border:1px solid #ffffff14}
 .evc-row.live{border-color:#4cd96488;background:#4cd96414}.evc-row h4{margin:0;font-size:14px}.evc-tag{font-size:11px;padding:2px 8px;border-radius:999px;background:#ffffff14;margin-inline-start:6px}
@@ -6633,6 +6662,133 @@ pre.log .lx{display:inline-block;margin-inline-start:6px;padding:0 6px;border-ra
     try { showInfo({ name: INFO[0], hint: INFO[1] }); } catch (_) { alert(INFO[0] + "\n\n" + INFO[1]); } });
   setInterval(() => { try { draw(); } catch (e) { console.warn(e); } }, 5000);
   setTimeout(() => { try { draw(); } catch (_) {} }, 1500);
+})();
+</script>
+<script>
+/* ===== ADM-01: admin control of every managed server (kingbot-syn/servers/index.json) ===== */
+(function () {
+  const $ = id => document.getElementById(id);
+  const esc = t => String(t == null ? "" : t).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  const ST = { running: "يعمل", waiting: "ينتظر", paused: "موقوف", frozen: "مجمّد", recovering: "يتعافى", error: "خطأ", offline: "غير متصل", new: "لم يتصل بعد" };
+  const CLS = { running: "running", waiting: "waiting", paused: "paused", frozen: "frozen", recovering: "recovering", error: "error", offline: "offline", new: "offline" };
+  let DATA = {}, latest = 0, busy = false;
+  const ago = iso => { const t = Date.parse(iso || ""); if (!t) return "—"; const m = Math.round((Date.now() - t) / 60000); return m < 1 ? "الآن" : m < 60 ? "قبل " + m + " د" : m < 1440 ? "قبل " + Math.round(m / 60) + " س" : "قبل " + Math.round(m / 1440) + " يوم"; };
+  const bar = v => v == null ? "" : `<span class="adm-bar"><i class="${v > 90 ? "r" : v > 75 ? "w" : ""}" style="width:${Math.max(2, Math.min(100, v))}%"></i></span>`;
+  function stateOf(s) { if (!s) return "new"; const upd = Date.parse(s.updated || ""); if (!upd || Date.now() - upd > 10 * 60e3) return "offline";
+    return (s.health && s.health.state) || (s.state === "paused" ? "paused" : s.state === "waiting" ? "waiting" : "running"); }
+  function subLine(c) { if (!c) return "بلا اشتراك (حساب المالك)"; const st = Date.parse(c.start || ""), left = st ? Math.ceil((st + (c.days || 30) * 864e5 - Date.now()) / 864e5) : null;
+    return `👤 ${esc(c.name || "عميل")} · ${esc(c.plan || "")}${c.game_id ? " · ID " + esc(c.game_id) : ""} · ${left == null ? "لم يبدأ" : left > 0 ? "باقي " + left + " يوم" : "منتهي"}${c.frozen ? " · ❄️ مجمّد" : ""}`; }
+  async function load() {
+    if (busy) return; busy = true; $("adm-refresh") && $("adm-refresh").classList.add("loading");
+    try {
+      try { await loadServers(); } catch (_) {}
+      const out = {};
+      await Promise.all(SERVERS.map(async sv => {
+        const r = { sv };
+        try { r.status = await ghGetJson(sv.status); } catch (e) { r.err = String(e.message || e); }
+        try { r.control = await ghGetJson(sv.control); } catch (_) {}
+        if (!sv.legacy) try { r.info = await ghGetJson(`servers/${sv.id}/server.json`); } catch (_) {}
+        out[sv.id] = r;
+      }));
+      DATA = out; latest = Date.now(); draw();
+    } finally { busy = false; $("adm-refresh") && $("adm-refresh").classList.remove("loading"); }
+  }
+  function draw() {
+    const box = $("adm-list"); if (!box) return;
+    const rows = SERVERS.map(sv => DATA[sv.id] || { sv });
+    const states = rows.map(r => stateOf(r.status));
+    const newest = Math.max(0, ...rows.map(r => +((r.status || {}).version || 0)));
+    $("adm-sum").innerHTML = [["السيرفرات", rows.length], ["تعمل", states.filter(x => x === "running" || x === "waiting").length], ["موقوفة", states.filter(x => x === "paused" || x === "frozen").length],
+      ["غير متصلة", states.filter(x => x === "offline" || x === "new").length], ["أحدث نسخة", newest ? "v" + newest : "—"]].map(([a, b]) => `<div><small>${a}</small><b>${b}</b></div>`).join("");
+    $("adm-at").textContent = latest ? "آخر تحديث " + new Date(latest).toLocaleTimeString("ar-OM") : "";
+    box.innerHTML = rows.map((r, i) => {
+      const s = r.status || {}, st = states[i], sys = s.sys || {}, up = s.update || {}, c = (r.info && r.info.client) || null, run = !r.control || r.control.running !== false;
+      const lc = s.last_command, pin = up.pinned;
+      return `<div class="adm-srv${r.sv.id === curServerId() ? " cur" : ""}" data-sid="${esc(r.sv.id)}">
+        <div class="adm-top"><div><h3>${esc(r.sv.name || r.sv.id)} <small>${esc(r.sv.id)} · ${esc(r.sv.role || "")}</small></h3><div class="adm-sub">${subLine(c)}</div></div>
+          <span class="hl-st ${CLS[st] || ""}">${ST[st] || st}</span></div>
+        <div class="adm-kv">
+          <div><small>النسخة</small><b>${s.version ? "v" + s.version : "—"}${s.version && newest && s.version < newest ? " ⬆️" : ""}${pin ? " 📌" + pin.max : ""}</b></div>
+          <div><small>المعالج</small><b>${sys.cpu != null ? sys.cpu + "%" : "—"}</b>${bar(sys.cpu)}</div>
+          <div><small>الذاكرة</small><b>${sys.ram != null ? sys.ram + "%" : "—"}</b>${bar(sys.ram)}</div>
+          <div><small>القرص</small><b>${sys.disk != null ? sys.disk + "%" + (sys.disk_free_gb != null ? " · " + sys.disk_free_gb + "GB حر" : "") : "—"}</b>${bar(sys.disk)}</div>
+          <div><small>المهمة الآن</small><b>${esc(s.active_routine || s.task || "—")}</b></div>
+          <div><small>النبض</small><b>${ago(s.heartbeat_at || s.updated)}</b></div>
+          <div><small>آخر أمر</small><b>${lc ? esc(lc.do || lc.kind) + " · " + esc(lc.status) : "—"}</b></div>
+          <div><small>التحكم</small><b>${r.control ? (run ? "▶️ مفعّل" : "⏸️ موقوف") : "—"}</b></div>
+        </div>
+        <div class="adm-btns">
+          <button type="button" class="btn" data-a="switch">↪️ تحكم بهذا السيرفر</button>
+          <button type="button" class="btn" data-a="${run ? "stop" : "start"}">${run ? "⏸️ إيقاف" : "▶️ تشغيل"}</button>
+          <button type="button" class="btn" data-a="run_now">⚡ جولة الآن</button>
+          <button type="button" class="btn" data-a="restart_bot">🔄 إعادة تشغيل البوت</button>
+          <button type="button" class="btn" data-a="restart_game">🎮 إعادة تشغيل اللعبة</button>
+          <button type="button" class="btn" data-a="probe">🔎 صور فحص</button>
+          <button type="button" class="btn" data-a="shot">📸 صورة الشاشة</button>
+          <button type="button" class="btn" data-a="update_now">⬆️ تحديث الآن</button>
+          <button type="button" class="btn" data-a="rollback">⏪ رجوع للنسخة السابقة</button>
+          ${pin ? '<button type="button" class="btn" data-a="release_updates">📌 فك تثبيت النسخة</button>' : ""}
+          <button type="button" class="btn danger" data-a="logout_game">🚪 تسجيل الخروج من اللعبة</button>
+          ${r.sv.legacy ? "" : '<button type="button" class="btn" data-a="sub">🧾 الاشتراك</button>'}
+        </div></div>`;
+    }).join("") || '<p class="note">لا توجد سيرفرات في servers/index.json</p>';
+  }
+  async function writeControl(sv, patch, label) {
+    const cur = (await ghGetJson(sv.control)) || {};
+    const next = Object.assign({}, cur, patch, { sent_at: new Date().toISOString() });
+    const seal = (typeof KB_ENC === "object" && KB_ENC.sealed && (KB_ENC.sealed.has(sv.control) || KB_ENC.sealed.has(sv.status)));
+    if (seal && !(KB_ENC.key)) throw new Error("هذا السيرفر مشفّر — أدخل عبارة التشفير أولاً من 🔐");
+    const paths = [sv.control]; if (sv.mirror_legacy) paths.push("control/control.json");
+    for (const p of paths) await ghPutJson(p, next, `admin: ${label} (${sv.id})`, !!seal);
+  }
+  const CONFIRM = { stop: "إيقاف البوت على هذا السيرفر؟", restart_bot: "إعادة تشغيل البوت؟", restart_game: "إعادة تشغيل اللعبة؟", rollback: "الرجوع للنسخة السابقة وتثبيت التحديثات عليها؟",
+    logout_game: "سيخرج البوت من حساب اللعبة ويتوقف حتى يُسجَّل الدخول من جديد. متأكد؟" };
+  document.addEventListener("click", async e => {
+    const t = e.target; if (!t || !t.closest) return;
+    if (t.closest("#adm-refresh")) { load(); return; }
+    const b = t.closest("#v-admin [data-a]"); if (!b) return;
+    const sid = b.closest("[data-sid]").dataset.sid, sv = SERVERS.find(x => x.id === sid), a = b.dataset.a; if (!sv) return;
+    if (a === "switch") { try { localStorage.setItem("kb_server", sid); } catch (_) {} location.hash = ""; location.reload(); return; }
+    if (a === "sub") { openSub(sv); return; }
+    if (CONFIRM[a] && !confirm(CONFIRM[a])) return;
+    b.classList.add("loading"); setMsg("m-adm", "");
+    try {
+      const id = stamp();
+      if (a === "stop" || a === "start") await writeControl(sv, { running: a === "start" }, a);
+      else if (a === "run_now") await writeControl(sv, { run_now: id, running: true }, "run now");
+      else if (a === "probe") await writeControl(sv, { probe_request: id }, "probe");
+      else if (a === "shot") await writeControl(sv, { shot_request: id }, "screenshot");
+      else await writeControl(sv, { action_request: { id, do: a } }, a);
+      setMsg("m-adm", `✅ أُرسل «${b.textContent.trim()}» إلى ${sv.name || sid} — تظهر النتيجة في «آخر أمر» خلال دقيقة أو اثنتين.`, "ok");
+      setTimeout(load, 60e3);
+    } catch (err) { setMsg("m-adm", "تعذّر الإرسال: " + (err.message || err), "err"); }
+    finally { b.classList.remove("loading"); }
+  });
+  let SUB = null;
+  function openSub(sv) {
+    SUB = sv; const r = DATA[sv.id] || {}, c = (r.info && r.info.client) || {};
+    $("adm-dlg-h").textContent = "بطاقة الاشتراك — " + (sv.name || sv.id);
+    $("adm-c-name").value = c.name || ""; $("adm-c-game").value = c.game_id || ""; $("adm-c-plan").value = c.plan || "crown-pilot-30";
+    $("adm-c-start").value = c.start || new Date().toISOString().slice(0, 10); $("adm-c-days").value = c.days || 30; $("adm-c-frozen").checked = !!c.frozen; $("adm-c-notes").value = c.notes || "";
+    $("adm-dlg").hidden = false; $("adm-dlg").scrollIntoView({ behavior: "smooth" });
+  }
+  document.addEventListener("click", async e => { const t = e.target; if (!t || !t.closest) return;
+    if (t.closest("#adm-c-close")) { $("adm-dlg").hidden = true; return; }
+    const sb = t.closest("#adm-c-save"); if (!sb || !SUB) return;
+    sb.classList.add("loading");
+    try {
+      const path = `servers/${SUB.id}/server.json`, info = (await ghGetJson(path)) || { id: SUB.id, name: SUB.name, role: SUB.role };
+      info.client = Object.assign({}, info.client || {}, { id: (info.client && info.client.id) || SUB.id, name: $("adm-c-name").value.trim(), game_id: $("adm-c-game").value.trim(),
+        plan: $("adm-c-plan").value, start: $("adm-c-start").value || null, days: Math.max(1, parseInt($("adm-c-days").value, 10) || 30), frozen: $("adm-c-frozen").checked, notes: $("adm-c-notes").value.trim() });
+      await ghPutJson(path, info, `admin: subscription card ${SUB.id}`, false);
+      setMsg("m-adm-c", "✅ حُفظت بطاقة الاشتراك.", "ok"); load();
+    } catch (err) { setMsg("m-adm-c", "تعذّر الحفظ: " + (err.message || err), "err"); }
+    finally { sb.classList.remove("loading"); } });
+  const INFO = ["إدارة السيرفرات", "لوحة المشرف لكل السيرفرات المسجلة في kingbot-syn/servers/index.json (أضف السيرفر الجديد هناك أو من شريط السيرفرات). لكل سيرفر: الحالة (يعمل/ينتظر/موقوف/مجمّد/يتعافى/غير متصل إذا مرّت 10 دقائق بلا حالة)، النسخة (⬆️ = أقدم من أحدث نسخة، 📌 = مثبّتة بعد رجوع)، المعالج والذاكرة والقرص، المهمة الحالية، النبض وآخر أمر وصلاحية التحكم. الأزرار ترسل الأوامر مباشرة لذلك السيرفر دون تغيير السيرفر الذي تتحكم به: تشغيل/إيقاف، جولة الآن، إعادة تشغيل البوت أو اللعبة، صور فحص، صورة الشاشة، تحديث الآن، الرجوع للنسخة السابقة (يحتفظ كل سيرفر بآخر 6 نسخ احتياطية ويثبّت النسخة حتى تفكّ التثبيت)، وتسجيل الخروج من اللعبة. «تحكم بهذا السيرفر» ينقل اللوحة كلها إليه. «الاشتراك» يحفظ بطاقة العميل (الاسم، رقم الحاكم، الباقة، البداية، الأيام، التجميد) في servers/<id>/server.json."];
+  document.addEventListener("click", e => { const b = e.target.closest && e.target.closest('.info-btn[data-x="adm"]'); if (!b) return; e.preventDefault();
+    try { showInfo({ name: INFO[0], hint: INFO[1] }); } catch (_) { alert(INFO[0] + "\n\n" + INFO[1]); } });
+  document.querySelectorAll(".view").forEach(v => { if (v.id === "v-admin") new MutationObserver(() => { if (v.classList.contains("show") && Date.now() - latest > 60e3) load(); }).observe(v, { attributes: true, attributeFilter: ["class"] }); });
+  setInterval(() => { const v = $("v-admin"); if (v && v.classList.contains("show") && !document.hidden) load(); }, 120e3);
 })();
 </script>
 </body></html>
