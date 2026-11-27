@@ -1594,7 +1594,7 @@ window.addEventListener("error", function(e) {
             <line id="ac-needle" x1="60" y1="60" x2="24.0" y2="60.0" stroke="#fff" stroke-width="3" stroke-linecap="round"></line><circle cx="60" cy="60" r="5" fill="#fff"></circle>
           </svg></div>
       </section>
-      <section class="panel hl-card" id="hl-card" aria-labelledby="hl-h">   <!-- v252: bot health + command tracking -->
+      <section class="panel hl-card kb-owner-only" id="hl-card" aria-labelledby="hl-h" hidden>   <!-- v252: bot health + command tracking; v300: admin only -->
         <div class="panel-head"><h2 id="hl-h">🩺 صحة البوت والأوامر <button type="button" class="info-btn" data-x="hl" aria-label="شرح">❗</button></h2><span class="hl-st" id="hl-st">—</span></div>
         <div class="hl-grid" id="hl-grid"></div>
         <div class="hl-warn" id="hl-warn" hidden></div>
