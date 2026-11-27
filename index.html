@@ -4447,13 +4447,27 @@ async function loadServers() {
   if (!SERVERS.some(s => s.id === curServerId())) try { localStorage.setItem("kb_server", "vps-01-main"); } catch (_) {}
   try { window.dispatchEvent(new Event("kb-servers")); } catch (_) {}
 }
+// v299: GitHub answers 409 when the file changed between our read and our write (the bot or another
+// panel saved it in that second). Read the new version and try again, up to 4 times.
+async function ghPutRetry(path, text, message) {
+  let last;
+  for (let i = 0; i < 4; i++) {
+    let sha = null;
+    try { const ex = await ghApi(path, "GET"); if (ex && ex.sha) sha = ex.sha; } catch (_) {}
+    const payload = { message, content: utf8ToB64(text) };
+    if (sha) payload.sha = sha;
+    try { return await ghApi(path, "PUT", payload); }
+    catch (e) {
+      last = e;
+      if (!/HTTP 409|HTTP 422/.test(String(e && e.message))) throw e;
+      await new Promise(r => setTimeout(r, 800 + i * 900));
+    }
+  }
+  throw last;
+}
 async function ghPutJson(path, obj, message, seal) {
-  let sha = null;
-  try { const ex = await ghApi(path, "GET"); if (ex && ex.sha) sha = ex.sha; } catch (_) {}
   const text = seal ? await kbSealText(obj, ["sent_at"]) : JSON.stringify(obj, null, 2);
-  const payload = { message, content: utf8ToB64(text) };
-  if (sha) payload.sha = sha;
-  return ghApi(path, "PUT", payload);
+  return ghPutRetry(path, text, message);
 }
 async function ghGetJson(path) {
   const m = await ghApi(path, "GET");
@@ -4473,13 +4487,7 @@ async function call(tool, input) {
     if (KB_ENC.sealed.has(cs.status) || KB_ENC.sealed.has(cs.control)) text = await kbSealText(JSON.parse(text), ["sent_at"]);   // never send plain text to an encrypted server
     const srv = curServer(), paths = [srv.control || "control/control.json"];
     if (srv.mirror_legacy && !paths.includes("control/control.json")) paths.push("control/control.json");  // during the move
-    for (const path of paths) {
-      let sha = null;
-      try { const ex = await ghApi(path, "GET"); if (ex && ex.sha) sha = ex.sha; } catch (_) {}
-      const payload = { message: `dashboard: update ${srv.id} control`, content: utf8ToB64(text) };
-      if (sha) payload.sha = sha;
-      await ghApi(path, "PUT", payload);
-    }
+    for (const path of paths) await ghPutRetry(path, text, `dashboard: update ${srv.id} control`);   // v299: retry on 409
     return { ok: true };
   }
   return {};
