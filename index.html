@@ -1212,6 +1212,19 @@ main, .view, .panel, #top, .kbar { min-width: 0; max-width: 100%; box-sizing: bo
   .kbw-hl{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:14px}.kbw-hl span{padding:6px 12px;border-radius:999px;border:1px solid rgba(242,193,78,.35);background:rgba(0,0,0,.3);font-size:13px}
   .kbw-suite{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-top:22px}@media(max-width:900px){.kbw-suite{grid-template-columns:1fr}}
   .kbw-suite > div{padding:20px;border-radius:18px;background:rgba(20,14,6,.65);border:1px solid rgba(242,193,78,.22)}.kbw-suite span{font-size:28px}.kbw-suite h3{margin:8px 0 6px;color:#ffd46a}.kbw-suite p{margin:0;opacity:.85;font-size:14px;line-height:1.7}
+  .brain-flt{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0}.brain-flt button{font:inherit;font-size:13px;padding:6px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.15);background:none;color:inherit;cursor:pointer}
+  .brain-flt button.on{background:linear-gradient(135deg,#ffd46a,#f28c28);color:#1a1006;border-color:transparent}
+  .br-it{display:grid;grid-template-columns:200px 1fr;gap:12px;padding:12px;border-radius:14px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);margin-bottom:10px}
+  .br-it.open{border-color:rgba(255,120,90,.45)}.br-it.solved{opacity:.75}.br-it.ignored{opacity:.55}
+  @media(max-width:700px){.br-it{grid-template-columns:1fr}}
+  .br-shot{display:flex;align-items:center;justify-content:center;min-height:110px;border-radius:10px;background:rgba(0,0,0,.35);font-size:12px;opacity:.9}
+  .br-shot img{width:100%;border-radius:10px;cursor:zoom-in}.br-shot button{font:inherit;font-size:12px;background:none;border:1px dashed rgba(255,255,255,.3);color:inherit;padding:8px 12px;border-radius:10px;cursor:pointer}
+  .br-h{display:flex;flex-wrap:wrap;gap:6px;align-items:center}.br-h .chip.warn{color:#ff9a9a}
+  .br-msg{font-family:ui-monospace,Consolas,monospace;font-size:12.5px;margin:6px 0;opacity:.9;word-break:break-word}
+  .br-body pre{font-size:11px;max-height:180px;overflow:auto;background:rgba(0,0,0,.35);padding:8px;border-radius:8px}
+  .br-act{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}.br-act input{flex:1 1 240px;padding:8px 12px;border-radius:999px;border:1px solid rgba(255,255,255,.15);background:rgba(0,0,0,.3);color:inherit;font:inherit;font-size:13px}
+  .brain-badge{display:inline-block;min-width:18px;padding:0 5px;margin-inline-end:6px;border-radius:999px;background:#e5533d;color:#fff;font-size:11px;line-height:18px;text-align:center}
+  .brain-badge[hidden]{display:none}
 </style>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&amp;display=swap">
 </head>
@@ -1452,7 +1465,7 @@ window.addEventListener("error", function(e) {
         </details>
         <hr>
         <button type="button" data-go="v-home"><span data-i="home"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l9-7 9 7"></path><path d="M5 10v10h14V10"></path></svg></span>الرئيسية</button>
-        <button type="button" data-go="v-admin" class="kb-owner-only" hidden><span><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="6" rx="1.5"></rect><rect x="3" y="14" width="18" height="6" rx="1.5"></rect><path d="M7 7h.01M7 17h.01"></path></svg></span>إدارة السيرفرات</button>
+        <button type="button" data-go="v-admin" class="kb-owner-only" hidden><span class="brain-badge" hidden></span><span><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="6" rx="1.5"></rect><rect x="3" y="14" width="18" height="6" rx="1.5"></rect><path d="M7 7h.01M7 17h.01"></path></svg></span>إدارة السيرفرات</button>
         <button type="button" data-go="v-live"><span><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="6" width="13" height="12" rx="2"></rect><path d="m16 10 5-3v10l-5-3"></path></svg></span>البث المباشر</button>
         <button type="button" data-go="assistant"><span><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="8" width="14" height="11" rx="3"></rect><path d="M12 4v4M9 13h.01M15 13h.01M9 16h6"></path></svg></span>المساعد</button>
         <button type="button" data-go="v-subs"><span data-i="coins"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="9" r="6"></circle><path d="M15.5 9.5A6 6 0 1 1 9.5 15.5"></path></svg></span>الاشتراكات</button>
@@ -1638,6 +1651,13 @@ window.addEventListener("error", function(e) {
         <div class="msg" id="m-adm"></div>
       </section>
       <section class="panel" id="adm-subs-slot"></section>
+      <section class="panel brain-pn" aria-labelledby="brain-h">   <!-- BRAIN-01 -->
+        <div class="panel-head"><h2 id="brain-h">🧠 أعطال البوت (ذاكرة البوت) <button type="button" class="info-btn" data-info="brain" aria-label="شرح">❗</button></h2></div>
+        <div class="adm-sum" id="brain-sum"></div>
+        <div class="brain-flt"><button type="button" data-brf="open" class="on">مفتوحة</button><button type="button" data-brf="solved">تم حلها</button><button type="button" data-brf="ignored">متجاهلة</button><button type="button" data-brf="all">الكل</button></div>
+        <div id="brain-list"><p class="note">تظهر هنا أعطال كل السيرفرات بعد أن يرفعها البوت (v277+).</p></div>
+        <div class="msg" id="m-brain"></div>
+      </section>
       <section class="panel adm-dlg" id="adm-dlg" hidden><div class="panel-head"><h2 id="adm-dlg-h">بطاقة الاشتراك</h2></div>
         <div class="mc-row crc-in">
           <label>اسم العميل <input type="text" id="adm-c-name" dir="auto"></label>
@@ -2947,6 +2967,7 @@ const PAGE_INFO = {
   guide: { name: "الدليل", text: "دليل استعمال اللوحة خطوة بخطوة: اضغط أي عنوان في «في هذه الصفحة» للانتقال إليه مباشرة. الأرقام 1–7 في مخطط «لوحتك» تطابق الشرح تحته، و«معنى الحالة» يشرح كل حالة تظهر في رأس الخانة." },
   mail: { name: "مولّد رسائل التحالف", text: "أداة مجانية لكتابة بريد تحالف منسّق في Rise of Kingdoms. حدد نصاً واضغط عريض / مائل / الحجم / لون / تدرج فتوضع علامات اللعبة حوله (إذا لم تحدد شيئاً توضع العلامات عند المؤشر). العدّاد يحسب العلامات أيضاً لأن حد اللعبة 2,000 حرف يشملها. المسودة وقوالبك تُحفظ على هذا الجهاز فقط. «نسخ الكود» ينسخ النص بالعلامات لتلصقه في بريد التحالف." },
   uxq: { name: "في المدينة", text: "بطاقات الطوابير النشطة في مدينتك كما قرأها البوت من «نظرة عامة على الطوابير»: تدريب المشاة والفرسان والرماة والحصار (مع المستوى المختار في إعدادات الطوابير)، إنتاج المواد، والعلاج. العدّاد ينقص كل ثانية، والشريط يقارن الوقت المتبقي بأطول وقت رآه البوت لنفس الطابور (اللعبة لا تعرض المدة الكاملة). يقرأ البوت الطوابير كل 10 دقائق تقريباً وبعد تبديل الشخصية." },
+  brain: { name: "أعطال البوت (ذاكرة البوت)", text: "كل مرة يفشل فيها البوت (خطأ، مهمة لم تنجح، تعليق، أمر فشل) يحفظ العطل في ذاكرته ويجمع المتكرر منه في بطاقة واحدة مع عدد المرات وآخر سطور السجل، ويلتقط صورة للعبة لحظة العطل (أول مرة، ثم عند 3 و10 و25 و100 مرة، أو كل 6 ساعات) ويرسل تنبيهاً عند كل عطل جديد. من هنا: «✅ تم الحل» يغلقه (ويُفتح تلقائياً إذا عاد)، «🔕 تجاهل» يوقف صوره وتنبيهاته، و«💾 حفظ الملاحظة» يكتب الحل الذي سيتعلمه البوت في المرحلة الثانية. لا يضغط البوت أبداً زراً مجهولاً ولا يصرف الجواهر." },
   plans: { name: "باقتك والأنشطة المشمولة", text: "كل سيرفر (خانة = جهاز واحد يشغّل حساب لعبة واحد) له باقة يحددها المسؤول: Solo بـ25$ شهرياً (48 نشاط لاعب)، Leader بـ25$ (8 أوامر إدارة تحالف ومملكة)، Solo + Leader بـ45$ بدل 50$ (كل الـ56 نشاطاً)، وGroup بسعر مخصص لعدة خانات وسيرفر مخصص ودعم خاص. الدفع مقدّم شهرياً بدون تجديد تلقائي. الأنشطة غير المشمولة تظهر مقفلة 🔒 ولا يشغّلها البوت (يكتب السبب في السجل). ✓ = جاهز في البوت، «قريباً» = قيد البناء. للترقية تواصل مع المسؤول." },
   cpresets: { name: "قادة كل مهمة", text: "اختر قائداً أساسياً وثانوياً لكل مهمة (جمع الطعام/الخشب/الحجر/الذهب، البرابرة، الحشود، الحراس). عند تجهيز المسيرة يبدّل البوت القادة في نافذة الجيش الجديد إلى من اخترته (يبحث عن الاسم في قائمة القادة). إذا لم تختر قائداً تبقى التشكيلة المحفوظة في اللعبة كما هي. إذا كان القائد في مسيرة أخرى يكمل البوت بالتشكيلة المحفوظة. القادة الظاهرون أولاً هم الذين قرأهم البوت من حسابك." },
   alerts: { name: "تنبيهات فورية", text: "يرسل البوت رسالة فورية مع صورة من اللعبة إلى تيليجرام (وإلى ديسكورد إن وضعت رابط Webhook في local_config.json على السيرفر) فقط عند الأحداث المهمة: هجوم أو استكشاف على المدينة، انتهاء درع السلام، ظهور نافذة تحقق، أو بقاء اللعبة بلا اتصال بعد كل محاولات الانتظار (عند انقطاع الشبكة أو الصيانة ينتظر البوت 30 ثانية ثم دقيقتين ثم 5 ثم 10 دقائق قبل إعادة المحاولة، ثم يعيد تشغيل اللعبة). كل رسالة فيها اسم السيرفر والشخصية ونوع الحدث، ولا يتكرر نفس التنبيه خلال 5 دقائق. «إرسال تنبيه تجريبي» يتأكد أن القناة تعمل (يحتاج البوت الإصدار 232 أو أحدث)." },
@@ -7133,9 +7154,10 @@ pre.log .lx{display:inline-block;margin-inline-start:6px;padding:0 6px;border-ra
         try { r.status = await ghGetJson(sv.status); } catch (e) { r.err = String(e.message || e); }
         try { r.control = await ghGetJson(sv.control); } catch (_) {}
         if (!sv.legacy) try { r.info = await ghGetJson(`servers/${sv.id}/server.json`); } catch (_) {}
+        try { r.brain = await ghGetJson(brainDir(sv) + "/brain.json"); } catch (_) {}     // BRAIN-01
         out[sv.id] = r;
       }));
-      DATA = out; latest = Date.now(); draw();
+      DATA = out; latest = Date.now(); draw(); try { drawBrain(); } catch (e) { console.warn(e); }
     } finally { busy = false; $("adm-refresh") && $("adm-refresh").classList.remove("loading"); }
   }
   function draw() {
@@ -7179,6 +7201,65 @@ pre.log .lx{display:inline-block;margin-inline-start:6px;padding:0 6px;border-ra
     }).join("") || '<p class="note">لا توجد سيرفرات في servers/index.json</p>';
   }
   window.kbAdmSetPlan = async (sid, tier) => { const sv = SERVERS.find(x => x.id === sid); if (!sv) return; await writeControl(sv, { plan: tier || null }, "plan " + (tier || "full")); };
+  /* ---------- BRAIN-01: «🧠 أعطال البوت» - the bot's incident memory, per server ---------- */
+  const brainDir = sv => String(sv.status || "outbox/status.json").replace(/\/[^/]*$/, "");
+  const BR_KIND = { error: "خطأ برمجي", fail: "فشل مهمة", stuck: "تعليق", warn: "تحذير" };
+  const BR_ST = { open: "مفتوح", solved: "تم الحل", ignored: "متجاهَل" };
+  let BR_FILTER = "open";
+  function drawBrain() {
+    const box = $("brain-list"); if (!box) return;
+    const all = [];
+    SERVERS.forEach(sv => { const b = (DATA[sv.id] || {}).brain; Object.values((b && b.incidents) || {}).forEach(i => all.push(Object.assign({ sv }, i))); });
+    const open = all.filter(i => i.status === "open").length;
+    $("brain-sum").innerHTML = [["مفتوحة", open], ["تم حلها", all.filter(i => i.status === "solved").length], ["متجاهلة", all.filter(i => i.status === "ignored").length],
+      ["مرات التسجيل", all.reduce((a, i) => a + (i.count || 0), 0)]].map(([a, b]) => `<div><small>${a}</small><b>${b}</b></div>`).join("");
+    const badge = document.querySelector('[data-go="v-admin"] .brain-badge'); if (badge) { badge.textContent = open; badge.hidden = !open; }
+    let rows = all.filter(i => BR_FILTER === "all" || i.status === BR_FILTER);
+    rows.sort((a, b) => (b.last || "").localeCompare(a.last || ""));
+    box.innerHTML = rows.length ? rows.slice(0, 80).map(i => {
+      const fx = Object.entries(i.fixes || {}).map(([k, v]) => `${esc(k)} ${v.worked}/${v.tried}`).join(" · ");
+      return `<div class="br-it ${esc(i.status)}" data-bsid="${esc(i.sv.id)}" data-key="${esc(i.key)}">
+        <div class="br-shot" data-shot="${i.shots ? 1 : 0}">${i.shots ? '<button type="button" data-br="shot">📷 عرض الصورة</button>' : '<span>لا توجد صورة</span>'}</div>
+        <div class="br-body">
+          <div class="br-h"><b>${esc(i.task)}</b> <span class="chip">${BR_KIND[i.kind] || esc(i.kind)}</span> <span class="chip st">${BR_ST[i.status] || esc(i.status)}</span>
+            <span class="chip">×${i.count}</span>${i.reopened ? ' <span class="chip warn">عاد بعد الحل ×' + i.reopened + '</span>' : ""}</div>
+          <div class="br-msg" dir="ltr">${esc(i.msg)}</div>
+          <small>${esc(i.sv.name || i.sv.id)} · الشاشة: ${esc(i.screen || "—")} · أول مرة ${fmtT(i.first)} · آخر مرة ${fmtT(i.last)}${fx ? " · الحلول: " + fx : ""}</small>
+          ${(i.log || []).length ? `<details><summary>آخر سطور السجل</summary><pre dir="ltr">${esc((i.log || []).join("\n"))}</pre></details>` : ""}
+          <div class="br-act"><input type="text" maxlength="300" placeholder="ملاحظة / الحل (مثلاً: اضغط X أعلى اليمين ثم أعد المهمة)" value="${esc(i.admin_note || "")}">
+            <button type="button" class="btn" data-br="note">💾 حفظ الملاحظة</button>
+            ${i.status !== "solved" ? '<button type="button" class="btn primary" data-br="solved">✅ تم الحل</button>' : ""}
+            ${i.status !== "ignored" ? '<button type="button" class="btn" data-br="ignored">🔕 تجاهل</button>' : ""}
+            ${i.status !== "open" ? '<button type="button" class="btn" data-br="open">↺ إعادة فتح</button>' : ""}</div>
+        </div></div>`; }).join("") : '<p class="note">لا توجد أعطال في هذا التصنيف. 🎉</p>';
+  }
+  const fmtT = t => t ? new Date(t).toLocaleString("ar-OM", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" }) : "—";
+  document.addEventListener("click", async e => {
+    const f = e.target.closest && e.target.closest("[data-brf]");
+    if (f) { BR_FILTER = f.dataset.brf; document.querySelectorAll("[data-brf]").forEach(x => x.classList.toggle("on", x === f)); drawBrain(); return; }
+    const b = e.target.closest && e.target.closest("[data-br]"); if (!b || !(window.kbIsOwner && window.kbIsOwner())) return;
+    const it = b.closest(".br-it"), sv = SERVERS.find(x => x.id === it.dataset.bsid), key = it.dataset.key, a = b.dataset.br; if (!sv) return;
+    if (a === "shot") {
+      b.disabled = true; b.textContent = "جارٍ التحميل…";
+      try { const m = await ghApi(brainDir(sv) + "/incidents/" + key + ".jpg", "GET"); const b64 = m && m.content ? await kbImg(m.content.replace(/\n/g, "")) : null;
+        if (!b64) { b.textContent = m ? "🔐 مشفّرة — أدخل العبارة" : "لم تُرفع بعد"; return; }
+        const box = it.querySelector(".br-shot"); box.innerHTML = ""; const img = new Image(); img.alt = "صورة العطل"; img.src = "data:image/jpeg;base64," + b64;
+        img.addEventListener("click", () => { const w = window.open(); if (w) w.document.write('<img src="' + img.src + '" style="max-width:100%">'); }); box.appendChild(img);
+      } catch (err) { b.textContent = "تعذّر التحميل"; b.disabled = false; }
+      return;
+    }
+    const note = (it.querySelector(".br-act input").value || "").trim().slice(0, 300);
+    const inc = (((DATA[sv.id] || {}).brain || {}).incidents || {})[key] || {};
+    const status = a === "note" ? (inc.status || "open") : a;
+    b.disabled = true;
+    try {
+      const cur = (await ghGetJson(sv.control)) || {};
+      const notes = Object.assign({}, cur.brain_notes || {}, { [key]: { status, note, at: new Date().toISOString() } });
+      await writeControl(sv, { brain_notes: notes }, "brain " + key + " " + status);
+      inc.status = status; inc.admin_note = note; drawBrain();
+      setMsg("m-brain", a === "note" ? "حُفظت الملاحظة — يقرؤها البوت خلال دقيقتين." : "تم: " + (BR_ST[status] || status) + " — يصل للبوت خلال دقيقتين.", "ok");
+    } catch (err) { setMsg("m-brain", "تعذّر الحفظ: " + (err.message || err), "err"); b.disabled = false; }
+  });
   async function writeControl(sv, patch, label) {
     const cur = (await ghGetJson(sv.control)) || {};
     const next = Object.assign({}, cur, patch, { sent_at: new Date().toISOString() });
