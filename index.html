@@ -1208,7 +1208,11 @@ main, .view, .panel, #top, .kbar { min-width: 0; max-width: 100%; box-sizing: bo
   .kbw-auth{display:none;gap:6px;align-items:center}
   body.kbw-public .kbw-auth{display:flex} body.kbw-public .kbw-hi, body.kbw-public .kbw-out, body.kbw-public .kbw-next{display:none}
   .kbw-auth .kbw-btn{padding:8px 14px;font-size:13px}
-  @media (max-width:520px){.kbw-auth .kbw-btn{padding:7px 10px;font-size:12px} body.kbw-public .kbw-lang{display:none}}
+  @media (max-width:520px){.kbw-auth .kbw-btn{padding:7px 10px;font-size:12px}
+    /* the language switch stays on phones: a round globe button, the native list opens on tap */
+    .kbw-lang{position:relative;width:38px;height:38px;padding:0;justify-content:center;flex:none;background:rgba(242,193,78,.14);border-color:rgba(242,193,78,.45)}
+    .kbw-lang svg{width:20px;height:20px;opacity:1;color:#ffd46a}
+    .kbw-lang .kb-langsel{position:absolute;inset:0;width:100%;height:100%;max-width:none;opacity:0;cursor:pointer;font-size:16px}}
   .kbw-hl{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:14px}.kbw-hl span{padding:6px 12px;border-radius:999px;border:1px solid rgba(242,193,78,.35);background:rgba(0,0,0,.3);font-size:13px}
   .kbw-suite{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-top:22px}@media(max-width:900px){.kbw-suite{grid-template-columns:1fr}}
   .kbw-suite > div{padding:20px;border-radius:18px;background:rgba(20,14,6,.65);border:1px solid rgba(242,193,78,.22)}.kbw-suite span{font-size:28px}.kbw-suite h3{margin:8px 0 6px;color:#ffd46a}.kbw-suite p{margin:0;opacity:.85;font-size:14px;line-height:1.7}
@@ -5279,6 +5283,7 @@ renderAll();
     document.querySelectorAll("#langs button").forEach(b => { b.classList.toggle("on", b.dataset.l === l); const x = LANGS.find(y => y[0] === b.dataset.l); b.querySelector("small").textContent = l === "ar" ? x[2] : (EN[x[0]] || x[1]); });
   }
   const box = document.getElementById("langs");
+  box.innerHTML = "";   // the page file carried a saved copy of these buttons without click handlers - build them once, fresh
   LANGS.forEach(([c, n, a]) => { const b = document.createElement("button"); b.type = "button"; b.dataset.l = c; b.innerHTML = "<b></b><small></small>"; b.querySelector("b").textContent = n; b.querySelector("small").textContent = a; b.addEventListener("click", () => apply(c)); box.appendChild(b); });
   const dr = document.getElementById("sdrawer");
   const open = v => { dr.classList.toggle("open", v); dr.setAttribute("aria-hidden", v ? "false" : "true"); };
