@@ -1009,6 +1009,7 @@ main, .view, .panel, #top, .kbar { min-width: 0; max-width: 100%; box-sizing: bo
 .kbar-comm a:hover{background:#ffffff1a}
 .oratios{display:flex;flex-wrap:wrap;gap:8px}.oratios label{display:inline-flex;align-items:center;gap:4px;padding:4px 8px;border-radius:10px;background:#ffffff0a;font-size:12.5px}.oratios input{width:52px}.oratios small{opacity:.65;font-size:11px;margin-inline-start:4px}
 .mc-row{display:flex;flex-wrap:wrap;gap:10px}.mc-row label{display:flex;align-items:center;gap:6px;font-size:13px}.mc-row input{width:64px}
+.sub-st{margin:8px 0 0;padding:8px 10px;border-radius:10px;font-size:12.5px;background:rgba(245,158,11,.12);color:#f59e0b}.sub-st.ok{background:rgba(34,197,94,.12);color:#22c55e}.task-subs{display:grid;gap:12px;margin:14px 0 6px}.panel-sub{border:1px solid var(--line,rgba(127,127,127,.25));border-radius:14px;padding:12px 14px;background:rgba(127,127,127,.04);min-width:0}.panel-sub .panel-head h2{font-size:15px}
 .cpz-grid{display:grid;gap:8px}.cpz-row{display:grid;grid-template-columns:minmax(90px,1fr) 1fr 1fr;gap:6px;align-items:center;min-width:0}.cpz-row>b{font-size:13px}.cpz-row small{display:block;opacity:.6;font-size:10.5px}.cpz-row .cmdbtn{min-width:0;max-width:100%}@media(max-width:520px){.cpz-row{grid-template-columns:1fr 1fr}.cpz-row>b{grid-column:1/-1}}
 .ssx-now{margin:4px 0 10px;padding:10px 12px;border-radius:12px;background:#ffffff0a;border:1px solid #ffffff14}.ssx-top{display:flex;gap:8px;align-items:center;flex-wrap:wrap;font-size:13px}.ssx-top b{padding:2px 10px;border-radius:999px;background:#ffffff14}.ssx-top b.act{background:#2ecc7133;color:#9ff0bf}.ssx-top b.brk{background:#f39c1233;color:#ffd08a}.ssx-top b.done{background:#e74c3c33;color:#ffb3a8}.ssx-bar{height:8px;margin-top:8px;border-radius:99px;background:#ffffff14;overflow:hidden}.ssx-bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,#2ecc71,#f28c28);transition:width .4s}
 .ehx-r{justify-content:space-between;gap:10px;padding:6px 0;font-size:13.5px}.ehx-cmd{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:6px;font-size:13px}.ehx-cmd .cmdbtn{max-width:100%}.ehx-cmd input{width:56px}
@@ -1758,37 +1759,7 @@ window.addEventListener("error", function(e) {
       </section>
     </div>
     <div class="view show" id="v-acts">
-      <section class="panel plan-pn" aria-labelledby="plan-h">   <!-- PLAN-01..04 -->
-        <div class="panel-head"><h2 id="plan-h">💳 باقتك والأنشطة المشمولة <button type="button" class="info-btn" data-info="plans" aria-label="شرح">❗</button></h2></div>
-        <div id="plan-box"><p class="note">جارٍ التحميل…</p></div>
-      </section>
       <div style="display:flex;justify-content:flex-end;margin-bottom:8px"><button class="btn" type="button" onclick="showView('v-sched')">🕒 الجدولة</button></div>
-      <section class="panel mc" aria-labelledby="mc-h">   <!-- TASK-06 -->
-        <div class="panel-head"><h2 id="mc-h">🧭 أولوية المسيرات والمهلة <button type="button" class="info-btn" data-info="march" aria-label="شرح">❗</button></h2></div>
-        <div class="mc-row"><label>أقصى عدد جيوش في نفس الوقت <input type="number" id="mc-max" min="0" max="5" placeholder="0"></label>
-          <label>مهلة البحث في الخريطة (ثانية) <input type="number" id="mc-to" min="5" max="120" placeholder="30"></label></div>
-        <div class="mc-pr"><span>الترتيب:</span><ol id="mc-ord"></ol></div>
-        <p class="gd-p">تُحفظ مع «حفظ وإرسال».</p>
-      </section>
-      <section class="panel cpz" aria-labelledby="cpz-h">   <!-- TASK-07 -->
-        <div class="panel-head"><h2 id="cpz-h">🎖️ قادة كل مهمة <button type="button" class="info-btn" data-info="cpresets" aria-label="شرح">❗</button></h2></div>
-        <div class="cpz-grid" id="cpz-grid"></div>
-        <p class="gd-p">اضغط صورة القائد لاختياره (مع بحث). تُحفظ مع «حفظ وإرسال».</p>
-      </section>
-      <section class="panel ehx" aria-labelledby="ehx-h">   <!-- TASK-10 -->
-        <div class="panel-head"><h2 id="ehx-h">🏟️ وادي الغروب وصيد الحراس <button type="button" class="info-btn" data-info="evhunt" aria-label="شرح">❗</button></h2></div>
-        <label class="row ehx-r" for="ehx-sc"><span>🌅 وادي الغروب — المحاولات المجانية ضد أضعف خصم</span><span class="switch"><input type="checkbox" id="ehx-sc"><span></span></span></label>
-        <label class="row ehx-r" for="ehx-gd"><span>🛡️ صيد الحراس — بدون نقاط حركة أو جرعات</span><span class="switch"><input type="checkbox" id="ehx-gd"><span></span></span></label>
-        <div class="ehx-cmd"><span>قادة الحراس:</span><div id="ehx-c1"></div><div id="ehx-c2"></div><label>هجمات لكل جولة <input type="number" id="ehx-n" min="1" max="5" placeholder="2"></label></div>
-        <p class="gd-p">تُحفظ مع «حفظ وإرسال».</p>
-      </section>
-      <section class="panel mtx" aria-labelledby="mtx-h">   <!-- TASK-11 -->
-        <div class="panel-head"><h2 id="mtx-h">🛒 التاجر الغامض والحانة <button type="button" class="info-btn" data-info="mtav" aria-label="شرح">❗</button></h2><span class="count" id="mtx-cnt">اليوم: —</span></div>
-        <label class="row ehx-r" for="mtx-tav"><span>🍺 فتح صناديق الحانة المجانية</span><span class="switch"><input type="checkbox" id="mtx-tav"><span></span></span></label>
-        <label class="row ehx-r" for="mtx-res"><span>🪙 الشراء من التاجر بالموارد فقط (دائماً)</span><span class="switch"><input type="checkbox" id="mtx-res" checked disabled><span></span></span></label>
-        <label class="row ehx-r" for="mtx-ref"><span>🔄 استعمال التحديث المجاني للتاجر</span><span class="switch"><input type="checkbox" id="mtx-ref"><span></span></span></label>
-        <p class="gd-p">تُحفظ مع «حفظ وإرسال».</p>
-      </section>
       <section class="panel" aria-labelledby="pr-h">
         <div class="panel-head"><h2 id="pr-h"><span class="hic" style="background-position:100% 100%"></span>الإعدادات المخصصة <button type="button" class="info-btn" data-info="presets" aria-label="شرح">❗</button></h2><span class="count" id="pr-count">1 محفوظ</span></div>
         <div class="pr-new"><input id="pr-name" type="text" maxlength="40" placeholder="اسم الإعداد، مثلاً: إعداد حشد البربر"><button class="btn primary" id="pr-save" type="button">💾 حفظ الأنشطة الحالية بهذا الاسم</button></div>
@@ -1814,7 +1785,7 @@ window.addEventListener("error", function(e) {
       </section>
       <section class="panel" aria-labelledby="acts-h">
         <div class="panel-head">
-          <h2 id="acts-h">الأنشطة</h2>
+          <h2 id="acts-h">المهام</h2>
           <span class="count" id="acts-count">21 من 27 مفعّلة</span>
         </div>
         <label class="search" for="q"><span data-i="search"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path></svg></span><input id="q" type="search" placeholder="ابحث عن نشاط…"></label>
@@ -1986,6 +1957,37 @@ window.addEventListener("error", function(e) {
         <label for="en-conduct_watch" class="name">مراقبة السلوك (Conduct)<span class="chip">غير مسجّلة</span><span class="hint">يقرأ عداد السلوك من الإعدادات · إشعار تحت 100 · إغلاق البوت تلقائياً تحت 80 · <span class="slug">conduct_watch</span></span></label>
         
         <button type="button" class="info-btn" aria-label="شرح هذا الخيار">❗</button><div class="opts"><div class="opt"><span class="olabel">إشعار إذا نزل العداد عن</span><input type="number" min="1" max="1000"></div><div class="opt"><span class="olabel">إغلاق البوت تلقائياً إذا نزل عن</span><input type="number" min="1" max="1000"></div><div class="opt"><span class="olabel">يقرأ العداد كل (دقائق)</span><span class="orange"><input type="number" min="15" max="1440"> إلى <input type="number" min="15" max="1440"></span></div></div></div></div></div></div>
+        <div class="task-subs">   <!-- v299: march priority, commanders, canyon/guardians, merchant/tavern now live inside Tasks -->
+      <div class="panel-sub mtx" aria-labelledby="mtx-h">   <!-- TASK-11 -->
+        <div class="panel-head"><h2 id="mtx-h">🛒 التاجر الغامض والحانة <button type="button" class="info-btn" data-info="mtav" aria-label="شرح">❗</button></h2><span class="count" id="mtx-cnt">اليوم: —</span></div>
+        <label class="row ehx-r" for="mtx-tav"><span>🍺 فتح صناديق الحانة المجانية</span><span class="switch"><input type="checkbox" id="mtx-tav"><span></span></span></label>
+        <label class="row ehx-r" for="mtx-res"><span>🪙 الشراء من التاجر بالموارد فقط (دائماً)</span><span class="switch"><input type="checkbox" id="mtx-res" checked disabled><span></span></span></label>
+        <label class="row ehx-r" for="mtx-ref"><span>🔄 استعمال التحديث المجاني للتاجر</span><span class="switch"><input type="checkbox" id="mtx-ref"><span></span></span></label>
+        <p class="sub-st" id="mtx-st" hidden></p>
+        <p class="gd-p">تُحفظ مع «حفظ وإرسال».</p>
+      </div>
+      <div class="panel-sub ehx" aria-labelledby="ehx-h">   <!-- TASK-10 -->
+        <div class="panel-head"><h2 id="ehx-h">🏟️ وادي الغروب وصيد الحراس <button type="button" class="info-btn" data-info="evhunt" aria-label="شرح">❗</button></h2></div>
+        <label class="row ehx-r" for="ehx-sc"><span>🌅 وادي الغروب — المحاولات المجانية ضد أضعف خصم</span><span class="switch"><input type="checkbox" id="ehx-sc"><span></span></span></label>
+        <label class="row ehx-r" for="ehx-gd"><span>🛡️ صيد الحراس — بدون نقاط حركة أو جرعات</span><span class="switch"><input type="checkbox" id="ehx-gd"><span></span></span></label>
+        <div class="ehx-cmd"><span>قادة الحراس:</span><div id="ehx-c1"></div><div id="ehx-c2"></div><label>هجمات لكل جولة <input type="number" id="ehx-n" min="1" max="5" placeholder="2"></label></div>
+        <p class="sub-st" id="ehx-st" hidden></p>
+        <p class="gd-p">تُحفظ مع «حفظ وإرسال».</p>
+      </div>
+      <div class="panel-sub cpz" aria-labelledby="cpz-h">   <!-- TASK-07 -->
+        <div class="panel-head"><h2 id="cpz-h">🎖️ قادة كل مهمة <button type="button" class="info-btn" data-info="cpresets" aria-label="شرح">❗</button></h2></div>
+        <div class="cpz-grid" id="cpz-grid"></div>
+        <p class="sub-st" id="cpz-st" hidden></p>
+        <p class="gd-p">اضغط صورة القائد لاختياره (مع بحث). تُحفظ مع «حفظ وإرسال».</p>
+      </div>
+      <div class="panel-sub mc" aria-labelledby="mc-h">   <!-- TASK-06 -->
+        <div class="panel-head"><h2 id="mc-h">🧭 أولوية المسيرات والمهلة <button type="button" class="info-btn" data-info="march" aria-label="شرح">❗</button></h2></div>
+        <div class="mc-row"><label>أقصى عدد جيوش في نفس الوقت <input type="number" id="mc-max" min="0" max="5" placeholder="0"></label>
+          <label>مهلة البحث في الخريطة (ثانية) <input type="number" id="mc-to" min="5" max="120" placeholder="30"></label></div>
+        <div class="mc-pr"><span>الترتيب:</span><ol id="mc-ord"></ol></div>
+        <p class="gd-p">تُحفظ مع «حفظ وإرسال».</p>
+      </div>
+        </div>
         <div class="row">
           <label for="loop">تكرار الجولة</label>
           <select id="loop">
@@ -2662,6 +2664,10 @@ window.addEventListener("error", function(e) {
           <p class="note">🔐 تغيير كلمة مرور اللوحة يخرج الأجهزة الأخرى، ويلغي إشعارات الأجهزة وربط تيليجرام — فعّلها من جديد عن قصد.</p>
           <div class="msg" id="m-pn"></div></div>
         <div class="row"><button class="btn acc-out" type="button" id="acc-logout"><span data-i="logout"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 4h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-3M10 17l-5-5 5-5M5 12h11"></path></svg></span>تسجيل الخروج</button></div>
+      </section>
+      <section class="panel plan-pn" aria-labelledby="plan-h">   <!-- PLAN-01..04 -->
+        <div class="panel-head"><h2 id="plan-h">💳 باقتك والأنشطة المشمولة <button type="button" class="info-btn" data-info="plans" aria-label="شرح">❗</button></h2></div>
+        <div id="plan-box"><p class="note">جارٍ التحميل…</p></div>
       </section>
     </div>
 
@@ -4140,6 +4146,22 @@ function openUpgrade(page) {
 }
 
 /* ---------- conduct card ---------- */
+// v299: what the bot last reported for the activities that moved into Tasks (merchant, canyon/guardians, commander presets)
+function renderSubStates(c) {
+  const put = (id, txt, ok) => { const e = document.getElementById(id); if (!e) return; e.hidden = !txt; e.textContent = txt || ""; e.classList.toggle("ok", !!ok); };
+  const m = String(c.merchant_state || ""), mt = [];
+  if (m === "no_picture") mt.push(L("⚠ التاجر لا يعمل بعد: البوت يحتاج صورة التاجر الغامض (merchant_icon) تُسجَّل مرة واحدة على السيرفر عندما يظهر التاجر في المدينة.", "⚠ The merchant isn't working yet: the bot needs a picture of the Mysterious Merchant (merchant_icon), recorded once on the server while the merchant is in the city."));
+  else if (m === "not_here") mt.push(L("آخر زيارة: التاجر الغامض لم يكن في المدينة.", "Last visit: the Mysterious Merchant wasn't in the city."));
+  else if (/^bought/.test(m)) mt.push(L("✓ آخر زيارة: اشترى ", "✓ Last visit: bought ") + m.split(" ")[1] + L(" بالموارد.", " with resources."));
+  put("mtx-st", mt.join(" "), /^bought/.test(m));
+  const et = [], cs = String(c.canyon_state || ""), gs = String(c.guardians_state || "");
+  if (/^fought/.test(cs)) et.push(L("✓ وادي الغروب: ", "✓ Sunset Canyon: ") + cs.split(" ")[1] + L(" معارك مجانية", " free battles") + (c.canyon_read ? " · " + c.canyon_read : ""));
+  else if (cs === "page_not_open") et.push(L("⚠ وادي الغروب: لم تفتح صفحة الوادي في آخر محاولة.", "⚠ Sunset Canyon: the canyon page didn't open last time."));
+  if (gs === "no_picture") et.push(L("⚠ صيد الحراس يحتاج صورة الحارس (guardian) تُسجَّل مرة واحدة من الخريطة.", "⚠ Guardian hunting needs a guardian picture, recorded once on the map."));
+  put("ehx-st", et.join(" · "), et.length && !et.some(x => x.indexOf("⚠") === 0));
+  const pm = c.preset_missing && typeof c.preset_missing === "object" ? Object.keys(c.preset_missing) : [];
+  put("cpz-st", pm.length ? L("⚠ لم يجدها البوت في قائمة القادة المتاحين (مشغولة في مسيرة أخرى أو غير مملوكة)، فأبقى التشكيلة الحالية: ", "⚠ Not found among the free commanders (busy on another march or not owned), so the current loadout was kept: ") + pm.slice(0, 6).join("، ") : "", false);
+}
 function renderConduct(c) {
   const el = document.getElementById("cond-v"); if (!el) return;
   const cd0 = (c && c.conduct) || null, t = taskOf("conduct_watch");
@@ -4845,6 +4867,7 @@ async function refreshStatus(btn) {
     renderRes(s.resources, s.city);
     renderCity(s.city);
     try { renderConduct(s.city); } catch (_) {}
+    try { renderSubStates(s.city || {}); } catch (_) {}
     try { checkCharChange(s); checkWatched(s); astTick(s); } catch (_) {}
     try { if (window.glCheck) glCheck(s); } catch (_) {}   // v262 LOGIN-01
     try { if (window.liveUpdate) liveUpdate(s); } catch (_) {}
