@@ -3061,6 +3061,20 @@ document.querySelectorAll('.info-btn[data-info]').forEach(b => b.addEventListene
 /* ---------- v110: characters ---------- */
 let chList = [];
 function esc(t) { return String(t == null ? "" : t).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c])); }
+/* v308: the picture of the in-game characters page the bot took while reading them */
+let chShotKey = "", chShotB64 = "";
+async function chShot(sh) {
+  const box = document.getElementById("ch-shot"); if (!box || !sh || !sh.path) return;
+  const key = sh.path + "@" + (sh.at || "");
+  const paint = () => { box.innerHTML = '<p class="note">' + L("صورة صفحة الشخصيات في اللعبة", "In-game characters page") + (sh.at ? " · " + esc(sh.at) : "") + '</p>' +
+    '<img alt="" style="width:100%;border-radius:12px;border:1px solid #ffffff22" src="data:image/jpeg;base64,' + chShotB64 + '">'; };
+  if (key === chShotKey && chShotB64) { paint(); return; }
+  try {
+    const m = await ghApi(sh.path, "GET"); if (!m || !m.content) return;
+    const b = await kbImg(m.content.replace(/\n/g, "")); if (!b) { box.innerHTML = '<p class="note">🔐</p>'; return; }
+    chShotKey = key; chShotB64 = b; paint();
+  } catch (_) {}
+}
 function renderChars(c) {
   if (c && Array.isArray(c.characters) && c.characters.length) { chList = kbCache("chars", c.characters); if (c.characters_at) kbCache("chars_at", { t: c.characters_at }); }
   else { if (!chList.length) chList = kbCache("chars", null) || []; c = Object.assign({}, c || {}, { characters_at: (kbCache("chars_at", null) || {}).t }); }
@@ -3069,7 +3083,9 @@ function renderChars(c) {
     (ch.avatar && /^data:image\/jpeg;base64,[A-Za-z0-9+/=]+$/.test(ch.avatar) ? '<img alt="" src="' + ch.avatar + '">' : '<span class="noav"></span>') +
     '<div><b>' + esc(ch.name) + '</b><small>' + esc(ch.kingdom) + '</small><small>القوة: ' + esc(ch.power || "—") + '</small>' +
     (ch.current ? '<small>✅ ' + L("الشخصية الحالية", "Current character") + '</small>' : '<button type="button" class="btn" data-ch="' + i + '">' + L("العمل بهذه الشخصية", "Use this character") + '</button>') + '</div></div>').join("") +
-    (c && c.characters_at ? '<p class="note" style="grid-column:1/-1">آخر قراءة: ' + esc(c.characters_at) + '</p>' : "");
+    (c && c.characters_at ? '<p class="note" style="grid-column:1/-1">آخر قراءة: ' + esc(c.characters_at) + '</p>' : "") +
+    '<div id="ch-shot" style="grid-column:1/-1"></div>';
+  chShot(c && c.characters_shot);
   g.querySelectorAll("button[data-ch]").forEach(b => b.addEventListener("click", async () => {
     const ch = chList[+b.dataset.ch];
     if (!ch) return;
