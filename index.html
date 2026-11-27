@@ -4204,9 +4204,9 @@ window.kbPassDialog = kbPassDialog;
       '<p class="mut">' + (codeStep ? "١ ✔ البريد · <b>٢ الكود</b>" : "<b>١ البريد</b> · ٢ الكود") + '</p>' +
       (codeStep
         ? '<p class="mut">وصل كود إلى ' + esc(g.email_hint || "بريدك") + '. اكتبه هنا:</p>' +
-          '<input type="text" id="glg-code" inputmode="numeric" autocomplete="one-time-code" maxlength="8" placeholder="الكود" dir="ltr">' +
-          '<label class="mut"><input type="checkbox" id="glg-agree"> أوافق على اتفاقية المستخدم وسياسة الخصوصية للعبة (يضع البوت العلامة في نافذة الدخول)</label>'
-        : '<input type="text" id="glg-email" inputmode="email" autocomplete="email" placeholder="بريد حساب اللعبة" dir="ltr">') +
+          '<input type="text" id="glg-code" inputmode="numeric" autocomplete="one-time-code" maxlength="8" placeholder="الكود" dir="ltr">'
+        : '<input type="text" id="glg-email" inputmode="email" autocomplete="email" placeholder="بريد حساب اللعبة" dir="ltr">' +
+          '<label class="mut"><input type="checkbox" id="glg-agree"> أوافق على اتفاقية المستخدم وسياسة الخصوصية للعبة (يضع البوت العلامة في نافذة الدخول — اللعبة لا ترسل الكود بدونها)</label>') +
       '<div class="msg" id="m-glg">' + esc(g.detail || "") + '</div>' +
       '<div class="row">' +
       (codeStep ? '<button type="button" class="btn" id="glg-send-code"' + (busy ? " disabled" : "") + '>تسجيل الدخول</button><button type="button" class="btn ghost" id="glg-back">إعادة إرسال الكود / بريد آخر</button>'
@@ -4224,10 +4224,11 @@ window.kbPassDialog = kbPassDialog;
     if (se) se.onclick = async () => {
       const v = (e.value || "").trim();
       if (!/^[^@\s]+@[^@\s]+\.[A-Za-z]{2,}$/.test(v)) { setMsg("m-glg", "اكتب بريداً صحيحاً.", "err"); return; }
+      if (!box.querySelector("#glg-agree").checked) { setMsg("m-glg", "يجب الموافقة على اتفاقية المستخدم أولاً — اللعبة لا ترسل الكود بدونها.", "err"); return; }
       if (Date.now() - sentAt < 90e3) { setMsg("m-glg", "أُرسل طلب قبل قليل — انتظر نتيجته، أو اضغط «🔄 تحديث وإعادة العملية».", "err"); return; }
       sentAt = Date.now();
       const id = stamp();
-      if (await sendSettings({ action_request: { id, do: "game_login_email", email: v } }, "m-glg", se)) {
+      if (await sendSettings({ action_request: { id, do: "game_login_email", email: v, agree: true } }, "m-glg", se)) {
         setMsg("m-glg", "أُرسل. البوت يكتب البريد ويضغط Get Code خلال دقيقة تقريباً، ثم افحص بريدك (والبريد المزعج).", "ok");
         fastPoll(600);
       }
@@ -4236,7 +4237,6 @@ window.kbPassDialog = kbPassDialog;
     if (sc) sc.onclick = async () => {
       const v = (c.value || "").replace(/\s/g, "");
       if (!/^[0-9A-Za-z]{4,8}$/.test(v)) { setMsg("m-glg", "اكتب الكود كما وصلك (4 إلى 8 أحرف أو أرقام).", "err"); return; }
-      if (!box.querySelector("#glg-agree").checked) { setMsg("m-glg", "يجب الموافقة على اتفاقية المستخدم أولاً.", "err"); return; }
       if (Date.now() - sentAt < 90e3) { setMsg("m-glg", "أُرسل طلب قبل قليل — انتظر نتيجته، أو اضغط «🔄 تحديث وإعادة العملية».", "err"); return; }
       sentAt = Date.now();
       const id = stamp();
