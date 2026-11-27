@@ -4174,7 +4174,21 @@ window.kbPassDialog = kbPassDialog;
    The form opens by itself while the game waits for a login, and right after the bot is switched on. */
 (function () {
   const ACTIVE = ["need_email", "sending_code", "code_sent", "logging_in"];
-  let shownStage = "", closedStage = "", closedAt = 0;
+  let shownStage = "", closedStage = "", closedAt = 0, sentAt = 0;
+  const autoKey = () => { try { return "kb_glg_auto_" + (curServer().id || ""); } catch (_) { return "kb_glg_auto"; } };
+  const autoDone = () => { try { return localStorage.getItem(autoKey()) === "1"; } catch (_) { return false; } };
+  const setAuto = v => { try { v ? localStorage.setItem(autoKey(), "1") : localStorage.removeItem(autoKey()); } catch (_) {} };
+  function chip(on) {                                     // v272: a bar on the home page to open the form again
+    let c = document.getElementById("glg-chip");
+    if (!on) { if (c) c.remove(); return; }
+    if (c) return;
+    const home = document.getElementById("v-home"); if (!home) return;
+    c = document.createElement("div"); c.id = "glg-chip"; c.className = "msg";
+    c.style.cssText = "display:flex;gap:10px;align-items:center;justify-content:space-between;margin:8px 0;border:1px solid #e2b04a88;border-radius:12px;padding:10px 12px";
+    c.innerHTML = '<span>🎮 اللعبة تنتظر تسجيل الدخول</span><button type="button" class="btn" id="glg-chip-open">فتح نافذة الدخول</button>';
+    home.insertBefore(c, home.firstChild);
+    c.querySelector("#glg-chip-open").onclick = () => window.glOpen(true);
+  }
   const esc = t => String(t == null ? "" : t).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
   function glOf(s) { return ((s || {}).city || {}).game_login || {}; }
   function encOn() { try { const cs = curServer(); return !!(KB_ENC.sealed.has(cs.status) || KB_ENC.sealed.has(cs.control)); } catch (_) { return false; } }
@@ -4197,17 +4211,21 @@ window.kbPassDialog = kbPassDialog;
       '<div class="row">' +
       (codeStep ? '<button type="button" class="btn" id="glg-send-code"' + (busy ? " disabled" : "") + '>تسجيل الدخول</button><button type="button" class="btn ghost" id="glg-back">إعادة إرسال الكود / بريد آخر</button>'
                 : '<button type="button" class="btn" id="glg-send-email"' + (busy ? " disabled" : "") + '>إرسال الكود إلى بريدي</button>') +
+      '<button type="button" class="btn ghost" id="glg-redo" title="يقرأ حالة البوت من جديد ويرجعك لخطوة البريد">🔄 تحديث وإعادة العملية</button>' +
       '<button type="button" class="btn ghost" id="glg-x">إغلاق</button></div></div>';
     const e = box.querySelector("#glg-email"), c = box.querySelector("#glg-code");
     if (e) { e.value = keep.e; e.focus(); }
     if (c) { c.value = keep.c; c.focus(); }
     box.querySelector("#glg-info").onclick = () => { const h = box.querySelector("#glg-help"); h.style.display = h.style.display === "none" ? "" : "none"; };
-    box.querySelector("#glg-x").onclick = () => { closedStage = shownStage; closedAt = Date.now(); box.remove(); };
+    box.querySelector("#glg-x").onclick = () => { closedStage = shownStage; closedAt = Date.now(); box.remove(); chip(true); };
+    box.querySelector("#glg-redo").onclick = () => { sentAt = 0; render({ stage: "need_email" }); const ee = document.querySelector("#glg-email"); if (ee) ee.value = ""; setMsg("m-glg", "ابدأ من جديد: اكتب البريد واضغط «إرسال الكود إلى بريدي».", ""); try { fastPoll(120); } catch (_) {} };
     const back = box.querySelector("#glg-back"); if (back) back.onclick = () => render({ stage: "need_email" });
     const se = box.querySelector("#glg-send-email");
     if (se) se.onclick = async () => {
       const v = (e.value || "").trim();
       if (!/^[^@\s]+@[^@\s]+\.[A-Za-z]{2,}$/.test(v)) { setMsg("m-glg", "اكتب بريداً صحيحاً.", "err"); return; }
+      if (Date.now() - sentAt < 90e3) { setMsg("m-glg", "أُرسل طلب قبل قليل — انتظر نتيجته، أو اضغط «🔄 تحديث وإعادة العملية».", "err"); return; }
+      sentAt = Date.now();
       const id = stamp();
       if (await sendSettings({ action_request: { id, do: "game_login_email", email: v } }, "m-glg", se)) {
         setMsg("m-glg", "أُرسل. البوت يكتب البريد ويضغط Get Code خلال دقيقة تقريباً، ثم افحص بريدك (والبريد المزعج).", "ok");
@@ -4219,6 +4237,8 @@ window.kbPassDialog = kbPassDialog;
       const v = (c.value || "").replace(/\s/g, "");
       if (!/^[0-9A-Za-z]{4,8}$/.test(v)) { setMsg("m-glg", "اكتب الكود كما وصلك (4 إلى 8 أحرف أو أرقام).", "err"); return; }
       if (!box.querySelector("#glg-agree").checked) { setMsg("m-glg", "يجب الموافقة على اتفاقية المستخدم أولاً.", "err"); return; }
+      if (Date.now() - sentAt < 90e3) { setMsg("m-glg", "أُرسل طلب قبل قليل — انتظر نتيجته، أو اضغط «🔄 تحديث وإعادة العملية».", "err"); return; }
+      sentAt = Date.now();
       const id = stamp();
       if (await sendSettings({ action_request: { id, do: "game_login_code", code: v, agree: true } }, "m-glg", sc)) {
         setMsg("m-glg", "أُرسل الكود. البوت يسجّل الدخول خلال دقيقة تقريباً.", "ok");
@@ -4229,22 +4249,28 @@ window.kbPassDialog = kbPassDialog;
   window.glOpen = function (force) {
     const g = glOf(typeof lastStatus === "object" ? lastStatus : null);
     if (!ACTIVE.includes(g.stage) && !force) return false;
+    chip(false);
     render(ACTIVE.includes(g.stage) ? g : { stage: "need_email" });
     return true;
   };
   window.glCheck = function (s) {
     const g = glOf(s), box = document.getElementById("kb-glg-dlg");
     if (g.stage === "logged_in") {
+      setAuto(false); chip(false);
       if (box) { box.remove(); try { setMsg("m-status", "✅ تم تسجيل الدخول في اللعبة — البوت يبدأ العمل.", "ok"); } catch (_) {} }
       return;
     }
-    if (!ACTIVE.includes(g.stage)) return;
+    if (!ACTIVE.includes(g.stage)) { chip(false); return; }
     if (box) {
-      if (g.stage !== shownStage) render(g);
-      else if (g.detail) { const m = box.querySelector("#m-glg"); if (m && !m.classList.contains("ok")) setMsg("m-glg", g.detail, /البريد غير|لم أجد|رسالة اللعبة|خطأ|يجب/.test(g.detail) ? "err" : ""); }
+      if (g.stage !== shownStage && g.stage !== "sending_code" && g.stage !== "logging_in") render(g);   // the busy steps only update the message
+      if (g.detail && (g.detail + g.at) !== box.dataset.det) {           // show every new message from the bot once
+        box.dataset.det = g.detail + g.at;
+        setMsg("m-glg", g.detail, /البريد غير|لم أجد|رسالة اللعبة|خطأ|يجب/.test(g.detail) ? "err" : (/أُرسل|تم/.test(g.detail) ? "ok" : ""));
+      }
       return;
     }
-    if (closedStage === g.stage && Date.now() - closedAt < 10 * 60e3) return;   // closed by hand: ask again after 10 min
+    if (autoDone()) { chip(true); return; }               // v272: opens by itself only once - then the bar on the home page
+    setAuto(true);
     render(g);
   };
   document.addEventListener("change", ev => {
