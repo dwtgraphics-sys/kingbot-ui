@@ -4762,7 +4762,8 @@ function uxCityCards(box, c) {
     d.querySelector(".uxq-i").textContent = ico; d.querySelector("b").textContent = name;
     const t = d.querySelector(".uxq-t"), bar = d.querySelector(".qbar i");
     if (st === "busy" && left != null) { const tot = uxqMax(k, left); t.dataset.end = String((at + left) * 1000); t.dataset.tot = String(tot); bar.style.width = Math.round(100 * (1 - left / Math.max(tot, 1))) + "%"; }
-    else { t.textContent = st === "done" ? L("مكتمل ✓", "Done ✓") : st === "idle" ? L("خامل", "Idle") : (extra || "—"); bar.style.width = st === "done" ? "100%" : "0"; }
+    else { t.textContent = st === "done" ? L("مكتمل ✓", "Done ✓") : st === "idle" ? L("خامل", "Idle") : st === "busy" ? L("يعمل (الوقت لم يُقرأ)", "Busy (time not read)")
+        : (extra || L("لم يُقرأ — يُعاد بعد 10 دقائق", "Not read — retried in 10 min")); bar.style.width = st === "done" ? "100%" : st === "busy" ? "50%" : "0"; }
     if (extra && st === "busy") { const e = document.createElement("small"); e.textContent = extra; d.appendChild(e); }
     box.appendChild(d); };
   UXQ.forEach(([u, ico, n, tk]) => { const r = (qm.train || []).find(x => x.unit === u); const tier = tr[tk] ? " • T" + tr[tk] : "";
