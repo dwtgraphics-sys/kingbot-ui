@@ -6324,7 +6324,8 @@ document.getElementById("cond-ic").innerHTML = gsvg("conduct", 46);
   const onDemand = () => { const sd = (typeof settings === "object" && settings) || {}; return !(sd.stream && sd.stream.on_demand === false); };
   function lvWatch() {
     const sd = (typeof settings === "object" && settings) || null; if (!sd || !wantOn || !onDemand()) return;
-    const v = document.querySelector(".view.show"); if (!v || v.id !== "v-live" || document.hidden || lvPaused || lvOther) return;
+    const v = document.querySelector(".view.show");                      // v338: the player on the home page counts too
+    if (!v || !(v.id === "v-live" || (v.id === "v-home" && wrap.parentNode === $l("lv-slot-home") && wrap.offsetParent)) || document.hidden || lvPaused || lvOther) return;
     const now = Date.now() / 1000, wu = +((sd.stream || {}).watch_until || 0);
     if (wu - now > 300 || Date.now() - lvAsk < 90e3) return;
     lvAsk = Date.now(); sd.stream = Object.assign({}, sd.stream || {}, { enabled: true, watch_until: Math.round(now + 1200) });
