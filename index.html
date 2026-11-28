@@ -1728,7 +1728,7 @@ window.addEventListener("error", function(e) {
         <div class="mc-row crc-in">
           <label>اسم العميل <input type="text" id="adm-c-name" dir="auto"></label>
           <label>رقم الحاكم في اللعبة <input type="text" id="adm-c-game" dir="ltr"></label>
-          <label>نوع الباقة <select id="adm-c-tier"><option value="">كاملة (بدون تحديد)</option><option value="solo">Solo — 25$ (48 نشاط لاعب)</option><option value="leader">Leader — 25$ (8 أوامر قيادة)</option><option value="solo_leader_bundle">Solo + Leader — 45$ (56 نشاطاً)</option><option value="group">Group — مخصص (عدة خانات)</option></select></label>
+          <label>نوع الباقة <select id="adm-c-tier"><option value="">كاملة (بدون تحديد)</option><option value="solo">Solo — 25$ (48 نشاط لاعب)</option><option value="leader">Leader — 25$ (8 أوامر قيادة)</option><option value="solo_leader_bundle">Solo + Leader — 45$ (56 نشاطاً)</option><option value="group">Group — مخصص (عدة خانات)</option><option value="farms">🌾 باقة المزارع — خفيفة (مزارع + بربر + أعلام + مكافآت)</option></select></label>
           <label>المدة <select id="adm-c-plan"><option value="crown-pilot-30">Crown Pilot 30 يوم</option><option value="crown-pilot-90">Crown Pilot 90 يوم</option><option value="trial-3">تجربة 3 أيام</option><option value="owner">حساب المالك</option></select></label>
           <label>البداية <input type="date" id="adm-c-start"></label>
           <label>الأيام <input type="number" id="adm-c-days" min="1" max="3650"></label>
@@ -3039,7 +3039,7 @@ const PAGE_INFO = {
   mail: { name: "مولّد رسائل التحالف", text: "أداة مجانية لكتابة بريد تحالف منسّق في Rise of Kingdoms. حدد نصاً واضغط عريض / مائل / الحجم / لون / تدرج فتوضع علامات اللعبة حوله (إذا لم تحدد شيئاً توضع العلامات عند المؤشر). العدّاد يحسب العلامات أيضاً لأن حد اللعبة 2,000 حرف يشملها. المسودة وقوالبك تُحفظ على هذا الجهاز فقط. «نسخ الكود» ينسخ النص بالعلامات لتلصقه في بريد التحالف." },
   uxq: { name: "في المدينة", text: "بطاقات الطوابير النشطة في مدينتك كما قرأها البوت من «نظرة عامة على الطوابير»: تدريب المشاة والفرسان والرماة والحصار (مع المستوى المختار في إعدادات الطوابير)، إنتاج المواد، والعلاج. العدّاد ينقص كل ثانية، والشريط يقارن الوقت المتبقي بأطول وقت رآه البوت لنفس الطابور (اللعبة لا تعرض المدة الكاملة). يقرأ البوت الطوابير كل 10 دقائق تقريباً وبعد تبديل الشخصية." },
   brain: { name: "أعطال البوت (ذاكرة البوت)", text: "كل مرة يفشل فيها البوت (خطأ، مهمة لم تنجح، تعليق، أمر فشل) يحفظ العطل في ذاكرته ويجمع المتكرر منه في بطاقة واحدة مع عدد المرات وآخر سطور السجل، ويلتقط صورة للعبة لحظة العطل (أول مرة، ثم عند 3 و10 و25 و100 مرة، أو كل 6 ساعات) ويرسل تنبيهاً عند كل عطل جديد. من هنا: «✅ تم الحل» يغلقه (ويُفتح تلقائياً إذا عاد)، «🔕 تجاهل» يوقف صوره وتنبيهاته، و«💾 حفظ الملاحظة» يكتب الحل الذي سيتعلمه البوت في المرحلة الثانية. لا يضغط البوت أبداً زراً مجهولاً ولا يصرف الجواهر." },
-  plans: { name: "باقتك والأنشطة المشمولة", text: "كل سيرفر (خانة = جهاز واحد يشغّل حساب لعبة واحد) له باقة يحددها المسؤول: Solo بـ25$ شهرياً (48 نشاط لاعب)، Leader بـ25$ (8 أوامر إدارة تحالف ومملكة)، Solo + Leader بـ45$ بدل 50$ (كل الـ56 نشاطاً)، وGroup بسعر مخصص لعدة خانات وسيرفر مخصص ودعم خاص. الدفع مقدّم شهرياً بدون تجديد تلقائي. الأنشطة غير المشمولة تظهر مقفلة 🔒 ولا يشغّلها البوت (يكتب السبب في السجل). ✓ = جاهز في البوت، «قريباً» = قيد البناء. للترقية تواصل مع المسؤول." },
+  plans: { name: "باقتك والأنشطة المشمولة", text: "كل سيرفر (خانة = جهاز واحد يشغّل حساب لعبة واحد) له باقة يحددها المسؤول: Solo بـ25$ شهرياً (48 نشاط لاعب)، Leader بـ25$ (8 أوامر إدارة تحالف ومملكة)، Solo + Leader بـ45$ بدل 50$ (كل الـ56 نشاطاً)، وGroup بسعر مخصص لعدة خانات وسيرفر مخصص ودعم خاص. و🌾 باقة المزارع (خفيفة): جمع المزارع والموارد، ضرب البربر، المشاركة في بناء أعلام التحالف، صناديق الحانة (المجانية والأسطوري) والمكافآت اليومية فقط. الدفع مقدّم شهرياً بدون تجديد تلقائي. الأنشطة غير المشمولة تظهر مقفلة 🔒 ولا يشغّلها البوت (يكتب السبب في السجل). ✓ = جاهز في البوت، «قريباً» = قيد البناء. للترقية تواصل مع المسؤول." },
   cpresets: { name: "قادة كل مهمة", text: "اختر قائداً أساسياً وثانوياً لكل مهمة (جمع الطعام/الخشب/الحجر/الذهب، البرابرة، الحشود، الحراس). عند تجهيز المسيرة يبدّل البوت القادة في نافذة الجيش الجديد إلى من اخترته (يبحث عن الاسم في قائمة القادة). إذا لم تختر قائداً تبقى التشكيلة المحفوظة في اللعبة كما هي. إذا كان القائد في مسيرة أخرى يكمل البوت بالتشكيلة المحفوظة. القادة الظاهرون أولاً هم الذين قرأهم البوت من حسابك." },
   alerts: { name: "تنبيهات فورية", text: "يرسل البوت رسالة فورية مع صورة من اللعبة إلى تيليجرام (وإلى ديسكورد إن وضعت رابط Webhook في local_config.json على السيرفر) فقط عند الأحداث المهمة: هجوم أو استكشاف على المدينة، انتهاء درع السلام، ظهور نافذة تحقق، أو بقاء اللعبة بلا اتصال بعد كل محاولات الانتظار (عند انقطاع الشبكة أو الصيانة ينتظر البوت 30 ثانية ثم دقيقتين ثم 5 ثم 10 دقائق قبل إعادة المحاولة، ثم يعيد تشغيل اللعبة). كل رسالة فيها اسم السيرفر والشخصية ونوع الحدث، ولا يتكرر نفس التنبيه خلال 5 دقائق. «إرسال تنبيه تجريبي» يتأكد أن القناة تعمل (يحتاج البوت الإصدار 232 أو أحدث)." },
   smartsched: { name: "جلسات عمل واستراحات", text: "يقسّم البوت وقت عمله اليومي إلى جلسات (مثلاً 90 دقيقة) تليها استراحات (مثلاً 20 دقيقة) مثل اللاعب الحقيقي، ويتوقف لبقية اليوم عند بلوغ «حد الساعات اليومي» (يُحسب وقت تنفيذ المهام فقط، ويبدأ العد من جديد 00:00 بتوقيت غرينتش). «العشوائية ±%» تغيّر أطوال الجلسات والاستراحات وفترات الانتظار قليلاً. النقرات نفسها دقيقة دائماً في المكان الصحيح بدون أي إزاحة عشوائية. يعمل داخل ساعات «الجدولة الذكية» إن كانت مفعّلة. الشريط يعرض الساعات المستخدمة اليوم والحالة: يعمل / استراحة / انتهى حد اليوم." },
@@ -4612,13 +4612,17 @@ const PLAN_TIERS = {
   solo: { name: "Solo", ar: "سولو", price: "25$", groups: ["solo"] },
   leader: { name: "Leader", ar: "القائد", price: "25$", groups: ["leader"] },
   solo_leader_bundle: { name: "Solo + Leader", ar: "سولو + القائد", price: "45$", groups: ["solo", "leader"] },
-  group: { name: "Group", ar: "المجموعات", price: "مخصص", groups: ["solo", "leader"] } };
-const PLAN_ALIAS = { bundle: "solo_leader_bundle", "solo+leader": "solo_leader_bundle", solo_leader: "solo_leader_bundle", multi: "group" };
+  group: { name: "Group", ar: "المجموعات", price: "مخصص", groups: ["solo", "leader"] },
+  farms: { name: "باقة المزارع", ar: "Farms", price: "خفيفة", groups: ["solo"],   // v312: light plan - only these
+    only: ["gather", "collect_city", "attack_barbarians", "alliance_flag", "tavern", "tavern_legendary", "daily_objectives", "daily_rewards", "vip_chests"] } };
+const PLAN_ALIAS = { farm: "farms", bundle: "solo_leader_bundle", "solo+leader": "solo_leader_bundle", solo_leader: "solo_leader_bundle", multi: "group" };
 let PLAN_CFG = null;
 function planTier() { const t = String((typeof settings === "object" && settings && settings.plan) || "").trim().toLowerCase(); const k = PLAN_ALIAS[t] || t; return PLAN_TIERS[k] ? k : ""; }
 function planHas(group) { const t = planTier(); return !t || PLAN_TIERS[t].groups.includes(group); }
+function planOnly() { const t = planTier(); return t && PLAN_TIERS[t].only ? PLAN_TIERS[t].only : null; }
+function planAllows(routine) { const o = planOnly(); if (o) return o.includes(routine); return planHas(/^leader_/.test(routine) ? "leader" : "solo"); }
 function planLock(row, routine) {
-  const grp = /^leader_/.test(routine) ? "leader" : "solo"; if (planHas(grp)) return;
+  if (planAllows(routine)) return;
   row.classList.add("plan-locked"); const inp = row.querySelector("input[type=checkbox]"); if (inp) inp.disabled = true;   // the bot skips it; the choice is kept for an upgrade
   const nm = row.querySelector(".name"); if (nm && !nm.querySelector(".plan-chip")) nm.insertAdjacentHTML("afterbegin", '<span class="chip plan-chip">🔒 غير مشمول في باقتك</span>');
 }
@@ -4632,10 +4636,10 @@ async function renderPlanPanel() {
   const box = document.getElementById("plan-box"); if (!box) return;
   const t = planTier(), T = t ? PLAN_TIERS[t] : null, cfg = await planCfg(), esc2 = x => String(x == null ? "" : x).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
   const skipped = ((lastStatus || {}).plan || {}).skipped || {};
-  const head = T ? `<div class="plan-now"><b>${L("باقتك: ", "Your plan: ")}${T.name}</b> <span>${L(T.ar + " · ", "")}${T.price}${t === "group" ? "" : L(" / شهر", " / month")}</span>${planHas("leader") ? "" : ` <a href="#" data-plan-up>${L("رقِّ إلى Solo + Leader (45$)", "Upgrade to Solo + Leader ($45)")}</a>`}</div>`
+  const head = T ? `<div class="plan-now"><b>${L("باقتك: ", "Your plan: ")}${T.name}</b> <span>${L(T.ar + " · ", "")}${T.price}${t === "group" ? "" : L(" / شهر", " / month")}</span>${planOnly() ? ` <span>${L("— جمع المزارع (الموارد + موارد المدينة)، ضرب البربر، المشاركة في بناء أعلام التحالف، صناديق الحانة (المجانية + الأسطوري) والمكافآت اليومية فقط.", "— farm gathering, barbarians, alliance flags, tavern chests and daily rewards only.")}</span>` : ""}${planHas("leader") ? "" : ` <a href="#" data-plan-up>${L("رقِّ إلى Solo + Leader (45$)", "Upgrade to Solo + Leader ($45)")}</a>`}</div>`
                  : `<div class="plan-now"><b>${L("باقتك: كاملة", "Your plan: full")}</b> <span>${L("لم يحدّد المسؤول باقة لهذا السيرفر — كل الأنشطة متاحة.", "The admin hasn't set a plan for this server — every activity is available.")}</span></div>`;
   const solo = (cfg && cfg.activities && cfg.activities.solo) || [], lead = (cfg && cfg.activities && cfg.activities.leader) || [];
-  const li = (a, grp) => { const has = planHas(grp), built = grp === "solo" ? !!a.routine : !!a.built;
+  const li = (a, grp) => { const has = planOnly() ? (grp === "solo" && planOnly().includes(a.routine || "")) : planHas(grp), built = grp === "solo" ? !!a.routine : !!a.built;
     const en = kbLang() !== "ar";
     return `<li class="${has ? "" : "off"}"><span>${esc2(en ? a.name : (a.name_ar || a.name))}</span>${en ? "" : `<small>${esc2(a.name)}</small>`}${!has ? '<em class="lk">🔒</em>' : built ? '<em class="ok">✓</em>' : `<em class="soon">${L("قريباً", "Soon")}</em>`}</li>`; };
   box.innerHTML = head +
@@ -5610,7 +5614,7 @@ document.getElementById("cond-ic").innerHTML = gsvg("conduct", 46);
     try { renderPay(); } catch (_) {}
   }
   // WEB-03: plan choice + payment reference -> pending until the admin confirms it
-  const TIER_NAME = { solo: "Solo — 25$", leader: "Leader — 25$", solo_leader_bundle: "Solo + Leader — 45$", group: "Group — مخصص" };
+  const TIER_NAME = { solo: "Solo — 25$", leader: "Leader — 25$", solo_leader_bundle: "Solo + Leader — 45$", group: "Group — مخصص", farms: "🌾 باقة المزارع" };
   function payState(a) {
     if (!a) return "";
     if (isActive(a)) return "active";
