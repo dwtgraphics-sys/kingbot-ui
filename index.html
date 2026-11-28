@@ -1605,7 +1605,7 @@ window.addEventListener("error", function(e) {
         <div class="qm-head"><h2>⏱ مراقب الطوابير والمؤقتات الحيّة</h2><span class="qm-at" id="qm-at">—</span><span class="sp"></span>
           <button type="button" class="qm-btn qm-help" id="qm-info" title="ما هذا؟ شرح مدير الطوابير" aria-label="شرح مدير الطوابير">❗ شرح</button><button type="button" class="qm-btn" id="qm-read" title="اطلب قراءة الطوابير الآن">↻ قراءة الآن</button></div>
         <div class="qm-grid" id="qm-grid"></div>
-        <div class="qm-foot"><label class="qm-master"><input type="checkbox" id="qm-on"> تشغيل مدير الطوابير</label><span class="sp"></span><button type="button" class="qm-save" id="qm-save">💾 حفظ وإرسال للبوت</button></div>
+        <div class="qm-foot" hidden style="display:none"><label class="qm-master"><input type="checkbox" id="qm-on"> تشغيل مدير الطوابير</label><span class="sp"></span><button type="button" class="qm-save" id="qm-save">💾 حفظ وإرسال للبوت</button></div>
         <div class="msg" id="m-qm"></div>
       </section>
       <section class="panel lv-card" id="lv-home" aria-label="البث المباشر">
@@ -6558,12 +6558,10 @@ document.getElementById("cond-ic").innerHTML = gsvg("conduct", 46);
     const t = qmTask(); $q("qm-on").checked = t.enabled !== false;
     g.innerHTML = "";
     SEC.forEach(([key, title]) => {
-      const box = document.createElement("div"); box.className = "qm-sec" + (t[key] ? "" : " off");
+      const box = document.createElement("div"); box.className = "qm-sec";
       const sh = document.createElement("div"); sh.className = "qm-sh";
       const b = document.createElement("b"); b.textContent = title;
-      const sw = document.createElement("label"); sw.className = "qm-sw"; sw.title = "تفعيل/إيقاف";
-      const ci = document.createElement("input"); ci.type = "checkbox"; ci.checked = !!t[key]; ci.onchange = () => { t[key] = ci.checked; box.classList.toggle("off", !ci.checked); };
-      sw.append(ci, document.createElement("i")); sh.append(b, sw); box.append(sh);
+      sh.append(b); box.append(sh);                         // owner: monitor only - no switches here
       const d = qm || {};
       if (key === "train") (d.train || []).forEach(r => box.append(row((UNIT_AR[r.unit] || "") + (r.unit ? " · " : "") + r.name, r.state, r.left)));
       if (key === "heal" && d.heal) { box.append(row("الجرحى " + (d.heal.wounded != null ? d.heal.wounded.toLocaleString("en-US") + " / " + (d.heal.capacity || 0).toLocaleString("en-US") : "—"), d.heal.state, d.heal.left)); }
@@ -6574,8 +6572,7 @@ document.getElementById("cond-ic").innerHTML = gsvg("conduct", 46);
       if (key === "materials" && d.materials) box.append(row(L("الخانات المتاحة ", "Free slots ") + (d.materials.producible != null ? d.materials.producible + "/" + d.materials.max : "—"), d.materials.state, d.materials.left));
       if (key === "scout") (d.scout || []).forEach(r => box.append(row(kbLang() === "ar" ? r.name.replace("Scout", "الكشاف") : r.name, r.state, r.left)));
       if (box.querySelectorAll(".qm-row").length === 0) { const e = document.createElement("div"); e.className = "qm-row"; e.innerHTML = '<span class="n" style="opacity:.6">لم يُقرأ بعد</span>'; box.append(e); }
-      box.append(opts(key, t));
-      g.append(box);
+      g.append(box);                                        // owner: monitor only - no options here (settings page has them)
     });
     tick();
   }
